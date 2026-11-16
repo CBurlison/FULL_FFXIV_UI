@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tooltip XML conversion preview (proposed)</title>
+<style>
+  body { margin: 0; padding: 24px; background: #1b1d22; font-family: "Segoe UI", Arial, sans-serif; color: #e8e8ea; }
+  h2 { font-size: 13px; font-weight: 600; margin: 28px 0 6px; color: #9aa0aa; text-transform: uppercase; letter-spacing: .05em; }
+  .note { font-size: 12px; color: #9aa0aa; margin: 0 0 12px; max-width: 920px; line-height: 1.5; }
+  .fix { font-size: 11px; color: #ecd7a6; margin-top: 6px; }
+
+  /* Dark palette (FFXIV_UI/General/Themes.lua). Round frame and shine are the static surfaces. */
+  .tip {
+    position: relative; width: 340px; box-sizing: border-box; padding: 10px 14px 12px;
+    background: rgba(41, 41, 41, .98); border: 1px solid #66635a; border-radius: 8px;
+    color: #e0dbcc; font-size: 12px; line-height: 1.35;
+  }
+  .shine { position: absolute; left: 0; right: 0; top: 0; height: 40px; border-radius: 8px 8px 0 0;
+    background: linear-gradient(rgba(255,255,255,.14), rgba(255,255,255,0)); pointer-events: none; }
+  /* Icon and name share one row, centred vertically, name left-aligned and wrapping. */
+  .head { display: flex; gap: 10px; align-items: center; }
+  .icon { width: 36px; height: 36px; border-radius: 4px; background: #3a3e47; border: 1px solid #66635a; flex: none; }
+  .name { flex: 1; min-width: 0; font-size: 14px; color: #e8e4d6; white-space: normal; overflow-wrap: anywhere; }
+  /* Item type sits under the icon row; the owned/max count sits on the same row, right-aligned. */
+  .typerow { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #bcb6a4; margin-top: 4px; }
+  .house { display: inline-flex; align-items: center; gap: 4px; color: #d9c18b; }
+  .housebox { width: 14px; height: 14px; border: 1px solid #d9c18b; border-radius: 2px; }
+  .top { text-align: center; font-size: 11px; color: #bcb6a4; margin-bottom: 4px; }
+  .divider { height: 3px; margin: 8px 0; border-radius: 2px; background: #525052; }
+  .band { background: #2a2c31; color: #ffd45a; padding: 2px 0 2px 14px; margin: 6px -14px; }
+  .label { font-size: 11px; color: #bcb6a4; }
+  .cells { display: flex; gap: 10px; }
+  .cell { flex: 1; text-align: right; }
+  .cell .v { font-size: 17px; color: #e8e4d6; }
+  .bar { height: 3px; background: #4a4d55; border-radius: 2px; margin-top: 2px; }
+  .pair { display: flex; justify-content: space-between; min-height: 15px; }
+  .pos { color: #6fd46f; }
+  .neg { color: #ea6a6a; }
+  .dim { color: #7d8390; }
+  .yellow { color: #ffd45a; }
+  .reagent { color: #7fb8ff; }
+  .effect { color: #6fe06f; margin-top: 6px; }
+  .flavor { color: #ffd45a; margin-top: 10px; }
+  .money { font-size: 11px; color: #e0dbcc; margin-top: 6px; }
+  .coin { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #d4b04a; margin: 0 2px 0 4px; }
+  .silver { background: #b8bec8; }
+  .copper { background: #b5703f; }
+  .equipped-tab { display: inline-block; background: #c9a34c; color: #1b1d22; font-size: 11px; padding: 2px 10px; border-radius: 4px 4px 0 0; }
+  .pair-view { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .legend { font-size: 11px; color: #9aa0aa; line-height: 1.8; max-width: 760px; }
+  .tag { display: inline-block; font-size: 10px; border-radius: 3px; padding: 1px 6px; margin: 1px 3px 1px 0; }
+  .tag.xml { background: #2f4a33; color: #bfe6c3; }
+  .tag.lua { background: #4a3d2a; color: #ecd7a6; }
+  .tag.hid { background: #3a3e47; color: #9aa0aa; }
+</style>
+</head>
+<body>
+
+<h2>1. Shared template anatomy</h2>
+<p class="note">
+  One virtual template, <code>FFXIV_TooltipTemplate</code>, holds the surfaces below. Every section is created hidden.
+  Lua shows the sections a tooltip uses, fills them, and reuses a fixed pool of trait cells, stat pairs and
+  text rows. No row frames are created at runtime.
+</p>
+<div class="legend">
+  <span class="tag xml">XML</span> round-frame slices, header icon, name FontString (wrapping), type FontString under the icon,
+  the owned/max count and housing indicator on the type row, the trait cell pool (value FontString plus bar), the band,
+  the stat pair pool, divider, comparison heading, effect and flavor text FontStrings, the money line.<br>
+  <span class="tag lua">Lua</span> the shine gradient (kept in code, per your decision), data, values and colours,
+  which sections show, native line capture and restore, measured reflow, caching.<br>
+  <span class="tag hid">hidden</span> every section starts hidden. Lua shows only what the tooltip uses.
+</div>
+
+<h2>2. Spell (Holy Shock)</h2>
+<p class="note">Reference: icon and name on one row, subtype under the icon with range at right, three trait cells with bars, divider, effect text in the effect colour, then a plain line.</p>
+<div class="tip">
+  <div class="shine"></div>
+  <div class="head">
+    <div class="icon"></div>
+    <div class="name">Holy Shock</div>
+  </div>
+  <div class="typerow"><span>Spell</span><span>Range 40y</span></div>
+  <div class="cells" style="margin-top:10px">
+    <div class="cell"><div class="label">Cast</div><div class="v">Instant</div><div class="bar"></div></div>
+    <div class="cell"><div class="label">Recast</div><div class="v">4.99s</div><div class="bar"></div></div>
+    <div class="cell"><div class="label">MP Cost</div><div class="v">1380</div><div class="bar"></div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="effect yellow">Triggers a burst of Light on the target, dealing 2,566 Holy damage to an enemy, or 11,606 healing to an ally.</div>
+  <div style="margin-top:8px">Generates 1 Holy Power.</div>
+</div>
+
+<h2>3. Armor with comparison (Equipped / Hover)</h2>
+<p class="note">
+  Reference: two tooltips side by side, the equipped piece first. The name wraps to show in full. Slot/type sits under the icon.
+  Defense value with bar at right, full-width item-level band, Bonuses section with a two-column stat grid,
+  then the comparison block. Durability and Sell Price sit at the bottom on one left edge.
+</p>
+<div class="pair-view">
+  <div>
+    <div class="equipped-tab">Equipped</div>
+    <div class="tip" style="border-top-left-radius:0;">
+      <div class="shine"></div>
+      <div class="top">Soulbound</div>
+      <div class="head">
+        <div class="icon"></div>
+        <div class="name">Vambraces of the Lucent Battalion</div>
+      </div>
+      <div class="typerow"><span>Wrist / Plate</span><span></span></div>
+      <div class="cells" style="margin-top:6px"><div class="cell"><div class="label">Defense</div><div class="v">37</div><div class="bar"></div></div></div>
+      <div class="band">Item Level 121</div>
+      <div class="label">Bonuses</div>
+      <div class="divider"></div>
+      <div class="pair"><span>+15 Intellect</span><span>+99 Stamina</span></div>
+      <div class="pair"><span class="pos">+9 Haste</span><span class="pos">+20 Versatility</span></div>
+      <div class="pair"><span class="dim">+15 Strength</span><span></span></div>
+      <div class="divider"></div>
+      <div class="yellow" style="margin-top:4px">If you replace this item, the following stat changes will occur:</div>
+      <div class="neg">-10 Armor</div>
+      <div class="pos">+2 Intellect</div>
+      <div class="pos">+53 Stamina</div>
+      <div class="pos">+7 Haste</div>
+      <div class="neg">-20 Versatility</div>
+      <div class="pos">+17 Mastery</div>
+      <div class="divider"></div>
+      <div class="pair"><span>Durability 55 / 55</span></div>
+      <div class="money">Sell Price: 26<span class="coin"></span>32<span class="coin silver"></span>94<span class="coin copper"></span></div>
+    </div>
+  </div>
+  <div>
+    <div class="tip" style="margin-top:30px">
+      <div class="shine"></div>
+      <div class="top">Soulbound</div>
+      <div class="head">
+        <div class="icon"></div>
+        <div class="name">Splintered Hexwood Clasps</div>
+      </div>
+      <div class="typerow"><span>Wrist / Mail</span><span></span></div>
+      <div class="cells" style="margin-top:6px"><div class="cell"><div class="label">Defense</div><div class="v">27</div><div class="bar"></div></div></div>
+      <div class="band">Item Level 139</div>
+      <div class="label">Bonuses</div>
+      <div class="divider"></div>
+      <div class="pair"><span>+17 Intellect</span><span>+152 Stamina</span></div>
+      <div class="pair"><span class="pos">+16 Haste</span><span class="pos">+17 Mastery</span></div>
+      <div class="pair"><span class="dim">+17 Agility</span><span></span></div>
+      <div class="divider"></div>
+      <div class="pair"><span>Durability 40 / 40</span></div>
+      <div class="money">Sell Price: 17<span class="coin"></span>58<span class="coin silver"></span>88<span class="coin copper"></span></div>
+    </div>
+  </div>
+</div>
+
+<h2>4. Weapon (Root Sculptor's Verdaxe)</h2>
+<p class="note">Reference: top-centre binding, name on the icon row, slot/type under the icon, three trait cells (Damage, DPS, Speed) with bars, item-level band, Bonuses grid, durability and sell price.</p>
+<div class="tip">
+  <div class="shine"></div>
+  <div class="top">Soulbound</div>
+  <div class="head">
+    <div class="icon"></div>
+    <div class="name">Root Sculptor's Verdaxe</div>
+  </div>
+  <div class="typerow"><span>One-Hand / Axe</span><span></span></div>
+  <div class="cells" style="margin-top:8px">
+    <div class="cell"><div class="label">Damage</div><div class="v">27 - 58</div><div class="bar"></div></div>
+    <div class="cell"><div class="label">DPS</div><div class="v">16.3</div><div class="bar"></div></div>
+    <div class="cell"><div class="label">Speed</div><div class="v">2.60</div><div class="bar"></div></div>
+  </div>
+  <div class="band">Item Level 133</div>
+  <div class="label">Bonuses</div>
+  <div class="divider"></div>
+  <div class="pair"><span class="dim">+14 Strength</span><span>+119 Stamina</span></div>
+  <div class="pair"><span class="pos">+17 Haste</span><span class="pos">+11 Mastery</span></div>
+  <div class="divider"></div>
+  <div class="pair"><span>Durability 73 / 110</span></div>
+  <div class="money">Sell Price: 74<span class="coin"></span>1<span class="coin silver"></span>16<span class="coin copper"></span></div>
+</div>
+
+<h2>5. Consumable / misc (LOOT RAID-R Mini)</h2>
+<p class="note">
+  Reference: top-centre binding, type under the icon with the owned/max count right-aligned on the same row, Recast trait bar,
+  divider, Effects heading, green effect paragraphs, flavor quote, then Sell Price. The reference had a large blank gap
+  between the flavor quote and the Sell Price line, and a Sell Price label that did not align with the body text.
+  Both are fixed in this mockup.
+</p>
+<div class="tip">
+  <div class="shine"></div>
+  <div class="top">Warbound</div>
+  <div class="head">
+    <div class="icon"></div>
+    <div class="name">L00T RAID-R Mini</div>
+  </div>
+  <div class="typerow"><span>Other</span><span>1/200</span></div>
+  <div class="cells" style="margin-top:8px"><div class="cell"><div class="label">Recast</div><div class="v">0 s</div><div class="bar"></div></div></div>
+  <div class="divider"></div>
+  <div class="label">Effects</div>
+  <div class="effect">Use: Scan the environment highlighting Mislaid Curiosities for the rest of the delve.</div>
+  <div class="effect">Warning: Mystical disturbances interfere with scanning equipment, limiting scan range to 150 yards within The Labyrinth of Kindo'jan.</div>
+  <div class="divider"></div>
+  <div class="flavor">"More L00T in less RAID-R! Everything you loved about the original but smaller and less stable! Self-destructs upon use."</div>
+  <div class="money" style="margin-top:8px">Sell Price: 10<span class="coin"></span></div>
+</div>
+
+<h2>6. Furniture (Zul'Aman Swamp Palm Sprout)</h2>
+<p class="note">
+  Reference: the housing icon with its count sat outside the right edge of the tooltip. It now sits in the owned/max slot
+  on the type row. When the housing count exists, it replaces the 1/1 text for that item.
+</p>
+<div class="tip">
+  <div class="shine"></div>
+  <div class="top">Warbound</div>
+  <div class="head">
+    <div class="icon"></div>
+    <div class="name">Zul'Aman Swamp Palm Sprout</div>
+  </div>
+  <div class="typerow"><span>Housing Decor</span><span class="house"><span class="housebox"></span>3</span></div>
+  <div class="cells" style="margin-top:8px"><div class="cell"><div class="label">Recast</div><div class="v">0 s</div><div class="bar"></div></div></div>
+  <div class="divider"></div>
+  <div class="label">Effects</div>
+  <div class="effect">Use: Add this Decor to your House Chest.</div>
+</div>
+
+<h2>7. Reagent (Spark of Tides, Gamey Flank)</h2>
+<p class="note">
+  Reference: the Crafting Reagent label sits under the icon, not beside it. The label is a separate line in the
+  item-type colour. Flavor text follows and must wrap in full, and the tooltip must grow to hold it.
+</p>
+<div class="tip">
+  <div class="shine"></div>
+  <div class="top">Soulbound</div>
+  <div class="head">
+    <div class="icon"></div>
+    <div class="name">Spark of Tides</div>
+  </div>
+  <div class="typerow reagent"><span>Crafting Reagent</span><span></span></div>
+  <div class="effect">Midnight Season 2</div>
+  <div class="flavor">"A unique crafting material imbued with cerulean water. Obtained through weekly quests or end-game activities, it is used to create the most powerful of equipment via professions."</div>
+  <div class="money">Sell Price: 2<span class="coin silver"></span>75<span class="coin copper"></span></div>
+</div>
+
+<h2>8. Layout rules derived from the references</h2>
+<div class="legend">
+  Binding line is centred at the top; the body is left-aligned from one shared inset.<br>
+  Icon and name share one row. The icon is 36px and the name is vertically centred beside it, left-aligned, and wraps to show the full name.<br>
+  The item type sits on its own line under the icon. The owned/max count, or the housing indicator when present, sits on the same line, right-aligned.<br>
+  Trait cells: label above a right-aligned value, with a thin bar under each cell. Used by spell, weapon and consumable.<br>
+  The item-level band spans the full tooltip width.<br>
+  Stat pairs: left and right columns; secondary stats that do not apply to the player's spec are dimmed.<br>
+  Comparison lines: negatives red, positives green, with the heading in yellow.<br>
+  Flavor text is measured after wrapping, so the bottom padding holds even when it is the last section.<br>
+  The Sell Price row and the Durability row use the same left edge as the body text, and coin icons follow the amount.<br>
+  Sections are chained with the divider. Lua does not add a gap when a section is hidden.
+</div>
+
+<div class="fix">Preview only. No code or XML has changed. Retail verification is still needed. Forever checks are deferred and not recorded as passed.</div>
+</body>
+</html>

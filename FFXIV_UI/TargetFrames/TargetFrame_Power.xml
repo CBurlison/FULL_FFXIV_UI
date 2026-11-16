@@ -1,0 +1,73 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+                        https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Frame name="FFResourceBarTemplate" virtual="true" frameStrata="MEDIUM" enableMouse="false">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="background" file="Interface\AddOns\FFXIV_UI\Media\Textures\TargetFrame\Background">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="2" y="-3"/>
+                        <Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+                    </Anchors>
+                    <TexCoords left="0.005859375" right="0.99609375" top="0.490234375" bottom="0.505859375"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <StatusBar parentKey="bar" enableMouse="false">
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+                <BarTexture file="Interface\AddOns\FFXIV_UI\Media\Textures\TargetFrame\PowerFill"/>
+            </StatusBar>
+            <Frame parentKey="textFrame" enableMouse="false">
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY" textureSubLevel="3">
+                        <Texture parentKey="outline" file="Interface\AddOns\FFXIV_UI\Media\Textures\TargetFrame\Frame6" setAllPoints="true">
+                            <TexCoords left="0" right="1" top="0.486328125" bottom="0.515625"/>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY" textureSubLevel="7">
+                        <FontString parentKey="label" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf">
+                            <Anchors>
+                                <Anchor point="LEFT" x="4" y="-5"/>
+                            </Anchors>
+                            <FontHeight val="12"/>
+                            <Color r="1" g="0.976" b="0.839" a="1"/>
+                            <Shadow>
+                                <Color r="0" g="0" b="0" a="1"/>
+                                <Offset x="1" y="-1"/>
+                            </Shadow>
+                        </FontString>
+                        <FontString parentKey="valueText" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf">
+                            <Anchors>
+                                <Anchor point="RIGHT" x="-4" y="-5"/>
+                            </Anchors>
+                            <FontHeight val="12"/>
+                            <Color r="1" g="0.976" b="0.839" a="1"/>
+                            <Shadow>
+                                <Color r="0" g="0" b="0" a="1"/>
+                                <Offset x="1" y="-1"/>
+                            </Shadow>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+        </Frames>
+    </Frame>
+    <Frame name="FFTargetPowerFrame" parent="UIParent" inherits="FFResourceBarTemplate" hidden="true">
+        <Size x="300" y="16"/>
+    </Frame>
+    <Frame name="FFFocusPowerFrame" parent="UIParent" inherits="FFResourceBarTemplate" hidden="true">
+        <Size x="220" y="16"/>
+    </Frame>
+    <Frame name="FFTargetOfTargetPowerFrame" parent="UIParent" inherits="FFResourceBarTemplate" hidden="true">
+        <Size x="220" y="16"/>
+    </Frame>
+</Ui>

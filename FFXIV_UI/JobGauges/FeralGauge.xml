@@ -1,0 +1,48 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+                        https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Frame name="ComboTrackerFrame" parent="UIParent" hidden="true">
+        <Size x="350" y="350"/>
+        <Anchors>
+            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" x="0" y="0"/>
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="base" setAllPoints="true" hidden="true" alpha="0" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Druid\FeralGauge"/>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="orb1" hidden="true" alpha="0" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Druid\FeralCombo1">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb2" hidden="true" alpha="0" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Druid\FeralCombo2">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb3" hidden="true" alpha="0" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Druid\FeralCombo3">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb4" hidden="true" alpha="0" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Druid\FeralCombo4">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb5" hidden="true" alpha="0" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Druid\FeralCombo5">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+</Ui>

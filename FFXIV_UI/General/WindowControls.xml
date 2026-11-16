@@ -1,0 +1,71 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Frame name="FFXIV_ControlShadowTemplate" virtual="true" setAllPoints="true" enableMouse="false"/>
+    <Frame name="FFXIV_CollapsibleHeaderPanelTemplate" virtual="true" inherits="BackdropTemplate" setAllPoints="true" enableMouse="false"/>
+    <Texture name="FFXIV_CollapsibleHeaderHorizontalTemplate" virtual="true">
+        <Size x="10" y="2"/>
+        <Anchors><Anchor point="CENTER"/></Anchors>
+        <Color r="1" g="1" b="1" a="1"/>
+    </Texture>
+    <Texture name="FFXIV_CollapsibleHeaderVerticalTemplate" virtual="true">
+        <Size x="2" y="10"/>
+        <Anchors><Anchor point="CENTER"/></Anchors>
+        <Color r="1" g="1" b="1" a="1"/>
+    </Texture>
+    <Texture name="FFXIV_ControlFullTemplate" virtual="true" setAllPoints="true"/>
+    <Texture name="FFXIV_Control4LeftTemplate" virtual="true">
+        <Size x="4"/>
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="LEFT"/></Anchors>
+        <TexCoords left="0" right="0.125" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_Control4CenterTemplate" virtual="true">
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="LEFT" x="4"/><Anchor point="RIGHT" x="-4"/></Anchors>
+        <TexCoords left="0.125" right="0.875" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_Control4RightTemplate" virtual="true">
+        <Size x="4"/>
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="RIGHT"/></Anchors>
+        <TexCoords left="0.875" right="1" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_Control10LeftTemplate" virtual="true">
+        <Size x="10"/>
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="LEFT"/></Anchors>
+        <TexCoords left="0" right="0.125" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_Control10CenterTemplate" virtual="true">
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="LEFT" x="10"/><Anchor point="RIGHT" x="-10"/></Anchors>
+        <TexCoords left="0.125" right="0.875" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_Control10RightTemplate" virtual="true">
+        <Size x="10"/>
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="RIGHT"/></Anchors>
+        <TexCoords left="0.875" right="1" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_Control12LeftTemplate" virtual="true">
+        <Size x="12"/>
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="LEFT"/></Anchors>
+        <TexCoords left="0" right="0.125" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_Control12CenterTemplate" virtual="true">
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="LEFT" x="12"/><Anchor point="RIGHT" x="-12"/></Anchors>
+        <TexCoords left="0.125" right="0.875" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_Control12RightTemplate" virtual="true">
+        <Size x="12"/>
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="RIGHT"/></Anchors>
+        <TexCoords left="0.875" right="1" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ExtractedTabLeftTemplate" virtual="true">
+        <Size x="23"/>
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="LEFT"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_ExtractedTabCenterTemplate" virtual="true">
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="LEFT" x="23"/><Anchor point="RIGHT" x="-17"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_ExtractedTabRightTemplate" virtual="true">
+        <Size x="17"/>
+        <Anchors><Anchor point="TOP"/><Anchor point="BOTTOM"/><Anchor point="RIGHT"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_WindowCloseIconTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Close.tga"/>
+    <Texture name="FFXIV_CircularArrowBaseTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Arrow-Button-Circle.tga"/>
+    <Texture name="FFXIV_CircularArrowGlyphTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Arrow-Button-Glyph.tga"/>
+</Ui>

@@ -1,0 +1,38 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Frame name="FFXIV_AnchorVisualTemplate" virtual="true" inherits="BackdropTemplate">
+        <Layers>
+            <Layer level="OVERLAY">
+                <FontString parentKey="nameText" inherits="GameFontNormalSmall">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="4" y="-4"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="percentText" inherits="GameFontNormalSmall">
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" x="-4" y="-4"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button parentKey="btnInc">
+                <Size x="25" y="25"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="-14" y="0"/>
+                </Anchors>
+                <NormalTexture file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Plus.tga"/>
+                <PushedTexture file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Plus.tga"/>
+                <HighlightTexture file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Plus.tga" alphaMode="ADD"/>
+            </Button>
+            <Button parentKey="btnDec">
+                <Size x="25" y="25"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="14" y="0"/>
+                </Anchors>
+                <NormalTexture file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Minus.tga"/>
+                <PushedTexture file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Minus.tga"/>
+                <HighlightTexture file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Minus.tga" alphaMode="ADD"/>
+            </Button>
+        </Frames>
+    </Frame>
+</Ui>

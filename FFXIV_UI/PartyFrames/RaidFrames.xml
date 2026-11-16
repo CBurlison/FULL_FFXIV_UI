@@ -1,0 +1,65 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Texture name="FFXIV_RaidBorderTOPTemplate" virtual="true">
+        <Size y="1"/>
+        <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="TOPRIGHT"/>
+        </Anchors>
+    </Texture>
+    <Texture name="FFXIV_RaidBorderBOTTOMTemplate" virtual="true">
+        <Size y="1"/>
+        <Anchors>
+            <Anchor point="BOTTOMLEFT"/>
+            <Anchor point="BOTTOMRIGHT"/>
+        </Anchors>
+    </Texture>
+    <Texture name="FFXIV_RaidBorderLEFTTemplate" virtual="true">
+        <Size x="1"/>
+        <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMLEFT"/>
+        </Anchors>
+    </Texture>
+    <Texture name="FFXIV_RaidBorderRIGHTTemplate" virtual="true">
+        <Size x="1"/>
+        <Anchors>
+            <Anchor point="TOPRIGHT"/>
+            <Anchor point="BOTTOMRIGHT"/>
+        </Anchors>
+    </Texture>
+    <Texture name="FFXIV_RaidGroupBackgroundTemplate" virtual="true">
+        <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMRIGHT"/>
+        </Anchors>
+        <Color r="0.055" g="0.055" b="0.045" a="0.85"/>
+    </Texture>
+    <Texture name="FFXIV_RaidHealthShineTemplate" virtual="true">
+        <Size y="1"/>
+        <Color r="0.92" g="1" b="1" a="0.8"/>
+    </Texture>
+    <Texture name="FFXIV_RaidIconBaseTemplate" virtual="true">
+        <Size x="22" y="24"/>
+        <Anchors>
+            <Anchor point="LEFT" x="3" y="0"/>
+        </Anchors>
+        <Color r="0.13" g="0.11" b="0.065" a="1"/>
+    </Texture>
+    <Texture name="FFXIV_RaidClassIconTemplate" virtual="true">
+        <Size x="18" y="20"/>
+    </Texture>
+    <StatusBar name="FFXIV_RaidHealthTemplate" virtual="true" enableMouse="false">
+        <BarTexture file="Interface\Buttons\WHITE8X8"/>
+        <BarColor r="0.63" g="0.88" b="1"/>
+    </StatusBar>
+    <StatusBar name="FFXIV_RaidPowerTemplate" virtual="true" enableMouse="false">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="background" setAllPoints="true">
+                    <Color r="0.015" g="0.025" b="0.035" a="1"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <BarTexture file="Interface\Buttons\WHITE8X8"/>
+    </StatusBar>
+</Ui>

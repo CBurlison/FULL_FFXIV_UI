@@ -1,0 +1,374 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Texture name="FFXIV_ChatLogFadeTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Chat\LogFade.tga">
+        <Color r="0.025" g="0.025" b="0.025" a="0.28"/>
+    </Texture>
+    <Frame name="FFXIV_ChatLogBackgroundTemplate" virtual="true" enableMouse="false">
+        <Anchors>
+            <Anchor point="TOPLEFT" x="-12" y="8"/>
+            <Anchor point="BOTTOMRIGHT" x="12" y="-8"/>
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture inherits="FFXIV_ChatLogFadeTemplate">
+                    <Size x="8" y="8"/>
+                    <Anchors><Anchor point="TOPLEFT"/></Anchors>
+                    <TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatLogFadeTemplate">
+                    <Size y="8"/>
+                    <Anchors>
+                        <Anchor point="TOP"/>
+                        <Anchor point="LEFT" x="8"/>
+                        <Anchor point="RIGHT" x="-8"/>
+                    </Anchors>
+                    <TexCoords left="0.25" right="0.75" top="0" bottom="0.25"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatLogFadeTemplate">
+                    <Size x="8" y="8"/>
+                    <Anchors><Anchor point="TOPRIGHT"/></Anchors>
+                    <TexCoords left="0.75" right="1" top="0" bottom="0.25"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatLogFadeTemplate">
+                    <Size x="8"/>
+                    <Anchors>
+                        <Anchor point="LEFT"/>
+                        <Anchor point="TOP" y="-8"/>
+                        <Anchor point="BOTTOM" y="8"/>
+                    </Anchors>
+                    <TexCoords left="0" right="0.25" top="0.25" bottom="0.75"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatLogFadeTemplate">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                        <Anchor point="LEFT" x="8"/>
+                        <Anchor point="RIGHT" x="-8"/>
+                        <Anchor point="TOP" y="-8"/>
+                        <Anchor point="BOTTOM" y="8"/>
+                    </Anchors>
+                    <TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatLogFadeTemplate">
+                    <Size x="8"/>
+                    <Anchors>
+                        <Anchor point="RIGHT"/>
+                        <Anchor point="TOP" y="-8"/>
+                        <Anchor point="BOTTOM" y="8"/>
+                    </Anchors>
+                    <TexCoords left="0.75" right="1" top="0.25" bottom="0.75"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatLogFadeTemplate">
+                    <Size x="8" y="8"/>
+                    <Anchors><Anchor point="BOTTOMLEFT"/></Anchors>
+                    <TexCoords left="0" right="0.25" top="0.75" bottom="1"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatLogFadeTemplate">
+                    <Size y="8"/>
+                    <Anchors>
+                        <Anchor point="BOTTOM"/>
+                        <Anchor point="LEFT" x="8"/>
+                        <Anchor point="RIGHT" x="-8"/>
+                    </Anchors>
+                    <TexCoords left="0.25" right="0.75" top="0.75" bottom="1"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatLogFadeTemplate">
+                    <Size x="8" y="8"/>
+                    <Anchors><Anchor point="BOTTOMRIGHT"/></Anchors>
+                    <TexCoords left="0.75" right="1" top="0.75" bottom="1"/>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+    <Texture name="FFXIV_ChatInputSurfaceTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\surface.tga">
+        <Color r="0.025" g="0.025" b="0.025" a="0.3"/>
+    </Texture>
+    <Texture name="FFXIV_ChatInputBorderTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\border.tga">
+        <Color r="0.6" g="0.58" b="0.52" a="0.4"/>
+    </Texture>
+    <Frame name="FFXIV_ChatInputBackgroundTemplate" virtual="true" enableMouse="false" setAllPoints="true">
+        <Layers>
+            <Layer level="BACKGROUND" textureSubLevel="-2">
+                <Texture inherits="FFXIV_ChatInputSurfaceTemplate">
+                    <Size x="4" y="4"/>
+                    <Anchors><Anchor point="TOPLEFT"/></Anchors>
+                    <TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputSurfaceTemplate">
+                    <Size y="4"/>
+                    <Anchors>
+                        <Anchor point="TOP"/>
+                        <Anchor point="LEFT" x="4"/>
+                        <Anchor point="RIGHT" x="-4"/>
+                    </Anchors>
+                    <TexCoords left="0.25" right="0.75" top="0" bottom="0.25"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputSurfaceTemplate">
+                    <Size x="4" y="4"/>
+                    <Anchors><Anchor point="TOPRIGHT"/></Anchors>
+                    <TexCoords left="0.75" right="1" top="0" bottom="0.25"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputSurfaceTemplate">
+                    <Size x="4"/>
+                    <Anchors>
+                        <Anchor point="LEFT"/>
+                        <Anchor point="TOP" y="-4"/>
+                        <Anchor point="BOTTOM" y="4"/>
+                    </Anchors>
+                    <TexCoords left="0" right="0.25" top="0.25" bottom="0.75"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputSurfaceTemplate">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                        <Anchor point="LEFT" x="4"/>
+                        <Anchor point="RIGHT" x="-4"/>
+                        <Anchor point="TOP" y="-4"/>
+                        <Anchor point="BOTTOM" y="4"/>
+                    </Anchors>
+                    <TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputSurfaceTemplate">
+                    <Size x="4"/>
+                    <Anchors>
+                        <Anchor point="RIGHT"/>
+                        <Anchor point="TOP" y="-4"/>
+                        <Anchor point="BOTTOM" y="4"/>
+                    </Anchors>
+                    <TexCoords left="0.75" right="1" top="0.25" bottom="0.75"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputSurfaceTemplate">
+                    <Size x="4" y="4"/>
+                    <Anchors><Anchor point="BOTTOMLEFT"/></Anchors>
+                    <TexCoords left="0" right="0.25" top="0.75" bottom="1"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputSurfaceTemplate">
+                    <Size y="4"/>
+                    <Anchors>
+                        <Anchor point="BOTTOM"/>
+                        <Anchor point="LEFT" x="4"/>
+                        <Anchor point="RIGHT" x="-4"/>
+                    </Anchors>
+                    <TexCoords left="0.25" right="0.75" top="0.75" bottom="1"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputSurfaceTemplate">
+                    <Size x="4" y="4"/>
+                    <Anchors><Anchor point="BOTTOMRIGHT"/></Anchors>
+                    <TexCoords left="0.75" right="1" top="0.75" bottom="1"/>
+                </Texture>
+            </Layer>
+            <Layer level="BACKGROUND" textureSubLevel="-1">
+                <Texture inherits="FFXIV_ChatInputBorderTemplate">
+                    <Size x="4" y="4"/>
+                    <Anchors><Anchor point="TOPLEFT"/></Anchors>
+                    <TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputBorderTemplate">
+                    <Size y="4"/>
+                    <Anchors>
+                        <Anchor point="TOP"/>
+                        <Anchor point="LEFT" x="4"/>
+                        <Anchor point="RIGHT" x="-4"/>
+                    </Anchors>
+                    <TexCoords left="0.25" right="0.75" top="0" bottom="0.25"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputBorderTemplate">
+                    <Size x="4" y="4"/>
+                    <Anchors><Anchor point="TOPRIGHT"/></Anchors>
+                    <TexCoords left="0.75" right="1" top="0" bottom="0.25"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputBorderTemplate">
+                    <Size x="4"/>
+                    <Anchors>
+                        <Anchor point="LEFT"/>
+                        <Anchor point="TOP" y="-4"/>
+                        <Anchor point="BOTTOM" y="4"/>
+                    </Anchors>
+                    <TexCoords left="0" right="0.25" top="0.25" bottom="0.75"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputBorderTemplate">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                        <Anchor point="LEFT" x="4"/>
+                        <Anchor point="RIGHT" x="-4"/>
+                        <Anchor point="TOP" y="-4"/>
+                        <Anchor point="BOTTOM" y="4"/>
+                    </Anchors>
+                    <TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputBorderTemplate">
+                    <Size x="4"/>
+                    <Anchors>
+                        <Anchor point="RIGHT"/>
+                        <Anchor point="TOP" y="-4"/>
+                        <Anchor point="BOTTOM" y="4"/>
+                    </Anchors>
+                    <TexCoords left="0.75" right="1" top="0.25" bottom="0.75"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputBorderTemplate">
+                    <Size x="4" y="4"/>
+                    <Anchors><Anchor point="BOTTOMLEFT"/></Anchors>
+                    <TexCoords left="0" right="0.25" top="0.75" bottom="1"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputBorderTemplate">
+                    <Size y="4"/>
+                    <Anchors>
+                        <Anchor point="BOTTOM"/>
+                        <Anchor point="LEFT" x="4"/>
+                        <Anchor point="RIGHT" x="-4"/>
+                    </Anchors>
+                    <TexCoords left="0.25" right="0.75" top="0.75" bottom="1"/>
+                </Texture>
+                <Texture inherits="FFXIV_ChatInputBorderTemplate">
+                    <Size x="4" y="4"/>
+                    <Anchors><Anchor point="BOTTOMRIGHT"/></Anchors>
+                    <TexCoords left="0.75" right="1" top="0.75" bottom="1"/>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+    <Texture name="FFXIV_ChatTabFillTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Button-fill-Standard.tga"/>
+    <Texture name="FFXIV_ChatTabBorderTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Button-border-Standard.tga"/>
+    <Texture name="FFXIV_ChatTabFillLeftTemplate" virtual="true" inherits="FFXIV_ChatTabFillTemplate">
+        <Size x="10"/>
+        <Anchors>
+            <Anchor point="TOP" y="-3"/>
+            <Anchor point="BOTTOM" y="3"/>
+            <Anchor point="LEFT"/>
+        </Anchors>
+        <TexCoords left="0.125" right="0.125" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ChatTabFillCenterTemplate" virtual="true" inherits="FFXIV_ChatTabFillTemplate">
+        <Anchors>
+            <Anchor point="TOP" y="-3"/>
+            <Anchor point="BOTTOM" y="3"/>
+            <Anchor point="LEFT" x="10"/>
+            <Anchor point="RIGHT" x="-10"/>
+        </Anchors>
+        <TexCoords left="0.125" right="0.875" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ChatTabFillRightTemplate" virtual="true" inherits="FFXIV_ChatTabFillTemplate">
+        <Size x="10"/>
+        <Anchors>
+            <Anchor point="TOP" y="-3"/>
+            <Anchor point="BOTTOM" y="3"/>
+            <Anchor point="RIGHT"/>
+        </Anchors>
+        <TexCoords left="0.875" right="0.875" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ChatTabBorderLeftTemplate" virtual="true" inherits="FFXIV_ChatTabBorderTemplate">
+        <Size x="10"/>
+        <Anchors>
+            <Anchor point="TOP" y="-3"/>
+            <Anchor point="BOTTOM" y="3"/>
+            <Anchor point="LEFT"/>
+        </Anchors>
+        <TexCoords left="0.125" right="0.125" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ChatTabBorderCenterTemplate" virtual="true" inherits="FFXIV_ChatTabBorderTemplate">
+        <Anchors>
+            <Anchor point="TOP" y="-3"/>
+            <Anchor point="BOTTOM" y="3"/>
+            <Anchor point="LEFT" x="10"/>
+            <Anchor point="RIGHT" x="-10"/>
+        </Anchors>
+        <TexCoords left="0.125" right="0.875" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ChatTabBorderRightTemplate" virtual="true" inherits="FFXIV_ChatTabBorderTemplate">
+        <Size x="10"/>
+        <Anchors>
+            <Anchor point="TOP" y="-3"/>
+            <Anchor point="BOTTOM" y="3"/>
+            <Anchor point="RIGHT"/>
+        </Anchors>
+        <TexCoords left="0.875" right="0.875" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ChatTabFillLeftCapTemplate" virtual="true" inherits="FFXIV_ChatTabFillTemplate">
+        <Size x="10"/>
+        <Anchors>
+            <Anchor point="RIGHT" relativePoint="LEFT"/>
+            <Anchor point="TOP" y="-3"/>
+            <Anchor point="BOTTOM" y="3"/>
+        </Anchors>
+        <TexCoords left="0" right="0.125" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ChatTabFillRightCapTemplate" virtual="true" inherits="FFXIV_ChatTabFillTemplate">
+        <Size x="10"/>
+        <Anchors>
+            <Anchor point="LEFT" relativePoint="RIGHT"/>
+            <Anchor point="TOP" y="-3"/>
+            <Anchor point="BOTTOM" y="3"/>
+        </Anchors>
+        <TexCoords left="0.875" right="1" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ChatTabBorderLeftCapTemplate" virtual="true" inherits="FFXIV_ChatTabBorderTemplate">
+        <Size x="10"/>
+        <Anchors>
+            <Anchor point="RIGHT" relativePoint="LEFT"/>
+            <Anchor point="TOP" y="-3"/>
+            <Anchor point="BOTTOM" y="3"/>
+        </Anchors>
+        <TexCoords left="0" right="0.125" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ChatTabBorderRightCapTemplate" virtual="true" inherits="FFXIV_ChatTabBorderTemplate">
+        <Size x="10"/>
+        <Anchors>
+            <Anchor point="LEFT" relativePoint="RIGHT"/>
+            <Anchor point="TOP" y="-3"/>
+            <Anchor point="BOTTOM" y="3"/>
+        </Anchors>
+        <TexCoords left="0.875" right="1" top="0" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_ChatTabIndicatorTemplate" virtual="true" file="Interface\COMMON\Indicator-Yellow">
+        <Size x="8" y="8"/>
+        <Anchors>
+            <Anchor point="LEFT" x="5" y="0"/>
+        </Anchors>
+    </Texture>
+    <Button name="FFXIV_ChatIconButtonTemplate" virtual="true">
+        <Size x="24" y="24"/>
+    </Button>
+    <Button name="FFXIV_ChatModeButtonTemplate" virtual="true" inherits="FFXIV_ChatIconButtonTemplate">
+        <Anchors>
+            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="-5" y="-21"/>
+        </Anchors>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="icon" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Chat\Mode.tga"/>
+            </Layer>
+        </Layers>
+    </Button>
+    <Frame name="FFXIV_ChatToolbarTemplate" virtual="true">
+        <Size x="84" y="26"/>
+        <Anchors>
+            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="-50"/>
+        </Anchors>
+        <Frames>
+            <Button parentKey="add" inherits="FFXIV_ChatIconButtonTemplate">
+                <Anchors><Anchor point="LEFT"/></Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="icon" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Chat\Add.tga"/>
+                    </Layer>
+                </Layers>
+            </Button>
+            <Button parentKey="settings" inherits="FFXIV_ChatIconButtonTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.add" relativePoint="RIGHT" x="4" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="icon" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Chat\Settings.tga"/>
+                    </Layer>
+                </Layers>
+            </Button>
+            <Button parentKey="close" inherits="FFXIV_ChatIconButtonTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.settings" relativePoint="RIGHT" x="4" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="icon" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Chat\Close.tga"/>
+                    </Layer>
+                </Layers>
+            </Button>
+        </Frames>
+    </Frame>
+</Ui>

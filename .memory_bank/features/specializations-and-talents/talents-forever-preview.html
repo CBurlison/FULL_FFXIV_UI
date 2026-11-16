@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Forever Talents Layout Preview</title>
+    <style>
+        @font-face {
+            font-family: Axis;
+            src: url("../../../FFXIV_UI/Media/Fonts/AxisRegular.ttf");
+        }
+        body {
+            background: #17191e;
+            color: #e6dec7;
+            font-family: Axis, sans-serif;
+            padding: 32px;
+            margin: 0;
+        }
+        p { max-width: 720px; font-size: 13px; }
+        .window {
+            position: relative;
+            width: 760px;
+            height: 560px;
+            margin: 16px 0 24px;
+            border: 2px solid #8e8467;
+            border-radius: 12px;
+            background: #2b2b2b url("../../../FFXIV_UI/Media/Textures/Panels/Window-Background-Dark.png") center / 100% 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        /* Header: title left, close right. Replaces the native top texture. */
+        .header {
+            height: 30px;
+            margin: 4px 8px 0;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #8e8467;
+            padding-left: 12px;
+            font-size: 16px;
+            color: #d9c58c;
+        }
+        .header .close {
+            margin-left: auto;
+            width: 24px;
+            height: 24px;
+            margin-right: 2px;
+            background: url("../../../FFXIV_UI/Media/Textures/Panels/Close.png") center / contain no-repeat;
+            opacity: .85;
+        }
+        /* Primary / Secondary: Retail Character Menu tab art, 30px high, below the header. */
+        .tabs {
+            display: flex;
+            justify-content: flex-start;
+            margin: 10px 16px 0;
+        }
+        .tab {
+            width: 130px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #cfc6ad;
+            background: url("../../../FFXIV_UI/Media/Textures/Panels/Tab-Inactive-Dark.png") center / 100% 100% no-repeat;
+            cursor: pointer;
+            margin-right: -6px;
+        }
+        .tab:last-child { margin-right: 0; }
+        .tab.selected {
+            color: #fff3d0;
+            background-image: url("../../../FFXIV_UI/Media/Textures/Panels/Tab-Selected-Dark.png");
+        }
+        .tab:hover { filter: brightness(1.12); }
+        .tab.selected::after { content: "\2713"; margin-left: 6px; color: #e3b84c; }
+        .tab.locked::after { content: "\1F512"; margin-left: 6px; font-size: 10px; }
+
+        /* Toolbar: search sits above the unspent counter, right side. */
+        .toolbar {
+            margin: 14px 16px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .search-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .search {
+            width: 240px;
+            height: 24px;
+            box-sizing: border-box;
+            padding: 0 8px 0 24px;
+            font: 12px Axis, sans-serif;
+            color: #e6dec7;
+            background: linear-gradient(#333, #262626);
+            border: 1px solid #5a5a5a;
+            border-radius: 4px;
+            position: relative;
+        }
+        .search::placeholder { color: #8f8a7a; }
+        .search-wrap { position: relative; }
+        .search-wrap::before {
+            content: "\2315";
+            position: absolute;
+            left: 8px;
+            top: 3px;
+            font-size: 12px;
+            color: #b7aa86;
+            z-index: 1;
+        }
+        /* Down-pointing circle: Arrow-Button-Circle base + Arrow-Button-Glyph, rotated to point down. */
+        .circle-btn {
+            width: 24px;
+            height: 24px;
+            border: 0;
+            padding: 0;
+            background: url("../../../FFXIV_UI/Media/Textures/Panels/Arrow-Button-Base.png") center / 100% 100% no-repeat;
+            position: relative;
+            cursor: pointer;
+        }
+        .circle-btn::after {
+            content: "";
+            position: absolute;
+            left: 7px;
+            top: 6px;
+            width: 6px;
+            height: 6px;
+            border-right: 2px solid #e3b84c;
+            border-bottom: 2px solid #e3b84c;
+            transform: rotate(45deg);
+        }
+        .circle-btn:hover { filter: brightness(1.18); }
+
+        .menu-anchor { position: relative; }
+        .menu {
+            position: absolute;
+            right: 0;
+            top: 30px;
+            width: 180px;
+            padding: 6px 10px;
+            box-sizing: border-box;
+            background: #26241f url("../../../FFXIV_UI/Media/Textures/Panels/ComboBox-Menu-Dark.png") center / 100% 100% no-repeat;
+            border: 1px solid #8e8467;
+            border-radius: 6px;
+            font-size: 11px;
+            z-index: 5;
+        }
+        .menu.hidden { display: none; }
+        .menu label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 22px;
+            padding-left: 8px;
+        }
+        .menu label.selected { background: linear-gradient(90deg, rgba(209,176,102,.26), rgba(209,176,102,0)); }
+        .menu input { appearance: none; width: 14px; height: 14px; margin: 0; border: 1px solid #8e8467; background: #1b1b1b; }
+        .menu input:checked { background: #d1b066; }
+
+        .unspent {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+        .unspent .count {
+            min-width: 44px;
+            height: 30px;
+            box-sizing: border-box;
+            text-align: center;
+            line-height: 30px;
+            color: #4dff4d;
+            font-size: 20px;
+            border: 1px solid #8e8467;
+            background: #111;
+        }
+
+        .trees {
+            margin: 18px 16px 0;
+            height: 300px;
+            border: 1px dashed #4b4636;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7d7660;
+            font-size: 12px;
+        }
+
+        .footer {
+            position: absolute;
+            left: 50%;
+            bottom: 14px;
+            transform: translateX(-50%);
+        }
+        /* Apply Changes: Button-fill / Button-border capsule, 12px caps. */
+        .apply {
+            width: 150px;
+            height: 26px;
+            font: 12px Axis, sans-serif;
+            color: #cfc6ad;
+            border: 1px solid #8e8467;
+            border-radius: 4px;
+            background: linear-gradient(#3d3d3d, #282828);
+            cursor: pointer;
+        }
+        .apply:hover { color: #fff3d0; }
+        .apply:disabled { color: #6b6553; opacity: .5; }
+    </style>
+</head>
+<body>
+    <p>Layout preview for the Forever Talents frame (items 1-8 of the request). Ordering matches the
+        target: header with no large top texture, Primary/Secondary as tabs below the header,
+        search above the unspent counter, down circle opening a textured menu, and a textured Apply Changes button.
+        Tree content is a placeholder. Textures are stretched here; the in-game 3-slice rules apply on implementation.</p>
+
+    <section class="window" id="window">
+        <div class="header">Talents
+            <span class="close" title="Close"></span>
+        </div>
+
+        <div class="tabs" role="tablist">
+            <div class="tab selected" role="tab" data-tab="primary">Primary</div>
+            <div class="tab" role="tab" data-tab="secondary">Secondary</div>
+        </div>
+
+        <div class="toolbar">
+            <div class="search-row menu-anchor">
+                <div class="search-wrap">
+                    <input class="search" type="text" placeholder="Search">
+                </div>
+                <button class="circle-btn" id="menuBtn" type="button" aria-label="Talent options" aria-expanded="false"></button>
+                <div class="menu hidden" id="menu" role="menu">
+                    <label class="selected"><input type="checkbox"> Hide Passives</label>
+                    <label><input type="checkbox"> Show Ranks</label>
+                </div>
+            </div>
+
+            <div class="unspent">
+                <span>Unspent Talents</span>
+                <span class="count">1</span>
+            </div>
+        </div>
+
+        <div class="trees">Talent trees (Balance / Feral Combat / Restoration in-game)</div>
+
+        <div class="footer">
+            <button class="apply" type="button">Apply Changes</button>
+        </div>
+    </section>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(t => t.addEventListener('click', () => {
+            tabs.forEach(x => x.classList.remove('selected'));
+            t.classList.add('selected');
+        }));
+        const btn = document.getElementById('menuBtn');
+        const menu = document.getElementById('menu');
+        btn.addEventListener('click', () => {
+            const open = menu.classList.toggle('hidden') === false;
+            btn.setAttribute('aria-expanded', String(open));
+        });
+    </script>
+</body>
+</html>

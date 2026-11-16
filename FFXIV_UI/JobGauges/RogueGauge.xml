@@ -1,0 +1,57 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+                        https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Frame name="ComboPointTrackerFrame" parent="UIParent">
+        <Size x="350" y="350"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="base" setAllPoints="true" hidden="true" alpha="0" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Rogue\FFRogueFrame"/>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="orb1" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Rogue\RogueCombo1">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb2" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Rogue\RogueCombo2">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb3" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Rogue\RogueCombo3">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb4" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Rogue\RogueCombo4">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb5" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Rogue\RogueCombo5">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb6" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Rogue\RogueCombo6">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb7" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Rogue\RogueCombo7">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+</Ui>

@@ -1,0 +1,132 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+                        https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Frame name="DKRuneFrame" parent="UIParent" hidden="true">
+        <Size x="300" y="300"/>
+        <Anchors>
+            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" x="0" y="-200"/>
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="base" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFDeathKnightBG"/>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame parentKey="rune1">
+                <Size x="90" y="90"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="-50" y="-10"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="frameTex" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFrame.tga"/>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="fill" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFill.tga">
+                            <Size x="90" y="90"/>
+                            <Anchors>
+                                <Anchor point="BOTTOM"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame parentKey="rune2">
+                <Size x="90" y="90"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="-10"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="frameTex" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFrame.tga"/>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="fill" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFill.tga">
+                            <Size x="90" y="90"/>
+                            <Anchors>
+                                <Anchor point="BOTTOM"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame parentKey="rune3">
+                <Size x="90" y="90"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="50" y="-10"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="frameTex" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFrame.tga"/>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="fill" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFill.tga">
+                            <Size x="90" y="90"/>
+                            <Anchors>
+                                <Anchor point="BOTTOM"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame parentKey="rune4">
+                <Size x="90" y="90"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="-25" y="-60"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="frameTex" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFrame.tga"/>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="fill" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFill.tga">
+                            <Size x="90" y="90"/>
+                            <Anchors>
+                                <Anchor point="BOTTOM"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame parentKey="rune5">
+                <Size x="90" y="90"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="25" y="-60"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="frameTex" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFrame.tga"/>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="fill" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFill.tga">
+                            <Size x="90" y="90"/>
+                            <Anchors>
+                                <Anchor point="BOTTOM"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame parentKey="rune6">
+                <Size x="90" y="90"/>
+                <Anchors>
+                    <Anchor point="CENTER" x="75" y="-60"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="frameTex" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFrame.tga"/>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="fill" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\DeathKnight\FFRuneFill.tga">
+                            <Size x="90" y="90"/>
+                            <Anchors>
+                                <Anchor point="BOTTOM"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+        </Frames>
+    </Frame>
+</Ui>

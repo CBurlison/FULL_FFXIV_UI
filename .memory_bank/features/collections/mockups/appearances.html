@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collections Appearances Layout Preview</title>
+<style>
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; }
+body {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #d3cfc5;
+  font: 15px "Trebuchet MS", Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 82% 18%, rgba(196, 155, 44, .56), transparent 25%),
+    radial-gradient(ellipse at 18% 72%, rgba(75, 110, 31, .75), transparent 40%),
+    linear-gradient(118deg, #71602a 0%, #365321 47%, #88713b 100%);
+}
+.journal {
+  position: relative;
+  width: min(740px, calc(100vw - 20px));
+  height: min(760px, calc(100vh - 24px));
+  overflow: hidden;
+  border: 2px solid #96845e;
+  border-radius: 10px;
+  background: linear-gradient(105deg, #292a29 0%, #292a29 35%, #30302f 100%);
+  box-shadow: 0 2px 9px #080907, inset 0 0 0 2px #151615;
+}
+.header {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid #77746b;
+}
+.title { flex: 1; color: #ddd9ce; font-size: 22px; letter-spacing: .4px; }
+.close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #514f48;
+  border-radius: 50%;
+  color: #cfbd8d;
+  background: linear-gradient(#494844, #242422);
+  font-size: 16px;
+}
+.tabs {
+  display: flex;
+  gap: 6px;
+  height: 46px;
+  padding: 8px 16px 0;
+  border-bottom: 1px solid #5b5951;
+}
+.tab {
+  display: grid;
+  place-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid #3c3b38;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  color: #b9b4a8;
+  background: linear-gradient(#313130, #1e1e1d);
+  font-size: 14px;
+}
+.tab.selected {
+  color: #d6b96f;
+  border-color: #c9a24b;
+  background: linear-gradient(rgba(202, 166, 82, .28), #1e1e1d);
+}
+.body {
+  position: absolute;
+  top: 100px;
+  right: 14px;
+  bottom: 54px;
+  left: 14px;
+  display: flex;
+  flex-direction: column;
+}
+/* Row: Items tab, search, and filter combo, all FFXIV styled. No background panel. */
+.class-row { display: flex; align-items: center; gap: 10px; height: 44px; margin-bottom: 10px; }
+.class-combo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 190px;
+  height: 32px;
+  padding: 6px 10px;
+  border: 1px solid #55534c;
+  border-radius: 5px;
+  color: #d9b866;
+  background: linear-gradient(#3c3b38, #232321);
+}
+.slot-type {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 2px solid #55534c;
+  border-radius: 50%;
+  color: #b9b4a8;
+  background: linear-gradient(#3c3b38, #232321);
+  font-size: 12px;
+}
+.slot-type.on { border-color: #d5b04f; color: #d6b96f; }
+.row { display: flex; align-items: center; gap: 10px; height: 36px; }
+.subtab {
+  display: grid;
+  place-items: center;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid #c9a24b;
+  border-radius: 6px;
+  color: #d6b96f;
+  background: linear-gradient(rgba(202, 166, 82, .28), #1e1e1d);
+  font-size: 14px;
+}
+.searchbox {
+  flex: 1;
+  height: 32px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  color: #b9b4a8;
+  background: linear-gradient(#3c3b38, #252523);
+  box-shadow: inset 0 1px 4px #171716;
+}
+.combo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 170px;
+  height: 32px;
+  padding: 6px 10px;
+  border: 1px solid #55534c;
+  border-radius: 5px;
+  color: #d9b866;
+  background: linear-gradient(#3c3b38, #232321);
+}
+/* Flyout from the combo, styled like the FFXIV combo menu */
+.flyout {
+  position: absolute;
+  top: 140px;
+  right: 14px;
+  width: 170px;
+  padding: 6px;
+  border: 1px solid #8a7646;
+  border-radius: 6px;
+  background: linear-gradient(#262725, #1b1b1a);
+  box-shadow: 0 4px 10px #000;
+}
+.flyout div { padding: 5px 8px; border-radius: 4px; color: #cfc9b9; font-size: 14px; }
+.flyout .on { color: #d6b96f; background: linear-gradient(90deg, rgba(202, 166, 82, .25), transparent); }
+/* Divider replaces the old content background */
+.divider {
+  height: 1px;
+  margin: 12px 0;
+  background: linear-gradient(90deg, transparent, #8a877e 15%, #8a877e 85%, transparent);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(8, 58px);
+  gap: 10px;
+  align-content: start;
+  flex: 1;
+}
+/* Item boxes use the RoundOutline shape used by empty action slots */
+.item {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border: 2px solid #807d70;
+  border-radius: 50%;
+  background: #1b1b1a;
+}
+.item .art {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #d0c3a0, #756b53 45%, #272a28);
+}
+.item.unknown .art { filter: grayscale(1) brightness(.4); }
+.item.selected { border-color: #d5b04f; box-shadow: 0 0 6px rgba(213, 176, 79, .55); }
+/* Paging arrows: FFXIV Left/Right arrow buttons, bottom */
+.pager {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 34px;
+  border-top: 1px solid #8a877e;
+  padding-top: 8px;
+  color: #d9b866;
+}
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 28px;
+  border: 1px solid #55534c;
+  border-radius: 4px;
+  background: linear-gradient(#3c3b38, #232321);
+}
+</style>
+</head>
+<body>
+<main class="journal" aria-label="Collections Appearances layout preview">
+  <header class="header">
+    <span class="title">Collections</span>
+    <span class="close" aria-label="Close">✕</span>
+  </header>
+
+  <nav class="tabs" aria-label="Collections tabs">
+    <span class="tab">Mounts</span>
+    <span class="tab">Pets</span>
+    <span class="tab">Toy Box</span>
+    <span class="tab">Heirlooms</span>
+    <span class="tab selected">Appearances</span>
+    <span class="tab">Warband Scenes</span>
+  </nav>
+
+  <section class="body">
+    <div class="row">
+      <span class="subtab">Items</span>
+      <div class="searchbox">Enter search text</div>
+      <div class="combo"><span>All Sources</span><span>▾</span></div>
+    </div>
+    <div class="divider" aria-hidden="true"></div>
+    <div class="class-row">
+      <div class="class-combo"><span>All Classes</span><span>▾</span></div>
+      <span class="slot-type on">HD</span>
+      <span class="slot-type">SH</span>
+      <span class="slot-type">CH</span>
+      <span class="slot-type">LG</span>
+      <span class="slot-type">FT</span>
+      <span class="slot-type">MH</span>
+      <span class="slot-type">OH</span>
+      <span class="slot-type">BK</span>
+      <span class="slot-type">WR</span>
+    </div>
+    <div class="grid">
+      <div class="item selected"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item unknown"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item unknown"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item unknown"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+      <div class="item"><span class="art"></span></div>
+    </div>
+  </section>
+
+  <div class="flyout" aria-label="Filter menu preview">
+    <div class="on">All Sources</div>
+    <div>Collected</div>
+    <div>Not collected</div>
+  </div>
+
+  <footer class="pager">
+    <span class="arrow">◀</span>
+    <span>Page 1/3</span>
+    <span class="arrow">▶</span>
+  </footer>
+</main>
+</body>
+</html>

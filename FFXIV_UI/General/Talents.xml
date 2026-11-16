@@ -1,0 +1,23 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Frame name="FFXIV_TalentsHeaderTemplate" virtual="true" enableMouse="false">
+        <Size y="30"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" x="8" y="-4"/>
+            <Anchor point="TOPRIGHT" x="-8" y="-4"/>
+        </Anchors>
+    </Frame>
+    <FontString name="FFXIV_TalentsHeaderTitleTemplate" virtual="true" justifyH="LEFT">
+        <Size y="26"/>
+        <Anchors>
+            <Anchor point="LEFT" x="12"/>
+            <Anchor point="RIGHT" x="-36"/>
+        </Anchors>
+    </FontString>
+    <Texture name="FFXIV_TalentsHeaderDividerTemplate" virtual="true">
+        <Size y="1"/>
+        <Anchors>
+            <Anchor point="BOTTOMLEFT" x="0" y="5"/>
+            <Anchor point="BOTTOMRIGHT"/>
+        </Anchors>
+    </Texture>
+</Ui>

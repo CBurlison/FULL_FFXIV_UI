@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Professions XML scope preview</title>
+<style>
+  body { margin: 0; padding: 24px; background: #15120e; font-family: "Friz Quadrata", Georgia, serif; color: #e6dcc6; }
+  .note { max-width: 980px; font-size: 13px; line-height: 1.5; color: #b9ab8c; }
+  .note code { color: #c9a86a; }
+  .window { position: relative; width: 940px; height: 520px; margin-top: 16px; background: #1d1913; border: 1px solid #5c4a2c; border-radius: 10px; overflow: hidden; }
+  .abs { position: absolute; box-sizing: border-box; }
+  .title { left: 16px; top: 10px; font-size: 18px; color: #e6dcc6; }
+  .rank { left: 110px; top: 42px; width: 720px; height: 14px; background: #2a241b; border: 1px solid #5c4a2c; border-radius: 6px; }
+  .rule { left: 12px; right: 12px; top: 76px; height: 1px; background: #5c4a2c; }
+  .vrule { left: 452px; top: 86px; bottom: 40px; width: 1px; background: #5c4a2c; }
+  .list { left: 12px; top: 86px; width: 420px; bottom: 40px; }
+  .search { left: 0; top: 0; width: 420px; height: 64px; background: #241e16; border: 1px solid #5c4a2c; border-radius: 8px; }
+  .search-title { left: 10px; top: 6px; font-size: 16px; color: #9c8f73; }
+  .search-box { left: 10px; top: 34px; width: 400px; height: 22px; background: #15120e; border: 1px solid #5c4a2c; border-radius: 4px; }
+  .dropdown { right: 0; top: 74px; width: 88px; height: 24px; background: #2a241b; border: 1px solid #5c4a2c; border-radius: 4px; font-size: 12px; text-align: center; line-height: 22px; color: #e6dcc6; }
+  .row { left: 0; width: 420px; height: 34px; border-bottom: 1px solid #2f281e; font-size: 13px; line-height: 34px; padding-left: 40px; box-sizing: border-box; color: #e6dcc6; }
+  .form { left: 470px; top: 0; right: 12px; bottom: 0; }
+  .header { left: 0; top: 0; right: 0; height: 76px; background: #241e16; border: 1px solid #5c4a2c; border-radius: 8px; }
+  .icon { left: 12px; top: 12px; width: 48px; height: 48px; background: #352c20; border: 2px solid #c9a86a; border-radius: 4px; }
+  .output { left: 72px; top: 24px; font-size: 17px; color: #e6dcc6; }
+  .slot { left: 0; width: 420px; height: 46px; border-bottom: 1px solid #2f281e; }
+  .slot-name { left: 52px; top: 12px; font-size: 13px; color: #e6dcc6; }
+  .required { left: 0; top: 8px; width: 40px; text-align: right; font-size: 18px; color: #c9a86a; }
+  .owned { left: 0; top: 26px; width: 40px; text-align: right; font-size: 14px; color: #e6dcc6; }
+  .owned.short { color: #d9534f; }
+  .slot-div { left: 46px; top: 6px; bottom: 6px; width: 1px; background: #5c4a2c; }
+  .legend { position: absolute; left: 16px; bottom: 12px; font-size: 12px; color: #9c8f73; }
+  .tag { position: absolute; font-size: 11px; color: #c9a86a; background: rgba(201,168,106,0.12); border-radius: 3px; padding: 1px 5px; }
+</style>
+</head>
+<body>
+<p class="note">Proposed Retail XML scope for Professions: the recipe-search title and its panel surface, the rank bar divider, the centre divider, the recipe form header panel, the reagent "Required" and "Owned" labels and their divider, and the output-slot border. Recipe and reagent data, the rank bar contents, native profession controls, slot pooling, the short-quantity colour, and layout positions stay in Lua. Colours here are one Dark theme sample; live theming still applies in Lua. Tags mark the XML-owned parts.</p>
+
+<div class="window">
+  <div class="abs title">Alchemy</div>
+  <div class="abs rank"></div>
+  <div class="abs rule"></div>
+  <div class="abs vrule"></div>
+
+  <div class="abs list">
+    <div class="abs search">
+      <div class="abs search-title">Recipe Search</div>
+      <div class="abs search-box"></div>
+    </div>
+    <div class="abs dropdown">Filter</div>
+    <div class="abs" style="left:0; top:126px; width:420px;">
+      <div class="abs row" style="top:0;">Flask of Power</div>
+      <div class="abs row" style="top:34px;">Healing Potion</div>
+      <div class="abs row" style="top:68px;">Phial of Tepid Versatility</div>
+      <div class="abs row" style="top:102px;">Crystallized Spirit</div>
+    </div>
+  </div>
+
+  <div class="abs form">
+    <div class="abs header">
+      <div class="abs icon"></div>
+      <div class="abs output">Flask of Power</div>
+    </div>
+    <div class="abs slot" style="top:92px;">
+      <div class="abs required">3</div>
+      <div class="abs owned">5</div>
+      <div class="abs slot-div"></div>
+      <div class="abs slot-name">Glacial Spring Water</div>
+    </div>
+    <div class="abs slot" style="top:142px;">
+      <div class="abs required">2</div>
+      <div class="abs owned short">1</div>
+      <div class="abs slot-div"></div>
+      <div class="abs slot-name">Sun-Blessed Herb</div>
+    </div>
+  </div>
+
+  <div class="legend">Dividers, panel surfaces, search title and reagent labels: XML. Data, colours at runtime, layout and pooling: Lua.</div>
+</div>
+</body>
+</html>

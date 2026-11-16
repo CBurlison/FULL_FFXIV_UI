@@ -1,0 +1,9 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <FontString name="FFXIV_SocialTabLabelTemplate" virtual="true" inherits="GameFontNormal" justifyH="CENTER">
+        <Size y="28"/>
+        <Anchors>
+            <Anchor point="LEFT" x="18"/>
+            <Anchor point="RIGHT" x="-30"/>
+        </Anchors>
+    </FontString>
+</Ui>

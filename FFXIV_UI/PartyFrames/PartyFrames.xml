@@ -1,0 +1,137 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Texture name="FFXIV_PartyBarEdgeTemplate" virtual="true">
+        <Anchors>
+            <Anchor point="TOPLEFT" x="-1" y="1"/>
+            <Anchor point="BOTTOMRIGHT" x="1" y="-1"/>
+        </Anchors>
+        <Color r="0.05" g="0.22" b="0.3" a="0.9"/>
+    </Texture>
+    <Texture name="FFXIV_PartyBarBackgroundTemplate" virtual="true">
+        <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMRIGHT"/>
+        </Anchors>
+        <Color r="0.02" g="0.07" b="0.1" a="0.9"/>
+    </Texture>
+    <Texture name="FFXIV_PartyBarShineTemplate" virtual="true">
+        <Size y="1"/>
+        <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="TOPRIGHT"/>
+        </Anchors>
+        <Color r="0.75" g="0.94" b="1" a="0.65"/>
+    </Texture>
+    <Frame name="FFXIV_PartyRowVisualTemplate" virtual="true" setAllPoints="true" enableMouse="false">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="iconBorder">
+                    <Size x="26" y="28"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="-1"/>
+                    </Anchors>
+                    <Color r="0.76" g="0.61" b="0.31"/>
+                </Texture>
+                <Texture parentKey="badge">
+                    <Size x="11" y="12"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="33" y="-1"/>
+                    </Anchors>
+                    <Color r="0.76" g="0.61" b="0.31"/>
+                </Texture>
+            </Layer>
+            <Layer level="BORDER">
+                <Texture parentKey="iconBackground">
+                    <Size x="24" y="26"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="1" y="-2"/>
+                    </Anchors>
+                    <Color r="0.14" g="0.11" b="0.07"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="icon">
+                    <Size x="20" y="20"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="3" y="-5"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <FontString parentKey="order" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf" outline="NORMAL">
+                    <FontHeight val="11"/>
+                    <Color r="1" g="0.98" b="0.87"/>
+                    <Shadow>
+                        <Color r="0" g="0.12" b="0.2"/>
+                        <Offset x="1" y="-1"/>
+                    </Shadow>
+                </FontString>
+                <FontString parentKey="level" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf" outline="NORMAL" justifyH="LEFT">
+                    <Size x="32" y="13"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="47" y="-1"/>
+                    </Anchors>
+                    <FontHeight val="11"/>
+                    <Color r="0.82" g="0.94" b="1"/>
+                    <Shadow>
+                        <Color r="0" g="0.12" b="0.2"/>
+                        <Offset x="1" y="-1"/>
+                    </Shadow>
+                </FontString>
+                <FontString parentKey="name" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf" outline="NORMAL" justifyH="LEFT" wordwrap="false">
+                    <Size x="180" y="15"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="80" y="0"/>
+                    </Anchors>
+                    <FontHeight val="13"/>
+                    <Color r="0.82" g="0.94" b="1"/>
+                    <Shadow>
+                        <Color r="0" g="0.12" b="0.2"/>
+                        <Offset x="1" y="-1"/>
+                    </Shadow>
+                </FontString>
+                <FontString parentKey="healthValue" font="Interface\AddOns\FFXIV_UI\Media\Fonts\EurostileExtended.ttf" outline="NORMAL">
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="142" y="-22"/>
+                    </Anchors>
+                    <FontHeight val="11"/>
+                    <Color r="0.82" g="0.94" b="1"/>
+                    <Shadow>
+                        <Color r="0" g="0.12" b="0.2"/>
+                        <Offset x="1" y="-1"/>
+                    </Shadow>
+                </FontString>
+                <FontString parentKey="powerValue" font="Interface\AddOns\FFXIV_UI\Media\Fonts\EurostileExtended.ttf" outline="NORMAL">
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="260" y="-22"/>
+                    </Anchors>
+                    <FontHeight val="11"/>
+                    <Color r="0.82" g="0.94" b="1"/>
+                    <Shadow>
+                        <Color r="0" g="0.12" b="0.2"/>
+                        <Offset x="1" y="-1"/>
+                    </Shadow>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+    <StatusBar name="FFXIV_PartyPlayerBarTemplate" virtual="true" enableMouse="false">
+        <Size x="108" y="5"/>
+        <BarTexture file="Interface\Buttons\WHITE8X8"/>
+    </StatusBar>
+    <Button name="FFXIV_PartyPlayerTemplate" virtual="true" inherits="SecureUnitButtonTemplate" hidden="true">
+        <Size x="284" y="32"/>
+        <Frames>
+            <StatusBar parentKey="health" inherits="FFXIV_PartyPlayerBarTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="34" y="-16"/>
+                </Anchors>
+                <BarColor r="0.36" g="0.78" b="1"/>
+            </StatusBar>
+            <StatusBar parentKey="ManaBar" inherits="FFXIV_PartyPlayerBarTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="152" y="-16"/>
+                </Anchors>
+            </StatusBar>
+        </Frames>
+    </Button>
+</Ui>

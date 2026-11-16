@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tooltip Phase 4 per-type layouts (proposed mockup)</title>
+<style>
+  body { margin: 0; padding: 24px; background: #1b1d22; font-family: "Segoe UI", Arial, sans-serif; color: #e8e8ea; }
+  h2 { font-size: 13px; font-weight: 600; margin: 28px 0 6px; color: #9aa0aa; text-transform: uppercase; letter-spacing: .05em; }
+  .note { font-size: 12px; color: #9aa0aa; margin: 0 0 12px; max-width: 920px; line-height: 1.5; }
+  .fix { font-size: 11px; color: #ecd7a6; margin-top: 6px; }
+
+  /* Palette and classes match xml-tooltip-preview.html (Phase 1 approved). */
+  .tip {
+    position: relative; width: 340px; box-sizing: border-box; padding: 10px 14px 12px;
+    background: rgba(41, 41, 41, .98); border: 1px solid #66635a; border-radius: 8px;
+    color: #e0dbcc; font-size: 12px; line-height: 1.35;
+  }
+  .shine { position: absolute; left: 0; right: 0; top: 0; height: 40px; border-radius: 8px 8px 0 0;
+    background: linear-gradient(rgba(255,255,255,.14), rgba(255,255,255,0)); pointer-events: none; }
+  .head { display: flex; gap: 10px; align-items: center; }
+  .icon { width: 36px; height: 36px; border-radius: 4px; background: #3a3e47; border: 1px solid #66635a; flex: none; }
+  .icon.pet { width: 32px; height: 32px; border-radius: 50%; background: #2f4a33; }
+  .name { flex: 1; min-width: 0; font-size: 14px; color: #e8e4d6; white-space: normal; overflow-wrap: anywhere; }
+  .typerow { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #bcb6a4; margin-top: 4px; }
+  .top { text-align: center; font-size: 11px; color: #bcb6a4; margin-bottom: 4px; }
+  .divider { height: 3px; margin: 8px 0; border-radius: 2px; background: #525052; }
+  .band { background: #2a2c31; color: #ffd45a; padding: 2px 0 2px 14px; margin: 6px -14px; }
+  .label { font-size: 11px; color: #bcb6a4; }
+  .cells { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .cell { text-align: right; min-width: 0; }
+  .cells.from-left .cell { text-align: left; }
+  .cell.empty { visibility: hidden; }
+  .cell .v { font-size: 17px; color: #e8e4d6; }
+  .bar { height: 3px; background: #4a4d55; border-radius: 2px; margin-top: 2px; }
+  .pair { display: flex; justify-content: space-between; min-height: 15px; }
+  .pos { color: #6fd46f; }
+  .neg { color: #ea6a6a; }
+  .dim { color: #7d8390; }
+  .yellow { color: #ffd45a; }
+  .effect { color: #6fe06f; margin-top: 6px; }
+  .muted { color: #7d8390; font-size: 11px; }
+  .money { font-size: 11px; color: #e0dbcc; margin-top: 6px; }
+  .pair-view { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .legend { font-size: 11px; color: #9aa0aa; line-height: 1.8; max-width: 760px; }
+  .tag { display: inline-block; font-size: 10px; border-radius: 3px; padding: 1px 6px; margin: 1px 3px 1px 0; }
+  .tag.xml { background: #2f4a33; color: #bfe6c3; }
+  .tag.lua { background: #4a3d2a; color: #ecd7a6; }
+  .tag.hid { background: #3a3e47; color: #9aa0aa; }
+  .cap { font-size: 11px; color: #9aa0aa; margin-top: 4px; max-width: 340px; }
+</style>
+</head>
+<body>
+
+<h2>0. Scope and status</h2>
+<p class="note">
+  Proposed Phase 4 layouts for all eleven groups in one page. Nothing here is implemented. Values are
+  illustrative, not taken from dumps. Each group needs your approval before Lua/XML changes, and Retail acceptance per group
+  follows implementation.
+</p>
+<div class="legend">
+  <span class="tag xml">XML</span> static surfaces and FontString pools (trait cells, stat pairs, text rows, icons).<br>
+  <span class="tag lua">Lua</span> data, values, colours, which sections show, native capture and restore.<br>
+  <span class="tag hid">hidden</span> sections not used by a type are created hidden and never shown for that type.
+</div>
+
+<h2>1. Equipment (first to implement)</h2>
+<p class="note">
+  Defense and Damage/DPS/Speed metric cells sit under the header. Item level is a full-width band. Requirements follow,
+  then a two-column stat grid with beneficial (green) and detrimental (red) colours. A comparison block shows deltas for the
+  equipped item. Effects have a heading, divider and text. Durability and Sell Price sit at the footer on one left edge.
+</p>
+<div class="pair-view">
+  <div>
+    <div class="tip">
+      <div class="shine"></div>
+      <div class="top">Soulbound</div>
+      <div class="head"><div class="icon"></div><div class="name">Vambraces of the Lucent Battalion</div></div>
+      <div class="typerow"><span>Wrist / Plate</span><span></span></div>
+      <div class="cells" style="margin-top:6px">
+        <div class="cell empty"></div>
+        <div class="cell empty"></div>
+        <div class="cell"><div class="label">Defense</div><div class="v">37</div><div class="bar"></div></div>
+      </div>
+      <div class="band">Item Level 121</div>
+      <div class="label">Requirements</div>
+      <div class="pair"><span>Requires Level 80</span><span></span></div>
+      <div class="divider"></div>
+      <div class="pair"><span>+15 Intellect</span><span>+99 Stamina</span></div>
+      <div class="pair"><span class="pos">+9 Haste</span><span class="pos">+20 Versatility</span></div>
+      <div class="pair"><span class="dim">+15 Strength</span><span></span></div>
+      <div class="divider"></div>
+      <div class="yellow">If you replace this item, the following stat changes will occur:</div>
+      <div class="neg">-10 Armor</div>
+      <div class="pos">+2 Intellect</div>
+      <div class="divider"></div>
+      <div class="label">Effects</div>
+      <div class="effect">Use: Increases Haste for 10 sec.</div>
+      <div class="money">Sell Price: 2 <span class="muted">gold</span></div>
+    </div>
+    <div class="cap">Equipped comparison section shows the item level band for the currently equipped piece.</div>
+  </div>
+  <div>
+    <div class="tip">
+      <div class="shine"></div>
+      <div class="head"><div class="icon"></div><div class="name">Gauntlets of the Ember Vow</div></div>
+      <div class="typerow"><span>Hand / Cloth</span><span></span></div>
+      <div class="cells" style="margin-top:6px">
+        <div class="cell"><div class="label">Damage</div><div class="v">412 - 620</div><div class="bar"></div></div>
+        <div class="cell"><div class="label">Speed</div><div class="v">2.10</div><div class="bar"></div></div>
+        <div class="cell"><div class="label">DPS</div><div class="v">361.9</div><div class="bar"></div></div>
+      </div>
+      <div class="band">Item Level 124</div>
+      <div class="divider"></div>
+      <div class="pair"><span>+22 Intellect</span><span>+38 Mastery</span></div>
+      <div class="divider"></div>
+      <div class="yellow">If you replace this item, the following stat changes will occur:</div>
+      <div class="pos">+41 Mastery</div>
+      <div class="neg">-3 Haste</div>
+    </div>
+    <div class="cap">Weapons fill the three trait slots from the right. Damage, speed and DPS replace Defense. Unused slots stay empty.</div>
+  </div>
+</div>
+
+<h2>2. Usable item</h2>
+<p class="note">Recast cell comes from the item's associated spell cooldown. Shows <code>--</code> when missing or restricted.</p>
+<div class="tip">
+  <div class="shine"></div>
+  <div class="head"><div class="icon"></div><div class="name">Vial of Restorative Light</div></div>
+  <div class="typerow"><span>Consumable</span><span></span></div>
+  <div class="cells from-left" style="margin-top:10px">
+    <div class="cell"><div class="label">Recast</div><div class="v">60s</div><div class="bar"></div></div>
+    <div class="cell"><div class="label">Recast</div><div class="v">--</div><div class="bar"></div></div>
+      <div class="cell empty"></div>
+    </div>
+  <div class="divider"></div>
+  <div class="effect">Restores 25% of health over 10 sec.</div>
+</div>
+
+<h2>3. Active spell</h2>
+<p class="note">Cast, Recast and resource cells fill the three trait slots from the left. Muted Spell/Ability category with Range/Radius right-aligned on that row. 420 minimum width. Resource cell is omitted when there is no valid cost, leaving the slot empty.</p>
+<div class="tip" style="width:420px">
+  <div class="shine"></div>
+  <div class="head"><div class="icon"></div><div class="name">Holy Shock</div></div>
+  <div class="typerow"><span class="muted">Spell / Ability</span><span>Range 40y</span></div>
+  <div class="cells from-left" style="margin-top:10px">
+    <div class="cell"><div class="label">Cast</div><div class="v">Instant</div><div class="bar"></div></div>
+    <div class="cell"><div class="label">Recast</div><div class="v">4.99s</div><div class="bar"></div></div>
+    <div class="cell"><div class="label">MP Cost</div><div class="v">1380</div><div class="bar"></div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="effect yellow">Deals Holy damage to an enemy, or heals an ally.</div>
+</div>
+
+<h2>4. Passive spell</h2>
+<p class="note">Muted Passive label. No Cast/Recast/resource grid. Description below a compact separator.</p>
+<div class="tip">
+  <div class="shine"></div>
+  <div class="head"><div class="icon"></div><div class="name">Inner Focus</div></div>
+  <div class="typerow"><span class="muted">Passive</span><span></span></div>
+  <div class="divider" style="height:2px"></div>
+  <div>Increases Critical Strike chance by 5% for 10 sec after a spell cast.</div>
+</div>
+
+<h2>5. Large-to-small spell transition</h2>
+<p class="note">Going from a large spell (with cells) to a small spell (no cells) shrinks height from the current rows only. Previous rows are hidden, not measured.</p>
+<div class="pair-view">
+  <div>
+    <div class="cap">Before: three-cell spell</div>
+    <div class="tip" style="height:150px"><div class="shine"></div><div class="name">Holy Shock</div></div>
+  </div>
+  <div>
+    <div class="cap">After: passive, height reduced to content</div>
+    <div class="tip"><div class="shine"></div><div class="name">Inner Focus</div><div class="typerow"><span class="muted">Passive</span><span></span></div></div>
+  </div>
+</div>
+
+<h2>6. Currency</h2>
+<p class="note">Real icon from <code>C_CurrencyInfo.GetCurrencyInfo</code>, native name beside it. 320 minimum width. Native description and totals. Reuse does not keep the previous layout.</p>
+<div class="tip" style="width:320px">
+  <div class="shine"></div>
+  <div class="head"><div class="icon"></div><div class="name">Dawnwhisper Crest</div></div>
+  <div class="typerow"><span>Currency</span><span></span></div>
+  <div class="divider"></div>
+  <div>Earned through weekly activities. Spend it on upgrades.</div>
+  <div class="money">Total Earned: 240 / 500</div>
+</div>
+
+<h2>7. Mount</h2>
+<p class="note">Real icon, native category row, Cast trait cell, description and source. No Recast or resource grid.</p>
+<div class="tip">
+  <div class="shine"></div>
+  <div class="head"><div class="icon"></div><div class="name">Ashen Wyvern</div></div>
+  <div class="typerow"><span class="muted">Mount</span><span></span></div>
+  <div class="cells from-left" style="margin-top:10px">
+    <div class="cell"><div class="label">Cast</div><div class="v">Instant</div><div class="bar"></div></div>
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
+  </div>
+  <div class="divider"></div>
+  <div>A mount that rides on rising embers.</div>
+  <div class="muted" style="margin-top:6px">Source: Raid drop, Ashen Vault</div>
+</div>
+
+<h2>8. Toy</h2>
+<p class="note">Real item icon, category, Cast/Recast from the associated spell. Description and effects. Native level requirement is separated from the body.</p>
+<div class="tip">
+  <div class="shine"></div>
+  <div class="head"><div class="icon"></div><div class="name">Lantern of the Lost Hearth</div></div>
+  <div class="typerow"><span class="muted">Toy</span><span></span></div>
+  <div class="cells from-left" style="margin-top:10px">
+    <div class="cell"><div class="label">Cast</div><div class="v">1.5s</div><div class="bar"></div></div>
+    <div class="cell"><div class="label">Recast</div><div class="v">--</div><div class="bar"></div></div>
+    <div class="cell empty"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="effect">Summons a lantern that lights the area for 30 min.</div>
+  <div class="muted" style="margin-top:8px">Requires Level 70</div>
+</div>
+
+<h2>9. Skill line, flyout and companion pet</h2>
+<p class="note">Icon and name header with native descriptive text. No active-spell metric grid. Pet category may remain under the header.</p>
+<div class="pair-view">
+  <div>
+    <div class="tip">
+      <div class="shine"></div>
+      <div class="head"><div class="icon"></div><div class="name">Mage Portals</div></div>
+      <div class="divider" style="height:2px"></div>
+      <div>Choose a destination to open a portal.</div>
+    </div>
+    <div class="cap">Skill line / flyout</div>
+  </div>
+  <div>
+    <div class="tip">
+      <div class="shine"></div>
+      <div class="head"><div class="icon"></div><div class="name">Tiny Ember Drake</div></div>
+      <div class="typerow"><span class="muted">Companion Pet</span><span></span></div>
+      <div>A loyal companion that follows you around.</div>
+    </div>
+    <div class="cap">Companion pet, category kept under the header.</div>
+  </div>
+</div>
+
+<h2>10. Pet battle ability</h2>
+<p class="note">Native pet-type icon at 32×32. Cooldown (rounds) and Hit (%) trait cells. <code>--</code> for missing values. No seconds or player cast cells.</p>
+<div class="tip">
+  <div class="shine"></div>
+  <div class="head"><div class="icon pet"></div><div class="name">Flame Burst</div></div>
+  <div class="typerow"><span class="muted">Fire</span><span></span></div>
+  <div class="cells" style="margin-top:10px">
+    <div class="cell"><div class="label">Cooldown</div><div class="v">3 rounds</div><div class="bar"></div></div>
+    <div class="cell"><div class="label">Hit</div><div class="v">95%</div><div class="bar"></div></div>
+    <div class="cell"><div class="label">Hit</div><div class="v">--</div><div class="bar"></div></div>
+  </div>
+  <div class="divider"></div>
+  <div>Deals fire damage to the target.</div>
+</div>
+
+<h2>11. Aura tooltip</h2>
+<p class="note">Already converted. Borderless layout stays unchanged by the shared template work. Shown here for comparison only; no change planned.</p>
+<div class="tip" style="border:none;background:transparent;padding:0;width:260px">
+  <div class="name" style="font-size:13px">Lucent Battalion</div>
+  <div class="muted">Increases Intellect by 15.</div>
+  <div class="muted">12 sec remaining</div>
+</div>
+
+</body>
+</html>

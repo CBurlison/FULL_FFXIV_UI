@@ -1,0 +1,11 @@
+# Inventory XML Conversion
+- Status: accepted on Retail by the user (count moved to the Items line, right-aligned). Forever deferred.
+- Implementation: `FFXIV_UI/General/Inventory.xml` holds the title, Items label, count, divider and options-icon templates. Lua keeps fonts, colours, anchors that depend on layout, the native options dropdown, and combat deferral. Both TOCs load the XML before `FFXIV_UI/General/Inventory.lua`.
+- Tests: all 42 Lua suites pass. The shared applier and the Inventory mock apply the new templates. Assertions cover title left alignment, font sizes and the 24x24 options button.
+- Retail checks needed: gear glyph size and placement, FilterIcon position beside the gear, and no `Font not set` error. The Options text label was removed, so the gear has no tooltip or text label.
+- Mockup: `shell-preview.html` (shell, title, Items label, count, divider, settings and close buttons, per-bag headings, slot wells). Slots are Lua/native.
+- Prerequisites: shared controls and rounded panels.
+- Scope: custom panels, section headers, labels and separators in FFXIV_UI/General/Inventory.lua.
+- Keep native bags/slots/clicks, dynamic bag geometry and combat deferral in Lua.
+- Test opening, resizing, bag availability, native item interactions and repeated installation.
+- Require Retail visual acceptance; Forever verification deferred.

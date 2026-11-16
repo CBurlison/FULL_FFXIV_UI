@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Character Panel Stats and Banner Preview</title>
+    <style>
+        @font-face {
+            font-family: Axis;
+            src: url("../../../FFXIV_UI/Media/Fonts/AxisRegular.ttf");
+        }
+        @font-face {
+            font-family: Miedinger;
+            src: url("../../../FFXIV_UI/Media/Fonts/MiedingerMedium.ttf");
+        }
+        body {
+            background: #17191e;
+            color: #e6dec7;
+            font-family: Axis, sans-serif;
+            padding: 32px;
+        }
+        p { max-width: 680px; font-size: 13px; }
+        .pane {
+            width: 430px;
+            margin: 24px 0;
+            padding: 6px 12px;
+            border: 2px solid #8e8467;
+            border-radius: 12px;
+            background: linear-gradient(#484848, #252525 52px);
+        }
+        /* Level banner: the XML frame owns the box and anchors; Lua fills the text and icon. */
+        .banner {
+            position: relative;
+            height: 48px;
+            margin: 0 0 8px;
+            border: 1px solid #8e8467;
+            border-radius: 10px;
+            background: #1d1f24;
+        }
+        .level {
+            position: absolute;
+            left: 13px;
+            top: 5px;
+            font-family: Miedinger, Axis, sans-serif;
+            font-size: 11px;
+            color: #e6dec7;
+        }
+        .classIcon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: #3a3f48;
+            border-radius: 4px;
+        }
+        .className {
+            position: absolute;
+            left: 41px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            line-height: 24px;
+            color: #d9b871;
+        }
+        .toggle {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1px solid #8e8467;
+            background: #2a2c31;
+            color: #e6dec7;
+            text-align: center;
+            line-height: 24px;
+        }
+        /* Stat section header: a muted title over a 1px accent line. */
+        .section {
+            position: relative;
+            height: 28px;
+            padding-left: 10px;
+            font-size: 12px;
+            line-height: 24px;
+            color: #c2bba9;
+        }
+        .section::after {
+            content: "";
+            position: absolute;
+            left: 10px;
+            right: 8px;
+            bottom: 4px;
+            height: 1px;
+            background: #8e8467;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 10px;
+            font-size: 10px;
+            color: #dcd6c4;
+        }
+        .row b { font-weight: normal; color: #5fd35f; }
+        /* Stat blocks: up to two per line, sharing the section width. */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <p>Preview of the Character panel level banner and stat section headers. The banner box,
+        anchors and toggle placement move into XML. Lua still writes the level, class name,
+        class icon, colours and the stat values. Geometry values match the current Lua:
+        banner 48px high, text inset 13px, class icon 24px, toggle 26px at 5px from the right.</p>
+
+    <section class="pane">
+        <div class="banner">
+            <div class="level">Level 80</div>
+            <div class="classIcon"></div>
+            <div class="className">Warrior</div>
+            <div class="toggle">&#8249;</div>
+        </div>
+        <div class="section">Attributes</div>
+        <div class="grid">
+            <div class="category">
+                <div class="section">Attributes</div>
+                <div class="row"><span>Strength</span><b>+1</b></div>
+                <div class="row"><span>Agility</span><span>120</span></div>
+                <div class="row"><span>Intellect</span><span>45</span></div>
+                <div class="row"><span>Stamina</span><span>2,310</span></div>
+            </div>
+            <div class="category">
+                <div class="section">Offensive</div>
+                <div class="row"><span>Attack Power</span><span>950</span></div>
+                <div class="row"><span>Crit</span><span>18.4%</span></div>
+            </div>
+        </div>
+    </section>
+
+    <p>Revised per review: the class name is vertically centred beside its icon. Each stat
+        category is one block, and up to two category blocks sit side by side. The category
+        grid is a layout change, so Lua's measured pane layout must be checked on Retail before
+        acceptance. Resource bars and the decorative outline are not in this preview and stay in
+        Lua until a separate mockup is approved. No addon files have changed.</p>
+</body>
+</html>

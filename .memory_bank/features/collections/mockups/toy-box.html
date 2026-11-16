@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collections Toy Box Layout Preview</title>
+<style>
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; }
+body {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #d3cfc5;
+  font: 15px "Trebuchet MS", Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 82% 18%, rgba(196, 155, 44, .56), transparent 25%),
+    radial-gradient(ellipse at 18% 72%, rgba(75, 110, 31, .75), transparent 40%),
+    linear-gradient(118deg, #71602a 0%, #365321 47%, #88713b 100%);
+}
+.journal {
+  position: relative;
+  width: min(740px, calc(100vw - 20px));
+  height: min(760px, calc(100vh - 24px));
+  overflow: hidden;
+  border: 2px solid #96845e;
+  border-radius: 10px;
+  background: linear-gradient(105deg, #292a29 0%, #292a29 35%, #30302f 100%);
+  box-shadow: 0 2px 9px #080907, inset 0 0 0 2px #151615;
+}
+.header {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid #77746b;
+}
+.title { flex: 1; color: #ddd9ce; font-size: 22px; letter-spacing: .4px; }
+.close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #514f48;
+  border-radius: 50%;
+  color: #cfbd8d;
+  background: linear-gradient(#494844, #242422);
+  font-size: 16px;
+}
+.tabs {
+  display: flex;
+  gap: 6px;
+  height: 46px;
+  padding: 8px 16px 0;
+  border-bottom: 1px solid #5b5951;
+}
+.tab {
+  display: grid;
+  place-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid #3c3b38;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  color: #b9b4a8;
+  background: linear-gradient(#313130, #1e1e1d);
+  font-size: 14px;
+}
+.tab.selected {
+  color: #d6b96f;
+  border-color: #c9a24b;
+  background: linear-gradient(rgba(202, 166, 82, .28), #1e1e1d);
+}
+.body {
+  position: absolute;
+  top: 100px;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
+  display: flex;
+  flex-direction: column;
+}
+/* Total-toys card: same surface as the HP/Resource and Class/Level cards, sized to the search row */
+.total {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #111;
+  border-radius: 9px;
+  color: #d9b866;
+  font-size: 14px;
+  white-space: nowrap;
+  background: linear-gradient(#171817, #272826 52%, #171817);
+  box-shadow: inset 0 1px #494844;
+}
+.total .num { color: #ddd9ce; }
+.search { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.searchbox {
+  flex: 1;
+  height: 32px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  color: #b9b4a8;
+  background: linear-gradient(#3c3b38, #252523);
+  box-shadow: inset 0 1px 4px #171716;
+}
+.filter {
+  width: 150px;
+  height: 32px;
+  padding: 6px 10px;
+  border: 1px solid #55534c;
+  border-radius: 5px;
+  color: #d9b866;
+  background: linear-gradient(#3c3b38, #232321);
+}
+/* Divider between the total/search row and the toy grid */
+.divider {
+  height: 1px;
+  margin: 4px 0 12px;
+  background: linear-gradient(90deg, transparent, #8a877e 15%, #8a877e 85%, transparent);
+}
+.toys {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 10px;
+  flex: 1;
+  overflow: hidden;
+}
+/* Toy card: spellbook card behind an FFXIV action-button icon */
+.toy {
+  display: flex;
+  align-items: center;
+  height: 61px;
+  padding: 8px 15px;
+  border-radius: 9px;
+  background: #41413f;
+}
+.toy.unowned { opacity: .55; }
+.action {
+  flex: 0 0 44px;
+  height: 44px;
+  margin-right: 14px;
+  border: 2px solid #807d70;
+  border-radius: 7px;
+  box-shadow: 0 1px 4px #151515;
+  background: linear-gradient(140deg, #d0c3a0, #756b53 45%, #272a28);
+}
+.toy.unowned .action { filter: grayscale(1) brightness(.5); }
+.toy .label { font-size: 15px; letter-spacing: .4px; }
+.toy .sub { margin-top: 2px; color: #b8b2a5; font-size: 13px; }
+</style>
+</head>
+<body>
+<main class="journal" aria-label="Collections Toy Box layout preview">
+  <header class="header">
+    <span class="title">Collections</span>
+    <span class="close" aria-label="Close">✕</span>
+  </header>
+
+  <nav class="tabs" aria-label="Collections tabs">
+    <span class="tab">Mounts</span>
+    <span class="tab">Pets</span>
+    <span class="tab selected">Toy Box</span>
+    <span class="tab">Heirlooms</span>
+    <span class="tab">Appearances</span>
+    <span class="tab">Warband Scenes</span>
+  </nav>
+
+  <section class="body">
+    <div class="search">
+      <div class="total"><span>Total Toys</span><span class="num">128 / 512</span></div>
+      <div class="searchbox">Enter search text</div>
+      <div class="filter">Filter</div>
+    </div>
+    <div class="divider" aria-hidden="true"></div>
+    <div class="toys">
+      <article class="toy"><span class="action"></span><div><div class="label">Brazier of Dancing Flames</div><div class="sub">Toy</div></div></article>
+      <article class="toy"><span class="action"></span><div><div class="label">Hearthstone Deck</div><div class="sub">Toy</div></div></article>
+      <article class="toy unowned"><span class="action"></span><div><div class="label">Tranquil Mechanical Yeti</div><div class="sub">Not collected</div></div></article>
+      <article class="toy"><span class="action"></span><div><div class="label">Bubble Wand</div><div class="sub">Toy</div></div></article>
+      <article class="toy"><span class="action"></span><div><div class="label">Mr. Pinchy</div><div class="sub">Toy</div></div></article>
+      <article class="toy unowned"><span class="action"></span><div><div class="label">Ghostly Hat</div><div class="sub">Not collected</div></div></article>
+    </div>
+  </section>
+</main>
+</body>
+</html>

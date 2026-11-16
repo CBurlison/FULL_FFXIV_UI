@@ -1,0 +1,233 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Texture name="FFXIV_WindowBackground11Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Background-Dark.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true" alpha="0">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="TOPLEFT"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_WindowBackground12Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Background-Dark.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true">
+        <Size y="8"/>
+        <Anchors><Anchor point="TOPLEFT" x="8"/><Anchor point="TOPRIGHT" x="-8"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_WindowBackground13Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Background-Dark.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true" alpha="0">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="TOPRIGHT"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_WindowBackground21Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Background-Dark.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true">
+        <Size x="8"/>
+        <Anchors><Anchor point="TOPLEFT" y="-8"/><Anchor point="BOTTOMLEFT" y="8"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_WindowBackground22Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Background-Dark.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true">
+        <Anchors><Anchor point="TOPLEFT" x="8" y="-8"/><Anchor point="TOPRIGHT" x="-8" y="-8"/><Anchor point="BOTTOMLEFT" x="8" y="8"/><Anchor point="BOTTOMRIGHT" x="-8" y="8"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_WindowBackground23Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Background-Dark.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true">
+        <Size x="8"/>
+        <Anchors><Anchor point="TOPRIGHT" y="-8"/><Anchor point="BOTTOMRIGHT" y="8"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_WindowBackground31Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Background-Dark.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true" alpha="0">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="BOTTOMLEFT"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_WindowBackground32Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Background-Dark.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true">
+        <Size y="8"/>
+        <Anchors><Anchor point="BOTTOMLEFT" x="8"/><Anchor point="BOTTOMRIGHT" x="-8"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_WindowBackground33Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Background-Dark.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true" alpha="0">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="BOTTOMRIGHT"/></Anchors>
+    </Texture>
+    <Texture name="FFXIV_WindowRim11Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Rim-Dark.tga">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="TOPLEFT"/></Anchors>
+        <TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_WindowRim12Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Rim-Dark.tga">
+        <Size y="8"/>
+        <Anchors><Anchor point="TOPLEFT" x="8"/><Anchor point="TOPRIGHT" x="-8"/></Anchors>
+        <TexCoords left="0.25" right="0.75" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_WindowRim13Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Rim-Dark.tga">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="TOPRIGHT"/></Anchors>
+        <TexCoords left="0.75" right="1" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_WindowRim21Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Rim-Dark.tga">
+        <Size x="8"/>
+        <Anchors><Anchor point="TOPLEFT" y="-8"/><Anchor point="BOTTOMLEFT" y="8"/></Anchors>
+        <TexCoords left="0" right="0.25" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_WindowRim23Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Rim-Dark.tga">
+        <Size x="8"/>
+        <Anchors><Anchor point="TOPRIGHT" y="-8"/><Anchor point="BOTTOMRIGHT" y="8"/></Anchors>
+        <TexCoords left="0.75" right="1" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_WindowRim31Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Rim-Dark.tga">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="BOTTOMLEFT"/></Anchors>
+        <TexCoords left="0" right="0.25" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_WindowRim32Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Rim-Dark.tga">
+        <Size y="8"/>
+        <Anchors><Anchor point="BOTTOMLEFT" x="8"/><Anchor point="BOTTOMRIGHT" x="-8"/></Anchors>
+        <TexCoords left="0.25" right="0.75" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_WindowRim33Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Rim-Dark.tga">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="BOTTOMRIGHT"/></Anchors>
+        <TexCoords left="0.75" right="1" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_WindowHeader11Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Header-Dark.tga" alpha="0">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="TOPLEFT"/></Anchors>
+        <TexCoords left="0" right="0.3333333333333333" top="0" bottom="0.16666666666666666"/>
+    </Texture>
+    <Texture name="FFXIV_WindowHeader12Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Header-Dark.tga">
+        <Size y="8"/>
+        <Anchors><Anchor point="TOPLEFT" x="8"/><Anchor point="TOPRIGHT" x="-8"/></Anchors>
+        <TexCoords left="0.3333333333333333" right="0.6666666666666666" top="0" bottom="0.16666666666666666"/>
+    </Texture>
+    <Texture name="FFXIV_WindowHeader13Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Header-Dark.tga" alpha="0">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="TOPRIGHT"/></Anchors>
+        <TexCoords left="0.6666666666666666" right="1" top="0" bottom="0.16666666666666666"/>
+    </Texture>
+    <Texture name="FFXIV_WindowHeader21Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Header-Dark.tga">
+        <Size x="8" y="40"/>
+        <Anchors><Anchor point="TOPLEFT" y="-8"/></Anchors>
+        <TexCoords left="0" right="0.3333333333333333" top="0.16666666666666666" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_WindowHeader22Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Header-Dark.tga">
+        <Size y="40"/>
+        <Anchors><Anchor point="TOPLEFT" x="8" y="-8"/><Anchor point="TOPRIGHT" x="-8" y="-8"/></Anchors>
+        <TexCoords left="0.3333333333333333" right="0.6666666666666666" top="0.16666666666666666" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_WindowHeader23Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Window-Header-Dark.tga">
+        <Size x="8" y="40"/>
+        <Anchors><Anchor point="TOPRIGHT" y="-8"/></Anchors>
+        <TexCoords left="0.6666666666666666" right="1" top="0.16666666666666666" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_RoundSurface11Template" virtual="true">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="TOPLEFT"/></Anchors>
+        <TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_RoundSurface12Template" virtual="true">
+        <Size y="8"/>
+        <Anchors><Anchor point="TOP"/><Anchor point="LEFT" x="8"/><Anchor point="RIGHT" x="-8"/></Anchors>
+        <TexCoords left="0.25" right="0.75" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_RoundSurface13Template" virtual="true">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="TOPRIGHT"/></Anchors>
+        <TexCoords left="0.75" right="1" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_RoundSurface21Template" virtual="true">
+        <Size x="8"/>
+        <Anchors><Anchor point="LEFT"/><Anchor point="TOP" y="-8"/><Anchor point="BOTTOM" y="8"/></Anchors>
+        <TexCoords left="0" right="0.25" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_RoundSurface22Template" virtual="true">
+        <Anchors><Anchor point="CENTER"/><Anchor point="LEFT" x="8"/><Anchor point="RIGHT" x="-8"/><Anchor point="TOP" y="-8"/><Anchor point="BOTTOM" y="8"/></Anchors>
+        <TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_RoundSurface23Template" virtual="true">
+        <Size x="8"/>
+        <Anchors><Anchor point="RIGHT"/><Anchor point="TOP" y="-8"/><Anchor point="BOTTOM" y="8"/></Anchors>
+        <TexCoords left="0.75" right="1" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_RoundSurface31Template" virtual="true">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="BOTTOMLEFT"/></Anchors>
+        <TexCoords left="0" right="0.25" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_RoundSurface32Template" virtual="true">
+        <Size y="8"/>
+        <Anchors><Anchor point="BOTTOM"/><Anchor point="LEFT" x="8"/><Anchor point="RIGHT" x="-8"/></Anchors>
+        <TexCoords left="0.25" right="0.75" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_RoundSurface33Template" virtual="true">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="BOTTOMRIGHT"/></Anchors>
+        <TexCoords left="0.75" right="1" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_RoundBorder11Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Panel-Border-Dark.tga">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="TOPLEFT"/></Anchors>
+        <TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_RoundBorder12Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Panel-Border-Dark.tga">
+        <Size y="8"/>
+        <Anchors><Anchor point="TOP"/><Anchor point="LEFT" x="8"/><Anchor point="RIGHT" x="-8"/></Anchors>
+        <TexCoords left="0.25" right="0.75" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_RoundBorder13Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Panel-Border-Dark.tga">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="TOPRIGHT"/></Anchors>
+        <TexCoords left="0.75" right="1" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_RoundBorder21Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Panel-Border-Dark.tga">
+        <Size x="8"/>
+        <Anchors><Anchor point="LEFT"/><Anchor point="TOP" y="-8"/><Anchor point="BOTTOM" y="8"/></Anchors>
+        <TexCoords left="0" right="0.25" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_RoundBorder22Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Panel-Border-Dark.tga">
+        <Anchors><Anchor point="CENTER"/><Anchor point="LEFT" x="8"/><Anchor point="RIGHT" x="-8"/><Anchor point="TOP" y="-8"/><Anchor point="BOTTOM" y="8"/></Anchors>
+        <TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_RoundBorder23Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Panel-Border-Dark.tga">
+        <Size x="8"/>
+        <Anchors><Anchor point="RIGHT"/><Anchor point="TOP" y="-8"/><Anchor point="BOTTOM" y="8"/></Anchors>
+        <TexCoords left="0.75" right="1" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_RoundBorder31Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Panel-Border-Dark.tga">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="BOTTOMLEFT"/></Anchors>
+        <TexCoords left="0" right="0.25" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_RoundBorder32Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Panel-Border-Dark.tga">
+        <Size y="8"/>
+        <Anchors><Anchor point="BOTTOM"/><Anchor point="LEFT" x="8"/><Anchor point="RIGHT" x="-8"/></Anchors>
+        <TexCoords left="0.25" right="0.75" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_RoundBorder33Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Panel-Border-Dark.tga">
+        <Size x="8" y="8"/>
+        <Anchors><Anchor point="BOTTOMRIGHT"/></Anchors>
+        <TexCoords left="0.75" right="1" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_RoundFill11Template" virtual="true">
+        <Size x="8" y="8"/>
+        <TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_RoundFill12Template" virtual="true">
+        <Size y="8"/>
+        <TexCoords left="0.25" right="0.75" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_RoundFill13Template" virtual="true">
+        <Size x="8" y="8"/>
+        <TexCoords left="0.75" right="1" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_RoundFill21Template" virtual="true">
+        <Size x="8"/>
+        <TexCoords left="0" right="0.25" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_RoundFill22Template" virtual="true">
+        <TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_RoundFill23Template" virtual="true">
+        <Size x="8"/>
+        <TexCoords left="0.75" right="1" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_RoundFill31Template" virtual="true">
+        <Size x="8" y="8"/>
+        <TexCoords left="0" right="0.25" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_RoundFill32Template" virtual="true">
+        <Size y="8"/>
+        <TexCoords left="0.25" right="0.75" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_RoundFill33Template" virtual="true">
+        <Size x="8" y="8"/>
+        <TexCoords left="0.75" right="1" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_RoundGrainTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Grain.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true">
+        <Anchors><Anchor point="TOPLEFT" x="8" y="-8"/><Anchor point="BOTTOMRIGHT" x="-8" y="8"/></Anchors>
+    </Texture>
+</Ui>

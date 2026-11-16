@@ -1,0 +1,19 @@
+# Professions XML Conversion
+- Status: Scope approved. Retail defect fixes implemented in Lua, awaiting Retail acceptance. The XML conversion of the approved static pieces has not started. Forever verification deferred.
+- Retail fixes applied (Lua only, `FFXIV_UI/General/Professions.lua`):
+  - Info button (`CraftingPage.TutorialButton`) moved to `TOPLEFT 12,-42`, 22x22, off the title row.
+  - Rank bar moved to `TOPLEFT 110,-42` and narrowed so it stops before the top-right buttons.
+  - Link button (`CraftingPage.LinkButton`) pinned to `TOPRIGHT -12,-42`, 24x24.
+  - Bottom profession tabs (`TabSystem.tabs`) skinned with `Control`.
+  - +/- spinner buttons use `Arrow-Left`/`Arrow-Right` Enabled/Disabled textures, following the Spellbook arrow pattern.
+  - Reagent rows anchor to a `Reagents` header below the description, so they no longer overlap the "Reagents:" label.
+  - Crafting Details (`CraftingPage.SchematicForm`) child NineSlice borders are hidden.
+- Open for Retail verification: whether the Crafting Details ornate border is fully removed, and whether the LinkButton icon still renders after restyling.
+- Create/Create All buttons were confirmed correct by the user and are unchanged.
+- Proposed XML scope: recipe-search title and its panel surface, rank bar divider, centre divider, recipe form header panel, reagent "Required" and "Owned" labels with their divider, and output-slot border.
+- Stays in Lua: recipe/reagent data, rank bar contents, native profession controls, slot pooling, short-quantity colour, and layout positions.
+- Prerequisites: shared controls and rounded panels.
+- Scope: custom headers, search decoration, reagent labels and additive visual regions.
+- Keep recipe/reagent data, native profession controls, pooled rows, runtime layout and client-specific feature availability in Lua.
+- Test search, selection, reagent updates and reuse without introducing Retail-only dependencies into Forever.
+- Require Retail visual acceptance; Forever verification deferred.

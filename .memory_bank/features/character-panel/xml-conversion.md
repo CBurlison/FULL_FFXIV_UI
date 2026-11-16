@@ -1,0 +1,17 @@
+# Character Panels XML Conversion
+- Status: header batch (title, name, divider) and level banner templates accepted on Retail. Forever verification deferred. Stats and overlays remain pending and need an approved HTML mockup before any visual change.
+- Runtime fix: the first Retail load raised `FontString:SetText(): Font not set` at `FFXIV_UI/General/CharacterFrame.lua` (title `SetText` before `Font`). The XML title and name templates now use `inherits="GameFontNormal"`. The test mock gives a template FontString a font only when its XML declares `inherits`, so this case fails in tests. The user confirmed the header loads cleanly on Retail.
+- Mockup: `stats-banner-preview.html` approved after two revisions (class name vertically centred beside its icon; each stat category is one block, up to two side by side). The two-column category layout already exists in Lua (`LayoutNativeStats`), so it is unchanged.
+- Converted (banner): `FFXIV_CharacterLevelTemplate`, `FFXIV_CharacterClassNameTemplate` and `FFXIV_CharacterClassIconTemplate` in `FFXIV_UI/General/CharacterFrame.xml` own the level text, class name and class icon anchors and the 24x24 icon size. Lua keeps fonts, colours, text, the class-name LEFT anchor to the icon, and the native banner/toggle geometry.
+- Still in Lua: resource bars, the decorative outline, and the native stat-header and toggle placement.
+- Tests: the mock applies all `FFXIV_Character*` templates, including width. The banner test asserts template ownership and anchor indices.
+- Retail acceptance: the user approved the banner batch ("Approved. Continue"). Forever deferred.
+- Prerequisites: shared controls and rounded panels.
+- Scope: custom headers, labels, stat/bar templates and decorative overlays in FFXIV_UI/General/CharacterFrame.lua.
+- Converted: `FFXIV_UI/General/CharacterFrame.xml` provides `FFXIV_CharacterHeaderTitleTemplate` (TOPLEFT 12,-8), `FFXIV_CharacterHeaderNameTemplate` (TOPRIGHT -36,-10) and `FFXIV_CharacterHeaderDividerTemplate` (height 1, TOPLEFT 10,-30 / TOPRIGHT -10,-30). Both the modern and legacy header blocks use them.
+- Kept in Lua: player name/title data, fonts and colours, title width (220 on the modern path), name justification/wrap, the title-relative LEFT anchor of the name, `StyleDivider`, close button and banner/stat/model overlays.
+- Inventory native-frame manipulation is not a custom XML tree.
+- Keep character/item/stat data, native scrolling/pooling, themes, measured layouts and secure interactions in Lua.
+- Tests: `tests/CharacterFrame.lua` applies the header templates in the mock and asserts anchors, width, height, point counts and TOC order. The legacy header path is not exercised by the mock; it shares the same templates but is only verified statically.
+- Test all affected subpanels, repeat refresh and resize without duplicate art.
+- Require Retail visual acceptance; Forever verification deferred.

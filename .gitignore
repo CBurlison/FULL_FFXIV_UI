@@ -1,2 +1,6 @@
 # Ignore rider IDE files
 .idea/*
+mockups/*
+Dumps/*
+Errors.txt
+MakeLink.txt

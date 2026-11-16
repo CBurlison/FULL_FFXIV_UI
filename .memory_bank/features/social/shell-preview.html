@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Social shell preview (proposed XML static surfaces)</title>
+<style>
+  body { margin: 0; padding: 24px; background: #1b1d22; font-family: "Segoe UI", Arial, sans-serif; color: #e8e8ea; }
+  h2 { font-size: 14px; font-weight: 600; margin: 28px 0 8px; color: #9aa0aa; text-transform: uppercase; letter-spacing: .05em; }
+  .note { font-size: 12px; color: #9aa0aa; margin-bottom: 12px; max-width: 900px; }
+  .window {
+    position: relative; background: #2a2d34; border: 1px solid #4a4f5a; border-radius: 8px;
+    box-sizing: border-box; overflow: hidden; display: inline-block; vertical-align: top; margin-right: 24px;
+  }
+  .title { position: absolute; left: 16px; top: 10px; font-size: 18px; color: #f2f2f4; }
+  .close {
+    position: absolute; right: 6px; top: 6px; width: 24px; height: 24px; border-radius: 4px;
+    background: #3a3e47; color: #e8e8ea; text-align: center; line-height: 24px; font-size: 14px;
+  }
+  .divider { position: absolute; left: 16px; right: 16px; height: 1px; background: #5c6270; }
+  .tabs { position: absolute; left: 16px; right: 16px; top: 40px; height: 28px; display: flex; gap: 4px; }
+  /* Contacts is the first top-level tab; markup keeps Who, Raid, Quick Join, Contacts order. */
+  .tabs .tab:last-child { order: -1; }
+  .tab {
+    flex: 1; border-radius: 4px; background: #3a3e47; font-size: 12px; line-height: 28px; text-align: center; color: #b9bdc6;
+  }
+  .tab.on { background: #4a5060; color: #f2f2f4; box-shadow: inset 0 -2px 0 #c9a86a; }
+  .subtabs { position: absolute; left: 16px; right: 16px; top: 74px; height: 22px; display: flex; gap: 4px; }
+  .subtab { flex: 1; font-size: 11px; line-height: 22px; text-align: center; color: #9aa0aa; border-bottom: 1px solid #3a3e47; }
+  .subtab.on { color: #c9a86a; border-bottom: 2px solid #c9a86a; }
+  .search {
+    position: absolute; left: 16px; top: 104px; width: 200px; height: 22px; border-radius: 4px;
+    background: #22252b; border: 1px solid #4a4f5a; font-size: 12px; line-height: 20px; padding-left: 8px; color: #7d8390; box-sizing: border-box;
+  }
+  .dropdown {
+    position: absolute; right: 16px; top: 104px; width: 130px; height: 22px; border-radius: 4px;
+    background: #3a3e47; border: 1px solid #4a4f5a; font-size: 12px; line-height: 20px; padding-left: 8px; box-sizing: border-box; color: #d7d9de;
+  }
+  .dropdown::after { content: "\25BE"; position: absolute; right: 8px; color: #9aa0aa; }
+  .heading { position: absolute; left: 16px; font-size: 12px; color: #c9a86a; }
+  .count { position: absolute; right: 16px; font-size: 12px; color: #9aa0aa; }
+  .row { position: absolute; left: 16px; right: 16px; height: 36px; border-bottom: 1px solid #353942; font-size: 12px; }
+  .row .name { position: absolute; left: 36px; top: 4px; color: #e8e8ea; }
+  .row .info { position: absolute; left: 36px; top: 19px; color: #7d8390; font-size: 10px; }
+  .row .dot { position: absolute; left: 6px; top: 13px; width: 10px; height: 10px; border-radius: 50%; background: #5fb36a; }
+  .row .dot.away { background: #d9a441; }
+  .row .dot.busy { background: #c4524f; }
+  .row .dot.off { background: #5a5f6b; }
+  .row .meta { position: absolute; right: 0; top: 10px; color: #9aa0aa; font-size: 11px; }
+  .button {
+    position: absolute; height: 22px; line-height: 22px; padding: 0 12px; border-radius: 4px; background: #3a3e47;
+    font-size: 11px; color: #d7d9de; text-align: center;
+  }
+  .panel { position: absolute; left: 16px; right: 16px; border-radius: 6px; background: #24272d; border: 1px solid #3f4450; box-sizing: border-box; }
+  .label { position: absolute; font-size: 11px; color: #7d8390; }
+  .note-inline { position: absolute; left: 16px; right: 16px; font-size: 11px; color: #7d8390; }
+  .legend { display: inline-block; font-size: 11px; color: #9aa0aa; margin-right: 16px; }
+  .swatch { display: inline-block; width: 10px; height: 10px; vertical-align: middle; margin-right: 4px; border-radius: 2px; }
+  .frame-note { position: absolute; left: 12px; bottom: 6px; font-size: 10px; color: #7d8390; }
+</style>
+</head>
+<body>
+
+<p class="note">Proposed Retail XML scope for Social: the main window shell, title, close button, the top tab row (Who, Raid, Quick Join, Contacts), the Contacts subtab row (Friends, Recent Allies, Recruit A Friend), search box and dropdown artwork, group headings, divider lines, and the static row/panel frames. Friend, Who, raid, and quick-join data, native status dropdown behavior, row pooling, presence icons, and layout measurements stay in Lua. The sample uses the Dark theme; live theming stays in Lua. Forever is not shown; Forever checks are deferred.</p>
+
+<h2>A. Contacts &rsaquo; Friends</h2>
+<div class="window" style="width:380px;height:460px;">
+  <div class="title">Social</div>
+  <div class="close">x</div>
+  <div class="tabs"><div class="tab">Who</div><div class="tab">Raid</div><div class="tab">Quick Join</div><div class="tab on">Contacts</div></div>
+  <div class="subtabs"><div class="subtab on">Friends</div><div class="subtab">Recent Allies</div><div class="subtab">Recruit A Friend</div></div>
+  <div class="search" style="top:104px;width:230px;">Search friends</div>
+  <div class="dropdown" style="top:104px;">Online</div>
+  <div class="heading" style="top:140px;">Online</div>
+  <div class="count" style="top:140px;">2</div>
+  <div class="row" style="top:160px;"><div class="dot"></div><div class="name">Arlo</div><div class="info">Mage &middot; Level 80</div><div class="meta">Zone</div></div>
+  <div class="row" style="top:196px;"><div class="dot away"></div><div class="name">Brinn</div><div class="info">Healer &middot; Away</div><div class="meta">Zone</div></div>
+  <div class="heading" style="top:242px;">Offline</div>
+  <div class="count" style="top:242px;">1</div>
+  <div class="row" style="top:262px;"><div class="dot off"></div><div class="name" style="color:#7d8390;">Corin</div><div class="info">Last seen 2 days ago</div></div>
+  <div class="button" style="left:16px;bottom:16px;width:120px;">Add Friend</div>
+  <div class="button" style="right:16px;bottom:16px;width:120px;">Remove</div>
+</div>
+
+<h2>B. Contacts &rsaquo; Recent Allies</h2>
+<div class="window" style="width:380px;height:460px;">
+  <div class="title">Social</div>
+  <div class="close">x</div>
+  <div class="tabs"><div class="tab">Who</div><div class="tab">Raid</div><div class="tab">Quick Join</div><div class="tab on">Contacts</div></div>
+  <div class="subtabs"><div class="subtab">Friends</div><div class="subtab on">Recent Allies</div><div class="subtab">Recruit A Friend</div></div>
+  <div class="search" style="top:104px;width:230px;">Search allies</div>
+  <div class="dropdown" style="top:104px;">All zones</div>
+  <div class="heading" style="top:140px;">Recent allies</div>
+  <div class="count" style="top:140px;">2</div>
+  <div class="row" style="top:160px;"><div class="dot off"></div><div class="name">Tessa</div><div class="info">Played together 3 days ago</div></div>
+  <div class="row" style="top:196px;"><div class="dot off"></div><div class="name">Remy</div><div class="info">Played together 1 week ago</div></div>
+  <div class="note-inline" style="top:250px;">Allies are listed here after group play. Invite and whisper buttons appear on hover.</div>
+  <div class="button" style="right:16px;bottom:16px;width:120px;">Add Friend</div>
+</div>
+
+<h2>C. Contacts &rsaquo; Recruit A Friend</h2>
+<div class="window" style="width:380px;height:460px;">
+  <div class="title">Social</div>
+  <div class="close">x</div>
+  <div class="tabs"><div class="tab">Who</div><div class="tab">Raid</div><div class="tab">Quick Join</div><div class="tab on">Contacts</div></div>
+  <div class="subtabs"><div class="subtab">Friends</div><div class="subtab">Recent Allies</div><div class="subtab on">Recruit A Friend</div></div>
+  <div class="heading" style="top:140px;">Your recruits</div>
+  <div class="row" style="top:160px;"><div class="dot"></div><div class="name">Pell</div><div class="info">Recruited 12 days ago</div></div>
+  <div class="heading" style="top:206px;">Share your link</div>
+  <div class="panel" style="top:228px;height:64px;"></div>
+  <div class="note-inline" style="top:238px;left:28px;right:28px;">Link is shown in a read-only box; the copy action is handled by Lua.</div>
+  <div class="button" style="left:28px;top:262px;width:120px;">Copy Link</div>
+  <div class="button" style="right:28px;top:262px;width:120px;">Generate</div>
+  <div class="label" style="left:16px;bottom:16px;">Recruit rewards show status only; claim actions stay native.</div>
+</div>
+
+<h2>D. Who</h2>
+<div class="window" style="width:380px;height:460px;">
+  <div class="title">Social</div>
+  <div class="close">x</div>
+  <div class="tabs"><div class="tab on">Who</div><div class="tab">Raid</div><div class="tab">Quick Join</div><div class="tab">Contacts</div></div>
+  <div class="search" style="top:74px;width:230px;">Player or guild name</div>
+  <div class="dropdown" style="top:74px;">All zones</div>
+  <div class="button" style="top:106px;left:16px;width:120px;">Search</div>
+  <div class="heading" style="top:140px;">Results</div>
+  <div class="count" style="top:140px;">3</div>
+  <div class="row" style="top:160px;"><div class="name">Arlo</div><div class="info">Mage &middot; Level 80 &middot; Stormwind</div></div>
+  <div class="row" style="top:196px;"><div class="name">Brinn</div><div class="info">Healer &middot; Level 79 &middot; Dornogal</div></div>
+  <div class="row" style="top:232px;"><div class="name">Corin</div><div class="info">Warrior &middot; Level 80 &middot; Valdrakken</div></div>
+  <div class="button" style="right:16px;bottom:16px;width:120px;">Whisper</div>
+</div>
+
+<h2>E. Raid</h2>
+<div class="window" style="width:380px;height:460px;">
+  <div class="title">Social</div>
+  <div class="close">x</div>
+  <div class="tabs"><div class="tab">Who</div><div class="tab on">Raid</div><div class="tab">Quick Join</div><div class="tab">Contacts</div></div>
+  <div class="heading" style="top:80px;">Raid group</div>
+  <div class="count" style="top:80px;">Party 1 &middot; 5 members</div>
+  <div class="panel" style="top:104px;height:200px;"></div>
+  <div class="row" style="top:116px;"><div class="name">You (Leader)</div><div class="info">Tank &middot; Ready</div></div>
+  <div class="row" style="top:152px;"><div class="name">Arlo</div><div class="info">Damage &middot; Ready</div></div>
+  <div class="row" style="top:188px;"><div class="name">Brinn</div><div class="info">Healer &middot; Pending</div></div>
+  <div class="row" style="top:224px;"><div class="name">Corin</div><div class="info">Damage &middot; Ready</div></div>
+  <div class="button" style="left:16px;bottom:16px;width:120px;">Convert to Raid</div>
+  <div class="button" style="right:16px;bottom:16px;width:120px;">Raid Info</div>
+</div>
+
+<h2>F. Quick Join</h2>
+<div class="window" style="width:380px;height:460px;">
+  <div class="title">Social</div>
+  <div class="close">x</div>
+  <div class="tabs"><div class="tab">Who</div><div class="tab">Raid</div><div class="tab on">Quick Join</div><div class="tab">Contacts</div></div>
+  <div class="heading" style="top:80px;">Available groups</div>
+  <div class="count" style="top:80px;">2</div>
+  <div class="row" style="top:104px;"><div class="name">Mythic+ 12 &middot; Tank needed</div><div class="info">Leader Arlo &middot; 3 of 5</div></div>
+  <div class="row" style="top:140px;"><div class="name">Delves &middot; Any role</div><div class="info">Leader Brinn &middot; 2 of 3</div></div>
+  <div class="note-inline" style="top:186px;">Queue state and join actions are native; entries refresh on Lua events.</div>
+  <div class="button" style="left:16px;bottom:16px;width:120px;">Refresh</div>
+  <div class="button" style="right:16px;bottom:16px;width:120px;">Join</div>
+</div>
+
+<h2>Legend</h2>
+<p class="legend"><span class="swatch" style="background:#5fb36a"></span>Online</p>
+<p class="legend"><span class="swatch" style="background:#d9a441"></span>Away</p>
+<p class="legend"><span class="swatch" style="background:#c4524f"></span>Busy</p>
+<p class="legend"><span class="swatch" style="background:#5a5f6b"></span>Offline</p>
+<p class="legend"><span class="swatch" style="background:#c9a86a"></span>Accent (active subtab and headings)</p>
+
+</body>
+</html>

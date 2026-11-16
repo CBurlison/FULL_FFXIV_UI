@@ -1,0 +1,21 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <FontString name="FFXIV_InventoryTitleTemplate" virtual="true" inherits="GameFontNormal">
+        <Anchors>
+            <Anchor point="TOPLEFT" x="16" y="-10"/>
+        </Anchors>
+    </FontString>
+    <FontString name="FFXIV_InventoryItemsTemplate" virtual="true" inherits="GameFontNormal">
+        <Anchors>
+            <Anchor point="TOPLEFT" x="24" y="-43"/>
+        </Anchors>
+    </FontString>
+    <FontString name="FFXIV_InventoryCountTemplate" virtual="true" inherits="GameFontNormal"/>
+    <Texture name="FFXIV_InventoryDividerTemplate" virtual="true">
+        <Size y="1"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" x="16" y="-62"/>
+            <Anchor point="TOPRIGHT" x="-16" y="-62"/>
+        </Anchors>
+    </Texture>
+    <Texture name="FFXIV_InventoryOptionsIconTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Chat\Settings.tga" setAllPoints="true"/>
+</Ui>

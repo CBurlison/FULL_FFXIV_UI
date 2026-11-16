@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Inventory shell preview (proposed XML static surfaces)</title>
+<style>
+  body { margin: 0; padding: 24px; background: #1b1d22; font-family: "Segoe UI", Arial, sans-serif; color: #e8e8ea; }
+  h2 { font-size: 14px; font-weight: 600; margin: 28px 0 8px; color: #9aa0aa; text-transform: uppercase; letter-spacing: .05em; }
+  .note { font-size: 12px; color: #9aa0aa; margin-bottom: 12px; max-width: 760px; }
+  .window {
+    position: relative; background: #2a2d34; border: 1px solid #4a4f5a; border-radius: 8px;
+    box-sizing: border-box; overflow: hidden; display: inline-block; vertical-align: top; margin-right: 24px;
+  }
+  .title { position: absolute; left: 16px; top: 10px; font-size: 18px; color: #f2f2f4; }
+  .items { position: absolute; left: 24px; top: 43px; font-size: 14px; color: #c9a86a; }
+  .count { position: absolute; right: 40px; top: 43px; font-size: 14px; color: #c9a86a; }
+  .divider { position: absolute; left: 16px; right: 16px; top: 62px; height: 1px; background: #5c6270; }
+  .close {
+    position: absolute; right: 6px; top: 6px; width: 24px; height: 24px; border-radius: 4px;
+    background: #3a3e47; color: #e8e8ea; text-align: center; line-height: 24px; font-size: 14px;
+  }
+  .options {
+    position: absolute; top: 6px; right: 38px; width: 24px; height: 24px; border-radius: 4px;
+    background: #3a3e47; font-size: 14px; text-align: center; line-height: 24px; color: #d7d9de;
+  }
+  .search {
+    position: absolute; left: 16px; right: 16px; top: 74px; height: 22px; border-radius: 4px;
+    background: #22252b; border: 1px solid #4a4f5a; font-size: 12px; line-height: 22px; padding-left: 8px; color: #7d8390;
+    box-sizing: border-box;
+  }
+  .heading { position: absolute; font-size: 12px; color: #b9bdc6; }
+  .slot {
+    position: absolute; width: 40px; height: 40px; box-sizing: border-box;
+    background: #1f2227; border: 1px solid #3b4029; border-radius: 3px;
+  }
+  .empty { background: #24272d; border-color: #44485a; }
+  .label { position: absolute; font-size: 11px; color: #7d8390; }
+  .legend { display: inline-block; font-size: 11px; color: #9aa0aa; margin-right: 16px; }
+  .swatch { display: inline-block; width: 10px; height: 10px; vertical-align: middle; margin-right: 4px; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<p class="note">Proposed Retail XML scope for Inventory: the static shell panel, title, "Items" label, capacity count, divider, settings button, close button and per-bag headings. The settings button uses the chat window's gear icon, <code>FFXIV_UI/Media/Textures/Chat/Settings.tga</code>; the gear glyph below is only a stand-in because browsers cannot render TGA. Slots, bag geometry, search owner, money, and item artwork stay in Lua. The mock uses one Dark theme sample; live theming is still applied by Lua.</p>
+
+<h2>A. Combined window, Per-bag grids (472 px wide)</h2>
+<div class="window" style="width:472px;height:420px;">
+  <div class="title">Inventory</div>
+  <div class="items">Items</div>
+  <div class="count">32 / 48</div>
+  <div class="divider"></div>
+  <div class="options" title="Settings.tga">&#9881;</div>
+  <div class="close">x</div>
+  <div class="search">Search</div>
+
+  <div class="heading" style="left:12px;top:104px;">Backpack</div>
+  <div class="heading" style="left:244px;top:104px;">Bag 1</div>
+  <div style="position:absolute;left:12px;top:124px;width:220px;height:176px;">
+    <div class="slot" style="left:0;top:0;"></div><div class="slot" style="left:43px;top:0;"></div><div class="slot empty" style="left:86px;top:0;"></div><div class="slot" style="left:129px;top:0;"></div><div class="slot" style="left:172px;top:0;"></div>
+    <div class="slot" style="left:0;top:43px;"></div><div class="slot" style="left:43px;top:43px;"></div><div class="slot" style="left:86px;top:43px;"></div><div class="slot empty" style="left:129px;top:43px;"></div><div class="slot" style="left:172px;top:43px;"></div>
+    <div class="slot empty" style="left:0;top:86px;"></div><div class="slot" style="left:43px;top:86px;"></div><div class="slot" style="left:86px;top:86px;"></div><div class="slot" style="left:129px;top:86px;"></div><div class="slot" style="left:172px;top:86px;"></div>
+    <div class="slot" style="left:0;top:129px;"></div><div class="slot empty" style="left:43px;top:129px;"></div><div class="slot" style="left:86px;top:129px;"></div><div class="slot" style="left:129px;top:129px;"></div><div class="slot" style="left:172px;top:129px;"></div>
+  </div>
+  <div style="position:absolute;left:244px;top:124px;width:220px;height:88px;">
+    <div class="slot" style="left:0;top:0;"></div><div class="slot" style="left:43px;top:0;"></div><div class="slot" style="left:86px;top:0;"></div><div class="slot empty" style="left:129px;top:0;"></div><div class="slot" style="left:172px;top:0;"></div>
+    <div class="slot" style="left:0;top:43px;"></div><div class="slot" style="left:43px;top:43px;"></div><div class="slot" style="left:86px;top:43px;"></div><div class="slot" style="left:129px;top:43px;"></div><div class="slot" style="left:172px;top:43px;"></div>
+  </div>
+  <div class="heading" style="left:12px;top:316px;">Bag 2</div>
+  <div class="label" style="left:12px;top:398px;">Heading and count use the theme's muted and accent colours; slot geometry is Lua-owned.</div>
+</div>
+
+<h2>B. Separate backpack window (244 px wide)</h2>
+<div class="window" style="width:244px;height:260px;">
+  <div class="title" style="font-size:18px;">Backpack</div>
+  <div class="items">Items</div>
+  <div class="count" style="right:40px;">16 / 16</div>
+  <div class="divider"></div>
+  <div class="options" title="Settings.tga">&#9881;</div>
+  <div class="close">x</div>
+  <div class="search">Search</div>
+  <div style="position:absolute;left:12px;top:104px;width:220px;height:140px;">
+    <div class="slot" style="left:0;top:0;"></div><div class="slot" style="left:43px;top:0;"></div><div class="slot" style="left:86px;top:0;"></div><div class="slot" style="left:129px;top:0;"></div><div class="slot" style="left:172px;top:0;"></div>
+    <div class="slot" style="left:0;top:43px;"></div><div class="slot" style="left:43px;top:43px;"></div><div class="slot" style="left:86px;top:43px;"></div><div class="slot" style="left:129px;top:43px;"></div><div class="slot" style="left:172px;top:43px;"></div>
+  </div>
+</div>
+
+<h2>Legend</h2>
+<span class="legend"><span class="swatch" style="background:#2a2d34;border:1px solid #4a4f5a;"></span>Shell (rounded surface, XML template)</span>
+<span class="legend"><span class="swatch" style="background:#c9a86a;"></span>Accent label (XML FontString, Lua colour)</span>
+<span class="legend"><span class="swatch" style="background:#5c6270;"></span>Divider (XML texture, Lua colour)</span>
+<span class="legend"><span class="swatch" style="background:#1f2227;border:1px solid #3b4029;"></span>Slot (Lua/native, unchanged)</span>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collections Shell and Mounts Layout Preview</title>
+<style>
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; }
+body {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #d3cfc5;
+  font: 15px "Trebuchet MS", Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 82% 18%, rgba(196, 155, 44, .56), transparent 25%),
+    radial-gradient(ellipse at 18% 72%, rgba(75, 110, 31, .75), transparent 40%),
+    linear-gradient(118deg, #71602a 0%, #365321 47%, #88713b 100%);
+}
+.journal {
+  position: relative;
+  width: min(740px, calc(100vw - 20px));
+  height: min(760px, calc(100vh - 24px));
+  overflow: hidden;
+  border: 2px solid #96845e;
+  border-radius: 10px;
+  background: linear-gradient(105deg, #292a29 0%, #292a29 35%, #30302f 100%);
+  box-shadow: 0 2px 9px #080907, inset 0 0 0 2px #151615;
+}
+/* Header: title moved left, no round icon, standard close button */
+.header {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid #77746b;
+}
+.title { flex: 1; color: #ddd9ce; font-size: 22px; letter-spacing: .4px; }
+.close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #514f48;
+  border-radius: 50%;
+  color: #cfbd8d;
+  background: linear-gradient(#494844, #242422);
+  font-size: 16px;
+}
+/* Tab row directly under the header, horizontal */
+.tabs {
+  display: flex;
+  gap: 6px;
+  height: 46px;
+  padding: 8px 16px 0;
+  border-bottom: 1px solid #5b5951;
+}
+.tab {
+  display: grid;
+  place-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid #3c3b38;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  color: #b9b4a8;
+  background: linear-gradient(#313130, #1e1e1d);
+  font-size: 14px;
+}
+.tab.selected {
+  color: #d6b96f;
+  border-color: #c9a24b;
+  background: linear-gradient(rgba(202, 166, 82, .28), #1e1e1d);
+}
+/* Content area: no frames; only the divider between list and detail */
+.body {
+  position: absolute;
+  top: 100px;
+  right: 14px;
+  bottom: 54px;
+  left: 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1px minmax(0, 0.8fr);
+  gap: 14px;
+}
+.divider { background: linear-gradient(#5b5951, #8a877e 50%, #5b5951); }
+.list { display: flex; flex-direction: column; min-width: 0; }
+.search { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.searchbox {
+  flex: 1;
+  height: 32px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  color: #b9b4a8;
+  background: linear-gradient(#3c3b38, #252523);
+  box-shadow: inset 0 1px 4px #171716;
+}
+.count { color: #b8b2a5; font-size: 13px; white-space: nowrap; }
+.grid-area { display: flex; gap: 6px; flex: 1; min-height: 0; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 56px);
+  align-content: start;
+  gap: 12px 10px;
+  flex: 1;
+}
+/* Highlight wraps the icon: ring instead of a list-row fill */
+.slot {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border: 2px solid #3d3c39;
+  border-radius: 50%;
+  background: #1b1b1a;
+  overflow: visible;
+}
+.slot .art {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #d0c3a0, #756b53 45%, #272a28);
+}
+.slot.selected { border: 2px solid #d5b04f; box-shadow: 0 0 6px rgba(213, 176, 79, .55); }
+.slot.unowned .art { filter: grayscale(1) brightness(.45); }
+.scroll {
+  position: relative;
+  width: 10px;
+  margin-left: 4px;
+  border-radius: 5px;
+  background: #1b1b1a;
+  box-shadow: inset 0 1px 3px #000;
+}
+.scroll .thumb {
+  position: absolute;
+  top: 10%;
+  right: 1px;
+  left: 1px;
+  height: 40%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #8a7646, #d6b96f);
+}
+/* Detail pane: plain text and paperdoll, no card */
+.detail { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.detail .name { color: #d6b96f; font-size: 20px; }
+.detail .sub { color: #b8b2a5; font-size: 13px; }
+.paperdoll {
+  flex: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, #4a4a46, #1f1f1d 70%);
+}
+/* Footer: bottom-left FFXIV-style button and checkbox */
+.footer {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 34px;
+  border-top: 1px solid #8a877e;
+  padding-top: 8px;
+}
+.btn {
+  height: 30px;
+  padding: 0 16px;
+  border: 1px solid #55534c;
+  border-radius: 15px;
+  color: #d9b866;
+  background: linear-gradient(#3c3b38, #232321);
+  line-height: 28px;
+}
+.check { display: flex; align-items: center; gap: 8px; color: #bcb7aa; }
+.check i {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #8a877e;
+  border-radius: 3px;
+  background: #1b1b1a;
+}
+</style>
+</head>
+<body>
+<main class="journal" aria-label="Collections Mounts layout preview">
+  <header class="header">
+    <span class="title">Collections</span>
+    <span class="close" aria-label="Close">✕</span>
+  </header>
+
+  <nav class="tabs" aria-label="Collections tabs">
+    <span class="tab selected">Mounts</span>
+    <span class="tab">Pets</span>
+    <span class="tab">Toy Box</span>
+    <span class="tab">Heirlooms</span>
+    <span class="tab">Appearances</span>
+    <span class="tab">Warband Scenes</span>
+  </nav>
+
+  <section class="body">
+    <div class="list">
+      <div class="search">
+        <div class="searchbox">Enter search text</div>
+        <span class="count">142 / 300</span>
+      </div>
+      <div class="grid-area">
+        <div class="grid">
+          <div class="slot selected"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot unowned"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot unowned"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+          <div class="slot"><span class="art"></span></div>
+        </div>
+        <div class="scroll"><span class="thumb"></span></div>
+      </div>
+    </div>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <div class="detail">
+      <div class="name">Swift Gray Steed</div>
+      <div class="sub">Ground mount</div>
+      <div class="paperdoll"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span class="btn">Summon Random</span>
+    <label class="check"><i></i> Only show collected</label>
+  </footer>
+</main>
+</body>
+</html>

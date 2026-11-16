@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FFXIV_UI Chat Mode Menu Preview</title>
+    <style>
+        @font-face {
+            font-family: Axis;
+            src: url("../../../FFXIV_UI/Media/Fonts/AxisRegular.ttf");
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 48px;
+            background: #222629;
+            color: #e6dec7;
+            font-family: Axis, sans-serif;
+        }
+        h1 { font-size: 18px; font-weight: normal; }
+        p { max-width: 560px; font-size: 13px; color: #bbb; }
+        .menu {
+            width: 184px;
+            padding: 6px;
+            border: 6px solid transparent;
+            border-image: url("../../../FFXIV_UI/Media/Textures/Panels/ComboBox-Menu-Dark.png") 8 fill / 6px / 0 stretch;
+        }
+        .menu button {
+            display: block;
+            width: 100%;
+            height: 22px;
+            padding: 0 8px;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            color: #e6dec7;
+            font: 11px Axis, sans-serif;
+            text-align: left;
+            text-shadow: 1px 1px 1px #000;
+            cursor: pointer;
+        }
+        .menu button:hover, .menu button:focus-visible {
+            background: linear-gradient(90deg, #d1b06642, #d1b06600);
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Mode popup — standard dark combo-menu style</h1>
+    <p>Uses the shared menu artwork and Axis 11 text. Hover a row to preview highlighting.
+        Entries and actions remain unchanged; channel labels use the player's joined channels in-game.
+        The existing Mode icon is unchanged.</p>
+    <div class="menu" aria-label="Chat mode">
+        <button type="button">Say</button>
+        <button type="button">Party</button>
+        <button type="button">Raid</button>
+        <button type="button">Instance</button>
+        <button type="button">Guild</button>
+        <button type="button">Yell</button>
+        <button type="button">Emote</button>
+        <button type="button">Whisper</button>
+        <button type="button">Reply</button>
+        <button type="button">1. General</button>
+        <button type="button">2. Trade</button>
+    </div>
+    <p>Preview only. In-game placement, scrolling, screen-edge handling, and keyboard/controller
+        navigation remain managed by the native menu system.</p>
+</body>
+</html>

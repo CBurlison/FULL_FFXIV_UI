@@ -1,0 +1,124 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <FontString name="FFXIV_EnemyListMarkerTemplate" virtual="true" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf" outline="NORMAL">
+        <FontHeight val="18"/>
+        <Color r="1" g="0.86" b="0.55"/>
+    </FontString>
+    <Frame name="FFXIV_EnemyListPlateTemplate" virtual="true" enableMouse="false">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="badge" file="Interface\Buttons\WHITE8X8">
+                    <Color r="0.08" g="0.06" b="0.03" a="0.9"/>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <FontString parentKey="number" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf" outline="NORMAL">
+                    <FontHeight val="16"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" relativePoint="LEFT" x="-6" y="0"/>
+                    </Anchors>
+                    <Color r="1" g="0.86" b="0.55"/>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+    <Frame name="FFXIV_EnemyListRowTemplate" virtual="true" enableMouse="false">
+        <Frames>
+            <StatusBar parentKey="health">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="34" y="-16"/>
+                </Anchors>
+                <BarTexture file="Interface\Buttons\WHITE8X8"/>
+                <BarColor r="0.85" g="0.12" b="0.16"/>
+            </StatusBar>
+            <StatusBar parentKey="cast" hidden="true">
+                <Size x="206" y="13"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="54" y="-37"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="icon">
+                            <Size x="16" y="16"/>
+                            <Anchors>
+                                <Anchor point="RIGHT" relativePoint="LEFT" x="-3" y="0"/>
+                            </Anchors>
+                            <TexCoords left="0.08" right="0.92" top="0.08" bottom="0.92"/>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY">
+                        <FontString parentKey="name" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf" outline="NORMAL" justifyH="LEFT" wordwrap="false">
+                            <FontHeight val="10"/>
+                            <Anchors>
+                                <Anchor point="LEFT" x="3" y="0"/>
+                                <Anchor point="RIGHT" x="-18" y="0"/>
+                            </Anchors>
+                            <Color r="1" g="0.86" b="0.55"/>
+                        </FontString>
+                        <Texture parentKey="interrupt" file="Interface\Buttons\UI-GroupLoot-Pass-Up">
+                            <Size x="12" y="12"/>
+                            <Anchors>
+                                <Anchor point="RIGHT" x="-2" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <BarTexture file="Interface\Buttons\WHITE8X8"/>
+                <BarColor r="1" g="1" b="1"/>
+            </StatusBar>
+            <Frame parentKey="outline" setAllPoints="true" enableMouse="false">
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="top" file="Interface\Buttons\WHITE8X8">
+                            <Size y="2"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="0" y="2"/>
+                                <Anchor point="TOPRIGHT" x="0" y="2"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture parentKey="bottom" file="Interface\Buttons\WHITE8X8">
+                            <Size y="2"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" x="0" y="-2"/>
+                                <Anchor point="BOTTOMRIGHT" x="0" y="-2"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture parentKey="left" file="Interface\Buttons\WHITE8X8">
+                            <Size x="2"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="-2" y="2"/>
+                                <Anchor point="BOTTOMLEFT" x="-2" y="-2"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture parentKey="right" file="Interface\Buttons\WHITE8X8">
+                            <Size x="2"/>
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" x="2" y="2"/>
+                                <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+        </Frames>
+    </Frame>
+    <Frame name="FFXIV_EnemyList" parent="UIParent" enableMouse="false" hidden="true">
+        <Layers>
+            <Layer level="OVERLAY">
+                <FontString parentKey="title" text="Enemy List" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf" outline="NORMAL">
+                    <FontHeight val="14"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                    </Anchors>
+                    <Color r="1" g="0.86" b="0.55"/>
+                </FontString>
+                <FontString parentKey="status" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf" outline="NORMAL">
+                    <FontHeight val="10"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="-18"/>
+                    </Anchors>
+                    <Color r="0.8" g="0.8" b="0.8"/>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+</Ui>

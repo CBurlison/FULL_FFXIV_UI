@@ -1,0 +1,48 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+                        https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Frame name="HolyPowerTrackerFrame" parent="UIParent" hidden="true">
+        <Size x="350" y="350"/>
+        <Anchors>
+            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" x="0" y="-200"/>
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="base" setAllPoints="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Paladin\FFPaladinFrame"/>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="orb1" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Paladin\HolyPower1.tga">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb2" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Paladin\HolyPower2.tga">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb3" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Paladin\HolyPower3.tga">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb4" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Paladin\HolyPower4.tga">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="orb5" hidden="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\JobGauges\Paladin\HolyPower5.tga">
+                    <Size x="350" y="350"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+</Ui>

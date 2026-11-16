@@ -1,0 +1,59 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+                        https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <StatusBar name="FFTargetCastBar" parent="UIParent" hidden="true">
+        <Size x="293.55" y="648.9"/>
+        <BarTexture file="Interface\AddOns\FFXIV_UI\Media\Textures\TargetFrame\Health"/>
+        <BarColor r="1" g="1" b="1" a="1"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="bg" file="Interface\AddOns\FFXIV_UI\Media\Textures\TargetFrame\Health" setAllPoints="true">
+                    <Color r="0.259" g="0.188" b="0.024" a="1"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame parentKey="outlineFrame" setAllPoints="true">
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="staticOutline" file="Interface\AddOns\FFXIV_UI\Media\Textures\TargetFrame\TargetTarget" hidden="true">
+                            <Size x="880.65" y="648.9"/>
+                            <Color r="0.822" g="0.629" b="0.225" a="1"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame parentKey="textFrame" frameStrata="HIGH" setAllPoints="true">
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString parentKey="text" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf">
+                            <Anchors>
+                                <Anchor point="RIGHT" x="0" y="-4.12"/>
+                            </Anchors>
+                            <FontHeight val="20.6"/>
+                            <Color r="1" g="0.976" b="0.839" a="1"/>
+                            <Shadow>
+                                <Color r="0.631" g="0.514" b="0.318" a="1"/>
+                                <Offset x="0" y="-1"/>
+                            </Shadow>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame parentKey="gifFrame" frameStrata="HIGH">
+                <Size x="381.615" y="324.45"/>
+                <Anchors>
+                    <Anchor point="CENTER"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="gifTexture" setAllPoints="true" hidden="true">
+                            <Color r="1" g="1" b="1" a="1"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+            </Frame>
+        </Frames>
+    </StatusBar>
+</Ui>

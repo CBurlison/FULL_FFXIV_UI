@@ -1,0 +1,174 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Texture name="FFXIV_TooltipBackground11Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Background-Dark.tga">
+        <Size x="16" y="16"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" x="0" y="0"/>
+        </Anchors>
+        <TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipBackground12Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Background-Dark.tga">
+        <Size y="16"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" x="16" y="0"/>
+            <Anchor point="TOPRIGHT" x="-16" y="0"/>
+        </Anchors>
+        <TexCoords left="0.25" right="0.75" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipBackground13Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Background-Dark.tga">
+        <Size x="16" y="16"/>
+        <Anchors>
+            <Anchor point="TOPRIGHT" x="0" y="0"/>
+        </Anchors>
+        <TexCoords left="0.75" right="1" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipBackground21Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Background-Dark.tga">
+        <Size x="16"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" x="0" y="-16"/>
+            <Anchor point="BOTTOMLEFT" x="0" y="16"/>
+        </Anchors>
+        <TexCoords left="0" right="0.25" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipBackground22Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Fill-Dark.tga" hWrapMode="REPEAT" vWrapMode="REPEAT" horizTile="true" vertTile="true">
+        <Anchors>
+            <Anchor point="TOPLEFT" x="16" y="-16"/>
+            <Anchor point="BOTTOMRIGHT" x="-16" y="16"/>
+        </Anchors>
+        <TexCoords left="0.25" right="0.75" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipBackground23Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Background-Dark.tga">
+        <Size x="16"/>
+        <Anchors>
+            <Anchor point="TOPRIGHT" x="0" y="-16"/>
+            <Anchor point="BOTTOMRIGHT" x="0" y="16"/>
+        </Anchors>
+        <TexCoords left="0.75" right="1" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipBackground31Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Background-Dark.tga">
+        <Size x="16" y="16"/>
+        <Anchors>
+            <Anchor point="BOTTOMLEFT" x="0" y="0"/>
+        </Anchors>
+        <TexCoords left="0" right="0.25" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipBackground32Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Background-Dark.tga">
+        <Size y="16"/>
+        <Anchors>
+            <Anchor point="BOTTOMLEFT" x="16" y="0"/>
+            <Anchor point="BOTTOMRIGHT" x="-16" y="0"/>
+        </Anchors>
+        <TexCoords left="0.25" right="0.75" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipBackground33Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Background-Dark.tga">
+        <Size x="16" y="16"/>
+        <Anchors>
+            <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+        </Anchors>
+        <TexCoords left="0.75" right="1" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipRim11Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Rim-Dark.tga">
+        <Size x="16" y="16"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" x="0" y="0"/>
+        </Anchors>
+        <TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipRim12Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Rim-Dark.tga">
+        <Size y="16"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" x="16" y="0"/>
+            <Anchor point="TOPRIGHT" x="-16" y="0"/>
+        </Anchors>
+        <TexCoords left="0.25" right="0.75" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipRim13Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Rim-Dark.tga">
+        <Size x="16" y="16"/>
+        <Anchors>
+            <Anchor point="TOPRIGHT" x="0" y="0"/>
+        </Anchors>
+        <TexCoords left="0.75" right="1" top="0" bottom="0.25"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipRim21Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Rim-Dark.tga">
+        <Size x="16"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" x="0" y="-16"/>
+            <Anchor point="BOTTOMLEFT" x="0" y="16"/>
+        </Anchors>
+        <TexCoords left="0" right="0.25" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipRim23Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Rim-Dark.tga">
+        <Size x="16"/>
+        <Anchors>
+            <Anchor point="TOPRIGHT" x="0" y="-16"/>
+            <Anchor point="BOTTOMRIGHT" x="0" y="16"/>
+        </Anchors>
+        <TexCoords left="0.75" right="1" top="0.25" bottom="0.75"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipRim31Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Rim-Dark.tga">
+        <Size x="16" y="16"/>
+        <Anchors>
+            <Anchor point="BOTTOMLEFT" x="0" y="0"/>
+        </Anchors>
+        <TexCoords left="0" right="0.25" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipRim32Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Rim-Dark.tga">
+        <Size y="16"/>
+        <Anchors>
+            <Anchor point="BOTTOMLEFT" x="16" y="0"/>
+            <Anchor point="BOTTOMRIGHT" x="-16" y="0"/>
+        </Anchors>
+        <TexCoords left="0.25" right="0.75" top="0.75" bottom="1"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipRim33Template" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Panels\Tooltip-Rim-Dark.tga">
+        <Size x="16" y="16"/>
+        <Anchors>
+            <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+        </Anchors>
+        <TexCoords left="0.75" right="1" top="0.75" bottom="1"/>
+    </Texture>
+    <FontString name="FFXIV_TooltipTypeTemplate" virtual="true" inherits="GameFontNormal" justifyH="LEFT">
+        <Size x="200"/>
+    </FontString>
+    <FontString name="FFXIV_TooltipCountTemplate" virtual="true" inherits="GameFontNormal" justifyH="RIGHT">
+        <Size x="120"/>
+    </FontString>
+    <FontString name="FFXIV_TooltipHeadingTemplate" virtual="true" inherits="GameFontNormal" justifyH="LEFT">
+        <Size x="248"/>
+    </FontString>
+    <FontString name="FFXIV_TooltipValueTemplate" virtual="true" inherits="GameFontNormalLarge" justifyH="LEFT">
+        <Size x="248"/>
+    </FontString>
+    <FontString name="FFXIV_TooltipDescriptionTemplate" virtual="true" inherits="GameFontNormal" justifyH="LEFT">
+        <Size x="248"/>
+    </FontString>
+    <FontString name="FFXIV_TooltipFooterTemplate" virtual="true" inherits="GameFontNormalSmall" justifyH="LEFT">
+        <Size x="248"/>
+    </FontString>
+    <Texture name="FFXIV_TooltipIconTemplate" virtual="true">
+        <Size x="32" y="32"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" x="16" y="-10"/>
+        </Anchors>
+    </Texture>
+    <Texture name="FFXIV_TooltipBandTemplate" virtual="true" setAllPoints="false">
+        <Color r="0" g="0" b="0" a="0.35"/>
+    </Texture>
+    <Texture name="FFXIV_TooltipDividerTemplate" virtual="true" setAllPoints="false">
+        <Color r="0" g="0" b="0" a="0.85"/>
+    </Texture>
+    <FontString name="FFXIV_TooltipTitleTemplate" virtual="true" inherits="GameFontNormalLarge" justifyH="LEFT">
+        <Size x="248"/>
+    </FontString>
+    <FontString name="FFXIV_TooltipStatLabelTemplate" virtual="true" inherits="GameFontNormalSmall" justifyH="LEFT">
+        <Size x="116"/>
+    </FontString>
+    <FontString name="FFXIV_TooltipStatValueTemplate" virtual="true" inherits="GameFontNormal" justifyH="LEFT">
+        <Size x="116"/>
+    </FontString>
+    <FontString name="FFXIV_TooltipMoneyTemplate" virtual="true" inherits="GameFontNormal" justifyH="LEFT">
+        <Size x="248"/>
+    </FontString>
+    <Frame name="FFXIV_TooltipRowTemplate" virtual="true" hidden="true">
+        <Size x="248" y="16"/>
+    </Frame>
+</Ui>

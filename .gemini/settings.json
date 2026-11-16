@@ -1,0 +1,19 @@
+{
+  "experimental": {
+    "skills": true
+  },
+  "agents": {
+    "overrides": {
+      "ai-builder": {
+        "enabled": false
+      }
+    }
+  },
+  "mcpServers": {
+    "wow-addon-mcp": {
+      "command": "python",
+      "args": ["-m", "wow_addon_mcp.server"],
+      "cwd": "F:\\Projects\\WowAddons\\Addon_Data_MCP"
+    }
+  }
+}

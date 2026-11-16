@@ -1,0 +1,104 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+                        https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+    <Frame name="FFTargetFrame" parent="UIParent" frameStrata="MEDIUM">
+        <Size x="669.5" y="669.5"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="bg" file="Interface\AddOns\FFXIV_UI\Media\Textures\TargetFrame\Background">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="4"/>
+                        <Anchor point="BOTTOMRIGHT" x="-3" y="-5"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <StatusBar parentKey="bar">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="0" y="0"/>
+                    <Anchor point="BOTTOMRIGHT" x="0" y="-5"/>
+                </Anchors>
+                <BarTexture file="Interface\AddOns\FFXIV_UI\Media\Textures\TargetFrame\Health"/>
+            </StatusBar>
+            <Frame parentKey="outlineFrame" frameStrata="MEDIUM">
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY" textureSubLevel="0">
+                        <Texture parentKey="classificationIcon" file="Interface\AddOns\FFXIV_UI\Media\Textures\TargetFrame\Normal-Icon" hidden="true">
+                            <Size x="28.84" y="28.84"/>
+                            <Anchors>
+                                <Anchor point="LEFT" x="5.15" y="20.6"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture parentKey="raidIcon" file="Interface\TargetingFrame\UI-RaidTargetingIcons" hidden="true">
+                            <Size x="28.84" y="28.84"/>
+                        </Texture>
+                    </Layer>
+                    <Layer level="OVERLAY" textureSubLevel="3">
+                        <Texture parentKey="outline" file="Interface\AddOns\FFXIV_UI\Media\Textures\TargetFrame\Frame6" setAllPoints="true"/>
+                    </Layer>
+                    <Layer level="OVERLAY" textureSubLevel="7">
+                        <FontString parentKey="LLabel" text="L" font="Interface\AddOns\FFXIV_UI\Media\Fonts\MavenPro-Bold.ttf" justifyH="LEFT">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.classificationIcon" relativePoint="RIGHT" x="4.12" y="0"/>
+                            </Anchors>
+                            <FontHeight val="18.54"/>
+                            <Shadow>
+                                <Offset x="1" y="-1"/>
+                            </Shadow>
+                        </FontString>
+                        <FontString parentKey="vLabel" text="v" font="Interface\AddOns\FFXIV_UI\Media\Fonts\MavenPro-Bold.ttf" justifyH="LEFT">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.LLabel" x="8.24" y="0"/>
+                            </Anchors>
+                            <FontHeight val="18.54"/>
+                            <Shadow>
+                                <Offset x="1" y="-1"/>
+                            </Shadow>
+                        </FontString>
+                        <FontString parentKey="levelText" font="Interface\AddOns\FFXIV_UI\Media\Fonts\EurostileExtendedBlack.ttf" justifyH="RIGHT">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.vLabel" relativePoint="RIGHT" x="4.12" y="-1.03"/>
+                            </Anchors>
+                            <FontHeight val="18.54"/>
+                            <Shadow>
+                                <Offset x="1" y="-1"/>
+                            </Shadow>
+                        </FontString>
+                        <FontString parentKey="nameText" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf" justifyH="LEFT">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.levelText" relativePoint="RIGHT" x="5.15" y="2.06"/>
+                            </Anchors>
+                            <FontHeight val="20.6"/>
+                            <Shadow>
+                                <Offset x="1" y="-1"/>
+                            </Shadow>
+                        </FontString>
+                        <FontString parentKey="hpPercentText" font="Interface\AddOns\FFXIV_UI\Media\Fonts\AxisMedium.ttf" justifyH="RIGHT">
+                            <Anchors>
+                                <Anchor point="RIGHT" x="-5.15" y="16.48"/>
+                            </Anchors>
+                            <FontHeight val="16.48"/>
+                            <Shadow>
+                                <Offset x="1" y="-1"/>
+                            </Shadow>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Button parentKey="clickFrame" name="FFXIV_TargetClick" inherits="SecureUnitButtonTemplate" frameStrata="MEDIUM">
+                        <Size x="669.5" y="30.9"/>
+                        <Anchors>
+                            <Anchor point="CENTER" x="0" y="5.15"/>
+                        </Anchors>
+                    </Button>
+                </Frames>
+            </Frame>
+        </Frames>
+    </Frame>
+</Ui>

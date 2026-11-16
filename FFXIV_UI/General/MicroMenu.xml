@@ -1,0 +1,22 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Texture name="FFXIV_MicroMenuIconTemplate" virtual="true">
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+    </Texture>
+    <Texture name="FFXIV_MicroMenuCharacterIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Character.tga"/>
+    <Texture name="FFXIV_MicroMenuCraftingLogIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\CraftingLog.tga"/>
+    <Texture name="FFXIV_MicroMenuActionsIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Actions.tga"/>
+    <Texture name="FFXIV_MicroMenuTalentsIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Talents.tga"/>
+    <Texture name="FFXIV_MicroMenuLegacyIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Legacy.tga"/>
+    <Texture name="FFXIV_MicroMenuAchievementsIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Achievements.tga"/>
+    <Texture name="FFXIV_MicroMenuJournalIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Journal.tga"/>
+    <Texture name="FFXIV_MicroMenuFreeCompanyIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\FreeCompany.tga"/>
+    <Texture name="FFXIV_MicroMenuDutyFinderIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\DutyFinder.tga"/>
+    <Texture name="FFXIV_MicroMenuCollectionIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Collection.tga"/>
+    <Texture name="FFXIV_MicroMenuAdventureGuideIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\AdventureGuide.tga"/>
+    <Texture name="FFXIV_MicroMenuHousingIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Housing.tga"/>
+    <Texture name="FFXIV_MicroMenuShopIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\Shop.tga"/>
+    <Texture name="FFXIV_MicroMenuGameMenuIconTemplate" virtual="true" inherits="FFXIV_MicroMenuIconTemplate" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\GameMenu.tga"/>
+    <Texture name="FFXIV_MicroMenuRingTemplate" virtual="true" file="Interface\AddOns\FFXIV_UI\Media\Textures\Menu\GoldRing.tga"/>
+</Ui>
