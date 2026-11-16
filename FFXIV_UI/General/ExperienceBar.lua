@@ -39,14 +39,16 @@ local CLASS_ABBR = {
     EVOKER      = "EV0",
 }
 
+-- Alpha instead of Hide/UnregisterAllEvents: those run Blizzard's OnHide and event
+-- handlers from addon code, tainting the EditMode/ObjectiveTracker layout on level up.
 local function HideDefaultXPBar()
     if MainMenuExpBar then
-        MainMenuExpBar:UnregisterAllEvents()
-        MainMenuExpBar:Hide()
+        MainMenuExpBar:SetAlpha(0)
+        MainMenuExpBar:EnableMouse(false)
     end
     if StatusTrackingBarManager then
-        StatusTrackingBarManager:UnregisterAllEvents()
-        StatusTrackingBarManager:Hide()
+        StatusTrackingBarManager:SetAlpha(0)
+        StatusTrackingBarManager:EnableMouse(false)
     end
 end
 

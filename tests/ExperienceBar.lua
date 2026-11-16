@@ -3,9 +3,11 @@ local function widget()
     return setmetatable({scripts = {}, events = {}, shown = true, level = 10}, {__index = methods})
 end
 for _, name in ipairs({
-    "SetAllPoints", "SetTexture", "EnableMouse", "SetSize", "SetFont",
-    "SetShadowOffset", "SetShadowColor", "ClearAllPoints", "SetAlpha",
+    "SetAllPoints", "SetTexture", "SetSize", "SetFont",
+    "SetShadowOffset", "SetShadowColor", "ClearAllPoints",
 }) do methods[name] = function() end end
+function methods:SetAlpha(alpha) self.alpha = alpha end
+function methods:EnableMouse(enabled) self.mouseEnabled = enabled end
 function methods:GetFrameLevel() return self.level end
 function methods:SetFrameLevel(level) self.level = level end
 function methods:SetParent(parent) self.parent = parent end
@@ -103,8 +105,9 @@ assert(f.point[1] == "CENTER" and f.point[2] == FFXIV_UI_Anchors.ExpBar, "bar mu
 assert(f.outlineFrame.level == 15, "outline frame must sit 5 levels above the bar")
 assert(f.xpBar.texture.drawLayer[1] == "ARTWORK" and f.xpBar.texture.drawLayer[2] == 0, "XP fill draw layer")
 assert(f.restedBar.texture.drawLayer[2] == -1, "rested fill draw layer")
-assert(MainMenuExpBar.unregistered and not MainMenuExpBar.shown, "Blizzard XP bar must be disabled")
-assert(StatusTrackingBarManager.unregistered and not StatusTrackingBarManager.shown, "Blizzard tracking bars must be disabled")
+assert(MainMenuExpBar.alpha == 0 and MainMenuExpBar.mouseEnabled == false, "Blizzard XP bar must be transparent and click-through")
+assert(StatusTrackingBarManager.alpha == 0 and StatusTrackingBarManager.mouseEnabled == false, "Blizzard tracking bars must be transparent and click-through")
+assert(not MainMenuExpBar.unregistered and not StatusTrackingBarManager.unregistered, "Blizzard events must not be unregistered from addon code")
 
 local events = table.concat(f.events, ",")
 assert(events == "PLAYER_ENTERING_WORLD,PLAYER_XP_UPDATE,PLAYER_LEVEL_UP,PLAYER_UPDATE_RESTING,ZONE_CHANGED,ZONE_CHANGED_NEW_AREA", "events: " .. events)
