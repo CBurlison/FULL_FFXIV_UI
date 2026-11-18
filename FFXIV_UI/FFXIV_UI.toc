@@ -41,6 +41,7 @@ General/Currency.lua
 General/Statistics.lua
 General/Inventory.xml
 General/Inventory.lua
+General/Bank.lua
 General/Chat.xml
 General/Chat.lua
 General/MicroMenu.xml

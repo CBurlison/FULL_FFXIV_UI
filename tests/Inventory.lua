@@ -109,15 +109,29 @@ assert(loadfile("FFXIV_UI\\General\\Tooltips\\Items.lua"))("FFXIV_UI", namespace
 assert(loadfile("FFXIV_UI\\General\\Tooltips\\Spells.lua"))("FFXIV_UI", namespace)
 local skinStates = setmetatable({}, {__mode = "k"})
 local function skinState(button)
-    skinStates[button] = skinStates[button] or {}
     return skinStates[button]
 end
 namespace.GetButtonSkinState = skinState
-local skinCalls = 0
+local secureUpdate, deferredCallbacks = false, {}
+namespace.DeferOutsideSecureUpdate = function(_, _, callback)
+    if secureUpdate then
+        deferredCallbacks[#deferredCallbacks + 1] = callback
+    else
+        callback()
+    end
+end
+local function flushDeferredCallbacks()
+    local callbacks = deferredCallbacks
+    deferredCallbacks = {}
+    for _, callback in ipairs(callbacks) do callback() end
+end
+local skinCalls, deferButtonSkin = 0, false
 namespace.ApplyButtonSkin = function(button, _, style)
     assert(style == "Equipment")
     skinCalls = skinCalls + 1
-    local state = skinState(button)
+    if deferButtonSkin then return end
+    local state = skinStates[button]
+    if not state then state = {}; skinStates[button] = state end
     state.backdrop = state.backdrop or button:CreateTexture()
     state.normal = state.normal or button:CreateTexture()
     state.overlay = state.overlay or {Gloss = button:CreateTexture()}
@@ -542,6 +556,26 @@ print("PASS pooled frame reuse, reagent replacement, independent close actions a
 
 assert(namespace.SetInventoryLayout("bags"))
 combat = true
+local firstUnskinned = root.Items[1]
+skinStates[firstUnskinned] = nil
+firstUnskinned.protected = true
+root:UpdateItemLayout()
+assert(skinState(firstUnskinned) == nil, "combat layout update unexpectedly skinned a protected item")
+firstUnskinned.protected = false
+deferButtonSkin = true
+local originalPoints, calls = firstUnskinned.points, skinCalls
+secureUpdate = true
+root:UpdateItems()
+root:UpdateItemLayout()
+secureUpdate = false
+assert(skinCalls == calls and firstUnskinned.points == originalPoints,
+    "inventory post-hooks mutated items inside a secure update")
+flushDeferredCallbacks()
+assert(skinCalls > calls and firstUnskinned.points ~= originalPoints,
+    "inventory styling and layout did not resume outside the secure update")
+assert(skinState(firstUnskinned) == nil, "deferred combat skin unexpectedly created button state")
+deferButtonSkin = false
+root:UpdateItems()
 -- Unprotected native bags opened in combat must get the addon grid, not Blizzard's default layout.
 local combatFrame = container(false)
 pool[#pool + 1] = combatFrame

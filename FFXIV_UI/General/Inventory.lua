@@ -218,7 +218,7 @@ local function UpdateItemVisibility(button)
     -- Forever draws the desaturated bag icon in empty slots; keep them as plain themed wells.
     if button.EmptyBagIcon then button.EmptyBagIcon:Hide() end
     local state = addonEnv.GetButtonSkinState(button)
-    if state.overlay then state.overlay.Gloss:SetShown(occupied) end
+    if state and state.overlay then state.overlay.Gloss:SetShown(occupied) end
 end
 
 local function StyleItems(frame)
@@ -229,8 +229,10 @@ local function StyleItems(frame)
             addonEnv.ApplyButtonSkin(button, nil, "Equipment")
             if button.ItemSlotBackground then button.ItemSlotBackground:SetAlpha(0) end
             local state = addonEnv.GetButtonSkinState(button)
-            Color(state.backdrop, "SetVertexColor", "inset")
-            Color(state.normal, "SetVertexColor", "border")
+            if state then
+                Color(state.backdrop, "SetVertexColor", "inset")
+                Color(state.normal, "SetVertexColor", "border")
+            end
         end
         UpdateItemVisibility(button)
     end
@@ -371,6 +373,12 @@ local function UpdateTitle(frame)
     FrameArt(frame).title:SetText(title)
 end
 
+local function DeferInventoryWork(frame, tag, callback)
+    addonEnv.DeferOutsideSecureUpdate(frame, "inventory:" .. tag, function()
+        callback(frame)
+    end)
+end
+
 Refresh = function()
     if not installed or refreshing then return end
     if InCombatLockdown() then pending = true; return end
@@ -401,18 +409,36 @@ local function SkinContainer(frame)
 
     -- Sizing runs after Blizzard's own UpdateFrameSize rather than overriding its CalculateWidth/CalculateHeight.
     hooksecurefunc(frame, "UpdateFrameSize", function(self)
-        local _, height = BagLayout(self)
-        self:SetSize(FrameWidth(self), GridTop(self) + height + (self.MoneyFrame and 58 or 38) + ExtraHeight(self))
+        DeferInventoryWork(self, "frame-size", function(container)
+            local _, height = BagLayout(container)
+            container:SetSize(FrameWidth(container), GridTop(container) + height
+                + (container.MoneyFrame and 58 or 38) + ExtraHeight(container))
+        end)
     end)
     -- Keep mutations out of Blizzard's post-hook call chain, but finish before the next render.
     hooksecurefunc(frame, "UpdateItemLayout", function(self)
-        LayoutItems(self)
-        for _, button in ipairs(self.Items or {}) do UpdateItemVisibility(button) end
+        DeferInventoryWork(self, "item-layout", function(container)
+            LayoutItems(container)
+            for _, button in ipairs(container.Items or {}) do UpdateItemVisibility(button) end
+        end)
     end)
-    hooksecurefunc(frame, "UpdateItems", function(self) StyleItems(self); UpdateCount(self) end)
-    hooksecurefunc(frame, "UpdateSearchBox", LayoutControls)
-    hooksecurefunc(frame, "UpdateName", UpdateTitle)
-    if frame.UpdateCurrencyFrames then hooksecurefunc(frame, "UpdateCurrencyFrames", LayoutControls) end
+    hooksecurefunc(frame, "UpdateItems", function(self)
+        DeferInventoryWork(self, "items", function(container)
+            StyleItems(container)
+            UpdateCount(container)
+        end)
+    end)
+    hooksecurefunc(frame, "UpdateSearchBox", function(self)
+        DeferInventoryWork(self, "controls", LayoutControls)
+    end)
+    hooksecurefunc(frame, "UpdateName", function(self)
+        DeferInventoryWork(self, "title", UpdateTitle)
+    end)
+    if frame.UpdateCurrencyFrames then
+        hooksecurefunc(frame, "UpdateCurrencyFrames", function(self)
+            DeferInventoryWork(self, "controls", LayoutControls)
+        end)
+    end
 
     HideTextures(frame)
     for _, key in ipairs({"NineSlice", "PortraitContainer", "TitleContainer"}) do
@@ -485,16 +511,18 @@ local function Install()
     if InCombatLockdown() then pending = true; return end
     installed = true
     InstallContainers()
-    hooksecurefunc("ContainerFrame_GenerateFrame", function(container, _, id)
-        if containers[container] or not IsCarriedBag(id) then return end
-        if Locked(container) then pending = true; return end
-        SkinContainer(container)
-        container:UpdateFrameSize()
-        LayoutItems(container)
-        for _, button in ipairs(container.Items or {}) do UpdateItemVisibility(button) end
-        UpdateTitle(container)
-        LayoutControls(container)
-        UpdateContainerFrameAnchors()
+    hooksecurefunc("ContainerFrame_GenerateFrame", function(container)
+        DeferInventoryWork(container, "generate-frame", function(frame)
+            if containers[frame] or not IsCarriedBag(frame:GetBagID()) then return end
+            if Locked(frame) then pending = true; return end
+            SkinContainer(frame)
+            frame:UpdateFrameSize()
+            LayoutItems(frame)
+            for _, button in ipairs(frame.Items or {}) do UpdateItemVisibility(button) end
+            UpdateTitle(frame)
+            LayoutControls(frame)
+            UpdateContainerFrameAnchors()
+        end)
     end)
     HideTextures(BagItemSearchBox)
     local searchPanel = Panel(BagItemSearchBox, "inset")

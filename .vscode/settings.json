@@ -102,6 +102,25 @@
         "PetJournalSummonButton",
         "QuestObjectiveTracker",
         "CampaignQuestObjectiveTracker",
-        "PetJournal_ShowPetCard"
+        "PetJournal_ShowPetCard",
+        "BankPanelMixin",
+        "BankPanelTabMixin",
+        "BankFrameMixin",
+        "BankFrame",
+        "UpdateUIPanelPositions",
+        "BankFrame_Open",
+        "BagItemSearchBox",
+        "BagItemAutoSortButton",
+        "UpdateContainerFrameAnchors",
+        "ContainerFrameCombinedBags",
+        "ContainerFrameSettingsManager",
+        "ITEMS",
+        "NUM_TOTAL_BAG_FRAMES",
+        "ContainerFrame_GenerateFrame",
+        "INVENTORY_TOOLTIP",
+        "BAG_NAME_BACKPACK",
+        "KEYRING",
+        "ContainerFrameContainer",
+        "ContainerFrame_GetContainerNumSlots"
     ]
 }
