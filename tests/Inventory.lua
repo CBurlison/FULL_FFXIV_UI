@@ -349,8 +349,10 @@ assert(manager.IsUsingCombinedBags == routing and root.MatchesBagID == matching
 local function same(actual, expected)
     for i = 1, #expected do assert(actual[i] == expected[i], "theme color differs") end
 end
+local function artOf(frame) return namespace.InventoryFrameArt[frame] end
+local function headersOf(frame) return (artOf(frame) or {bagHeaders = {}}).bagHeaders end
 local function checkFrame(frame, count, title)
-    assert(frame.FFXIVUICount.text == count and frame.FFXIVUITitle.text == title)
+    assert(artOf(frame).count.text == count and artOf(frame).title.text == title)
     assert(frame.nativeArt.alpha == 0 and frame.NineSlice.alpha == 0 and frame.TitleContainer.alpha == 0)
     assert(frame.CloseButton.FFXIVUICloseIcon.texture == "Interface\\AddOns\\FFXIV_UI\\Media\\Textures\\Panels\\Close.tga")
     assert(frame.PortraitButton.scripts.OnClick() == "native bag menu")
@@ -377,7 +379,10 @@ end
 checkFrame(backpack, "2/16", "Bag 0")
 checkFrame(reagent, "2/6", "Bag 5")
 assert(backpack.width == 244 and backpack.height == 335 and reagent.width == 244 and reagent.height == 197)
-assert(reagent:GetColumns() == 5 and next(reagent.FFXIVUIBagHeaders) == nil)
+assert(backpack.CalculateWidth == native.CalculateWidth and backpack.CalculateHeight == native.CalculateHeight
+    and backpack.GetColumns == native.GetColumns, "addon replaced Blizzard sizing methods on the container")
+assert(backpack.FFXIVUICount == nil and reagent.FFXIVUIBagHeaders == nil, "addon wrote fields onto Blizzard frames")
+assert(next(headersOf(reagent)) == nil)
 assert(BagItemSearchBox:GetParent() == backpack and BagItemSearchBox.width == 166)
 assert(reagent.Items[1].points[1][5] == -119 and reagent.Items[#reagent.Items].points[1][5] == -76)
 print("PASS themed separate backpack/reagent windows, exact dimensions, native controls and hidden redundant headings")
@@ -387,12 +392,12 @@ manager:OnCombinedBagSettingChanged(true)
 checkFrame(root, "3/34", "Inventory"); checkFrame(reagent, "2/6", "Bag 5")
 assert(root.shown and reagent.shown and not backpack.shown)
 assert(root.width == 472 and root.height == 462 and root.size == 38 and #root.Items == 38)
-assert(root.FFXIVUIBagHeaders[5] == nil and not root:MatchesBagID(5) and not manager:IsUsingCombinedBags(5))
+assert(headersOf(root)[5] == nil and not root:MatchesBagID(5) and not manager:IsUsingCombinedBags(5))
 assert(BagItemSearchBox:GetParent() == root and BagItemSearchBox.width == 394)
 local byLocation = {}
 for _, button in ipairs(root.Items) do
     byLocation[button.bag .. ":" .. button.slot] = button
-    local header = root.FFXIVUIBagHeaders[button.bag]
+    local header = headersOf(root)[button.bag]
     assert(header.shown and header.Title.text == (button.bag == 0 and "Backpack" or "Bag " .. button.bag))
     assert(button.points[1][4] == header.points[1][4] + 4 + (button.slot - 1) % 5 * 43)
     assert(button.points[1][5] == header.points[1][5] - 24 - math.floor((button.slot - 1) / 5) * 43)
@@ -403,13 +408,13 @@ ToggleAllBags(); assert(root.shown and reagent.shown)
 OpenBag(-2)
 local keyring = assert(shownBag(-2))
 checkFrame(keyring, "1/9", "Keyring")
-assert(keyring ~= root and keyring.width == 244 and keyring.height == 197 and next(keyring.FFXIVUIBagHeaders) == nil)
+assert(keyring ~= root and keyring.width == 244 and keyring.height == 197 and next(headersOf(keyring)) == nil)
 assert(not manager:IsUsingCombinedBags(-2) and not root:MatchesBagID(-2))
 ToggleAllBags(); assert(not IsAnyBagOpen(), "open-all toggle did not close the keyring")
 ToggleAllBags(); OpenBag(-2)
 print("PASS combined bags exclude reagent/keyring, retain per-bag headings, and open-all closes every window")
 
-local shell = root.FFXIVUICount:GetParent()
+local shell = artOf(root).count:GetParent()
 local rounded = {}
 for _, region in ipairs(shell.regions) do
     if region ~= shell.FFXIVUIGrain and region.texture and region.texture:find("\\Panels\\", 1, true) then
@@ -442,9 +447,9 @@ for _, name in ipairs(namespace.Themes.GetNames()) do
     assert(namespace.Themes.Set(name))
     local palette = namespace.Themes.GetPalette()
     for _, frame in ipairs({root, backpack, reagent, keyring}) do
-        same(frame.FFXIVUICount:GetParent().color, palette.surface)
-        same(frame.FFXIVUICount.color, palette.accent)
-        same(frame.FFXIVUITitle.color, palette.text)
+        same(artOf(frame).count:GetParent().color, palette.surface)
+        same(artOf(frame).count.color, palette.accent)
+        same(artOf(frame).title.color, palette.text)
         for _, button in ipairs(frame.Items) do
             same(skinState(button).backdrop.color, palette.inset)
             same(skinState(button).normal.color, palette.border)
@@ -482,7 +487,7 @@ assert(root.height == 464 and root.width == 472)
 for _, button in ipairs(root.Items) do
     assert(type(button.points[1][4]) == "number" and type(button.points[1][5]) == "number")
 end
-for _, header in pairs(root.FFXIVUIBagHeaders) do assert(not header.shown) end
+for _, header in pairs(headersOf(root)) do assert(not header.shown) end
 checkFrame(reagent, "2/6", "Bag 5"); checkFrame(keyring, "1/9", "Keyring")
 assert(namespace.SetInventoryLayout("bags") and root.height == 462)
 manager:OnCombinedBagSettingChanged(false)
@@ -490,7 +495,7 @@ assert(not root.shown and backpack.shown and reagent.shown and shownBag(-2))
 for bag = 0, 5 do
     if sizes[bag] > 0 then
         local frame = assert(shownBag(bag))
-        assert(frame.width == 244 and next(frame.FFXIVUIBagHeaders) == nil,
+        assert(frame.width == 244 and next(headersOf(frame)) == nil,
             "individual bag retained a redundant section label")
     end
 end
@@ -511,12 +516,12 @@ print("PASS layout selector and native Combine Bags work independently; separate
 local reused = assert(shownBag(2))
 reused:Hide()
 local reusedTitle, reusedShell, children =
-    reused.FFXIVUITitle, reused.FFXIVUICount:GetParent(), #reused.children - #reused.pool
+    artOf(reused).title, artOf(reused).count:GetParent(), #reused.children - #reused.pool
 ContainerFrame_GenerateFrame(reused, sizes[-2], -2)
 checkFrame(reused, "1/9", "Keyring")
 reused:Hide(); ContainerFrame_GenerateFrame(reused, sizes[2], 2)
 checkFrame(reused, "0/6", "Bag 2")
-assert(reused.FFXIVUITitle == reusedTitle and reused.FFXIVUICount:GetParent() == reusedShell
+assert(artOf(reused).title == reusedTitle and artOf(reused).count:GetParent() == reusedShell
     and #reused.children - #reused.pool == children, "native frame reuse duplicated themed artwork")
 local late = container(false)
 pool[#pool + 1] = late
@@ -525,14 +530,14 @@ checkFrame(late, "1/9", "Keyring")
 late:Hide()
 sizes[5], free[5] = 12, 10
 event("BAG_CONTAINER_UPDATE")
-assert(reagent.size == 12 and #reagent.Items == 12 and reagent.height == 240 and reagent.FFXIVUICount.text == "2/12")
+assert(reagent.size == 12 and #reagent.Items == 12 and reagent.height == 240 and artOf(reagent).count.text == "2/12")
 reagent.CloseButton.scripts.OnClick(); assert(not reagent.shown and backpack.shown)
 OpenBag(5); assert(reagent.shown and not root.shown)
 manager:OnCombinedBagSettingChanged(true)
 assert(root.shown and reagent.shown and not backpack.shown)
 root.tracker = object(); root.tracker.height = 20
 root:UpdateFrameSize(); root:UpdateCurrencyFrames()
-assert(root.height == 484 and root.FFXIVUICount.points[1][1] == "TOPRIGHT" and root.FFXIVUICount.points[1][4] == -40 and root.FFXIVUICount.points[1][5] == -43, "count must sit on the Items line, right-aligned")
+assert(root.height == 484 and artOf(root).count.points[1][1] == "TOPRIGHT" and artOf(root).count.points[1][4] == -40 and artOf(root).count.points[1][5] == -43, "count must sit on the Items line, right-aligned")
 print("PASS pooled frame reuse, reagent replacement, independent close actions and watched-currency space")
 
 assert(namespace.SetInventoryLayout("bags"))
@@ -548,7 +553,7 @@ combatFrame:Hide()
 for _, button in ipairs(root.Items) do button.points = {{"BOTTOMRIGHT", root, "BOTTOMRIGHT", 0, 0}} end
 BagItemSearchBox:ClearAllPoints(); BagItemSearchBox:SetPoint("TOPLEFT", root, "TOPLEFT", 42, -37)
 root:UpdateItemLayout(); root:UpdateSearchBox()
-checkFrame(root, root.FFXIVUICount.text, "Inventory")
+checkFrame(root, artOf(root).count.text, "Inventory")
 assert(BagItemSearchBox.points[1][4] == 22 and BagItemSearchBox.points[1][5] == -73,
     "search box kept the native combat position")
 local calls, oldHeight = skinCalls, root.height
@@ -556,13 +561,13 @@ local lockedFrame = container(false)
 lockedFrame.protected = true
 pool[#pool + 1] = lockedFrame
 ContainerFrame_GenerateFrame(lockedFrame, sizes[-2], -2)
-assert(lockedFrame.FFXIVUITitle == nil, "protected frame artwork/geometry changed in combat")
+assert(artOf(lockedFrame) == nil, "protected frame artwork/geometry changed in combat")
 sizes[1], free[1] = 30, 29
 event("BAG_CONTAINER_UPDATE")
 assert(namespace.SetInventoryLayout("bags"))
 assert(root.height == oldHeight and skinCalls == calls, "protected geometry changed during combat")
 namespace.Themes.Set("Clear Pink")
-same(reagent.FFXIVUICount:GetParent().color, namespace.Themes.GetPalette().surface)
+same(artOf(reagent).count:GetParent().color, namespace.Themes.GetPalette().surface)
 local empty = byLocation["0:3"]
 -- Rebuilds can reuse a different button for the same slot.
 for _, button in ipairs(root.Items) do if button.bag == 0 and button.slot == 3 then empty = button end end
@@ -573,7 +578,7 @@ assert(not empty.icon.shown and not skinState(empty).overlay.Gloss.shown)
 assert(skinState(empty).backdrop.width == 40 * 58 * 0.92 / 56
     and skinState(empty).normal.width == 40 * 58 * 0.92 / 52)
 free[0] = 13; event("BAG_UPDATE_DELAYED")
-assert(root.FFXIVUICount.text == "4/56" and reagent.FFXIVUICount.text == "2/12")
+assert(artOf(root).count.text == "4/56" and artOf(reagent).count.text == "2/12")
 combat = false; lockedFrame.protected = false; event("PLAYER_REGEN_ENABLED")
 assert(skinCalls > calls and root.height == 568 and #root.Items == 60)
 checkFrame(lockedFrame, "1/9", "Keyring")
@@ -583,8 +588,8 @@ CloseAllBags(); manager:OnCombinedBagSettingChanged(false); gamepad = true
 ToggleAllBags()
 assert(root.shown and reagent.shown and not backpack.shown, "native controller combined mode was overridden")
 ToggleAllBags(); assert(not IsAnyBagOpen())
-assert(root.FFXIVUITitle.justify == "LEFT", "Inventory title must be left-aligned")
-assert(root.FFXIVUITitle.font[2] == 18 and root.FFXIVUICount.font[2] == 14, "title and count sizes changed")
+assert(artOf(root).title.justify == "LEFT", "Inventory title must be left-aligned")
+assert(artOf(root).title.font[2] == 18 and artOf(root).count.font[2] == 14, "title and count sizes changed")
 assert(root.PortraitButton.width == 24 and root.PortraitButton.height == 24, "options button must be a 24px gear")
 local tokenButton = object()
 tokenButton.Border = object()

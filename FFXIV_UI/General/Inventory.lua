@@ -10,6 +10,18 @@ local Themes = addonEnv.Themes
 local installed, pending, refreshing = false, false, false
 local bindings = {}
 local containers = {}
+-- Addon-owned art per native container; Blizzard frame tables stay untouched so their secure reads are not tainted.
+local frameArt = setmetatable({}, {__mode = "k"})
+local function FrameArt(frame)
+    local art = frameArt[frame]
+    if not art then
+        art = {bagHeaders = {}}
+        frameArt[frame] = art
+    end
+    return art
+end
+-- Exposed so the test harness can inspect per-container art.
+addonEnv.InventoryFrameArt = frameArt
 local watcher = CreateFrame("Frame")
 local Refresh
 local layoutNames = {unified = "Unified grid", bags = "Per-bag grids"}
@@ -196,7 +208,7 @@ local function UpdateCount(frame)
             free = free + C_Container.GetContainerNumFreeSlots(bag)
         end
     end
-    frame.FFXIVUICount:SetText((total - free) .. "/" .. total)
+    FrameArt(frame).count:SetText((total - free) .. "/" .. total)
 end
 
 local function UpdateItemVisibility(button)
@@ -233,11 +245,11 @@ local function LayoutItems(frame)
     local headings = combined and not unified
     local maxX = GetMaxXGrids()
 
-    frame.FFXIVUIBagHeaders = frame.FFXIVUIBagHeaders or {}
-    for bag, header in pairs(frame.FFXIVUIBagHeaders) do header:SetShown(headings and layout[bag] ~= nil) end
+    local bagHeaders = FrameArt(frame).bagHeaders
+    for bag, header in pairs(bagHeaders) do header:SetShown(headings and layout[bag] ~= nil) end
     for bag, grid in pairs(layout) do
         if headings and bag ~= "unified" and bag ~= "rowOffsets" and bag ~= "rowHeights" and bag ~= "bagOffsets" and type(bag) == "number" then
-            local header = frame.FFXIVUIBagHeaders[bag]
+            local header = bagHeaders[bag]
             if not header then
                 header = CreateFrame("Frame", nil, frame)
                 header:EnableMouse(false)
@@ -245,7 +257,7 @@ local function LayoutItems(frame)
                 header.Title:SetPoint("TOPLEFT", header, "TOPLEFT", 5, -3)
                 header.Title:SetPoint("TOPRIGHT", header, "TOPRIGHT", -5, -3)
                 header.Title:SetWordWrap(false)
-                frame.FFXIVUIBagHeaders[bag] = header
+                bagHeaders[bag] = header
             end
             header:ClearAllPoints()
             header:SetPoint("TOPLEFT", frame, "TOPLEFT", grid.x - 4, -grid.top)
@@ -346,8 +358,9 @@ local function LayoutControls(frame)
         sort:ClearAllPoints()
         sort:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -PADDING, -68)
     end
-    frame.FFXIVUICount:ClearAllPoints()
-    frame.FFXIVUICount:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -40, -43)
+    local count = FrameArt(frame).count
+    count:ClearAllPoints()
+    count:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -40, -43)
     UpdateCount(frame)
     StyleTokenTracker(frame)
 end
@@ -355,7 +368,7 @@ end
 local function UpdateTitle(frame)
     local title = IsCombined(frame) and (INVENTORY_TOOLTIP or BAG_NAME_BACKPACK)
         or (frame:GetBagID() == KEYRING_CONTAINER and KEYRING or C_Container.GetBagName(frame:GetBagID()))
-    frame.FFXIVUITitle:SetText(title)
+    FrameArt(frame).title:SetText(title)
 end
 
 Refresh = function()
@@ -386,12 +399,11 @@ local function SkinContainer(frame)
     if Locked(frame) then pending = true; return end
     containers[frame] = true
 
-    function frame:CalculateWidth() return FrameWidth(self) end
-    function frame:GetColumns() return IsCombined(self) and 10 or COLUMNS end
-    function frame:CalculateHeight()
+    -- Sizing runs after Blizzard's own UpdateFrameSize rather than overriding its CalculateWidth/CalculateHeight.
+    hooksecurefunc(frame, "UpdateFrameSize", function(self)
         local _, height = BagLayout(self)
-        return GridTop(self) + height + (self.MoneyFrame and 58 or 38) + ExtraHeight(self)
-    end
+        self:SetSize(FrameWidth(self), GridTop(self) + height + (self.MoneyFrame and 58 or 38) + ExtraHeight(self))
+    end)
     -- Keep mutations out of Blizzard's post-hook call chain, but finish before the next render.
     hooksecurefunc(frame, "UpdateItemLayout", function(self)
         LayoutItems(self)
@@ -412,11 +424,11 @@ local function SkinContainer(frame)
     title:SetPoint("TOPRIGHT", frame, "TOPRIGHT", IsCombined(frame) and -146 or -40, -10)
     title:SetJustifyH("LEFT")
     title:SetWordWrap(false)
-    frame.FFXIVUITitle = title
+    FrameArt(frame).title = title
     Text(shell, 14, "accent", ITEMS, "FFXIV_InventoryItemsTemplate")
     local line = shell:CreateTexture(nil, "OVERLAY", "FFXIV_InventoryDividerTemplate")
     Themes.StyleDivider(line, shell, "OVERLAY")
-    frame.FFXIVUICount = Text(shell, 14, "accent", nil, "FFXIV_InventoryCountTemplate")
+    FrameArt(frame).count = Text(shell, 14, "accent", nil, "FFXIV_InventoryCountTemplate")
     local close = frame.CloseButton
     HideTextures(close)
     close:ClearAllPoints()
