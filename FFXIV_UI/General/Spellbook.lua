@@ -7,16 +7,45 @@ local GRID_SCALE = 0.8
 local CARD_GAP = 8
 local BOOK_TOP = 34
 local styled, tabs, modes = {}, {}, {}
+local art = setmetatable({}, {__mode = "k"})
+local function ArtOf(frame)
+    art[frame] = art[frame] or {}
+    return art[frame]
+end
+addonEnv.SpellbookFrameArt = ArtOf
 local pending, updating, queued = false, false, false
 local watcher = CreateFrame("Frame")
 local Install, Layout
 
+-- Skinning from Blizzard's secure post-hooks taints its cooldown updates, so hook work runs in a fresh execution.
 local function QueueInstall()
-    if queued then return end
+    if queued or updating then return end
     queued = true
     C_Timer.After(0, function()
         queued = false
         Install()
+    end)
+end
+
+local layoutQueued = false
+local function QueueLayout()
+    if layoutQueued or updating then return end
+    layoutQueued = true
+    C_Timer.After(0, function()
+        layoutQueued = false
+        Layout()
+    end)
+end
+
+-- Blizzard resets these regions' alpha inside UpdateVisuals, so the restore is deferred out of that chain.
+local function HideBlizzardRegion(region)
+    if not region then return end
+    local state = ArtOf(region)
+    if state.hideHooked then return end
+    state.hideHooked = true
+    region:SetAlpha(0)
+    hooksecurefunc(region, "SetAlpha", function(self, alpha)
+        if alpha ~= 0 then C_Timer.After(0, function() self:SetAlpha(0) end) end
     end)
 end
 
@@ -62,7 +91,7 @@ local function Header(owner)
     end
     Themes.Register(UpdateBorder)
     UpdateBorder()
-    owner.FFXIVUIHeader = panel
+    ArtOf(owner).header = panel
 end
 
 local function SpellCard(row)
@@ -95,7 +124,7 @@ local function SpellCard(row)
         end
     end
     Themes.Register(Update)
-    row.FFXIVUISpellCard = panel
+    ArtOf(row).spellCard = panel
 end
 
 local function Arrow(button, direction)
@@ -118,7 +147,7 @@ end
 
 local function Tab(tab)
     local function HideLabel(region)
-        if not region or region == tab.FFXIVUICategoryLabel then return end
+        if not region or region == ArtOf(tab).categoryLabel then return end
         Hide(region)
         region:Hide()
         Hook(region, "Show", function(self) self:Hide() end)
@@ -143,7 +172,7 @@ local function Tab(tab)
     label:SetHeight(28)
     -- A separate label avoids changing native icon-tab identity or width calculations.
     Hide(tab.Text)
-    tab.FFXIVUICategoryLabel = label
+    ArtOf(tab).categoryLabel = label
     local highlight = {}
     for index = 1, 2 do
         local texture = tab:CreateTexture(nil, "BACKGROUND")
@@ -159,7 +188,7 @@ local function Tab(tab)
         end
         highlight[index] = texture
     end
-    tab.FFXIVUICategoryHighlight = highlight
+    ArtOf(tab).categoryHighlight = highlight
     local hovered = false
     local function Update()
         local palette = Themes.GetPalette()
@@ -187,19 +216,19 @@ end
 local function Row(row)
     if not row.Button or not row.Button.Icon then
         if row.Text then
-            Hide(row.Backplate)
-            Hide(row.Border)
-            if not row.FFXIVUIHeader then Header(row) end
+            HideBlizzardRegion(row.Backplate)
+            HideBlizzardRegion(row.Border)
+            if not ArtOf(row).header then Header(row) end
             Text(row.Text, "accent", 16)
         end
         return
     end
     if not styled[row] then
         styled[row] = true
-        Hide(row.Backplate)
+        HideBlizzardRegion(row.Backplate)
         local button = row.Button
         for _, key in ipairs({"Border", "BorderShadow", "TrainableShadow", "TrainableBackplate", "BorderSheen"}) do
-            Hide(button[key])
+            HideBlizzardRegion(button[key])
         end
         SpellCard(row)
         addonEnv.ApplyButtonSkin(button, {Icon = button.Icon, Cooldown = button.Cooldown}, "Equipment")
@@ -224,7 +253,7 @@ local function CanModifyGeometry(frame)
 end
 
 local function FitElement(book, frame)
-    local limit = book.FFXIVUIPageWidth
+    local limit = ArtOf(book).pageWidth
     if not limit or not frame then return end
     if not CanModifyGeometry(frame) then
         pending = true
@@ -238,34 +267,42 @@ local function FitElement(book, frame)
 end
 
 local function ReserveSidebarWidth(book, widthKey, nativeWidthKey)
-    local nativeWidth = book[nativeWidthKey]
+    local state = ArtOf(book)
+    local nativeWidth = state[nativeWidthKey]
     if not nativeWidth or book[widthKey] ~= nativeWidth + SIDEBAR then
         nativeWidth = book[widthKey]
-        book[nativeWidthKey] = nativeWidth
+        state[nativeWidthKey] = nativeWidth
     end
     book[widthKey] = nativeWidth + SIDEBAR
 end
 
 local function ReserveSidebarWidths(book)
-    ReserveSidebarWidth(book, "minimizedWidth", "FFXIVUINativeMinimizedWidth")
-    ReserveSidebarWidth(book, "maximizedWidth", "FFXIVUINativeMaximizedWidth")
+    ReserveSidebarWidth(book, "minimizedWidth", "nativeMinimizedWidth")
+    ReserveSidebarWidth(book, "maximizedWidth", "nativeMaximizedWidth")
 end
 
+-- Blizzard's paged layout reads info.height and the paged spacing fields inside its secure chain,
+-- so this only changes frame geometry and never writes to those tables.
 local function CompactGrid(book)
     local paged = book.PagedSpellsFrame
     if not paged.ViewFrames or not paged.InternalGetTemplateInfo or not paged.UpdateLayouts then return end
-    local function Template(_, info)
-        info.FFXIVUINativeHeight = info.FFXIVUINativeHeight or info.height
-        info.height = info.FFXIVUINativeHeight * GRID_SCALE
+    local function Deferred(owner, tag, callback)
+        local defer = addonEnv.DeferOutsideSecureUpdate
+        if defer then defer(owner, tag, callback) else callback() end
     end
-    for _, info in pairs(paged.cachedTemplateInfos or {}) do Template(paged, info) end
-    Hook(paged, "ProcessTemplateInfo", Template)
-    Hook(paged, "ProcessElementFrame", function(self, frame, data)
+    local lastData = setmetatable({}, { __mode = "k" })
+    local function FitFrame(self, frame, data)
         if not CanModifyGeometry(frame) then
             pending = true
             return
         end
-        frame:SetHeight(self:InternalGetTemplateInfo(data.templateKey).height)
+        -- Read Blizzard's template cache only; InternalGetTemplateInfo would write it from insecure code.
+        local info = self.cachedTemplateInfos and self.cachedTemplateInfos[data.templateKey]
+        if not info then
+            pending = true
+            return
+        end
+        frame:SetHeight(info.height * GRID_SCALE)
         FitElement(book, frame)
         if frame.Button and CanModifyGeometry(frame.Button) then
             frame.Button:ClearAllPoints()
@@ -282,10 +319,19 @@ local function CompactGrid(book)
             frame.Text:SetPoint("LEFT", frame, "LEFT", 10, 0)
             frame.Text:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
         end
+    end
+    Hook(paged, "ProcessElementFrame", function(self, frame, data)
+        lastData[frame] = data
+        Deferred(frame, "element", function() FitFrame(self, frame, data) end)
     end)
-    paged.yPadding = 10 * GRID_SCALE
-    paged.spacerSize = 20 * GRID_SCALE
-    book.FFXIVUICompactGrid = true
+    -- Refits frames that already exist without running Blizzard's secure layout from addon code.
+    ArtOf(book).refitElements = function()
+        for _, frame in paged:EnumerateFrames() do
+            local data = lastData[frame]
+            if data then Deferred(frame, "element", function() FitFrame(paged, frame, data) end) end
+        end
+    end
+    ArtOf(book).compactGrid = true
 end
 
 local function Rows(book)
@@ -363,7 +409,7 @@ local function DisplayMode(host, book)
         local function Update()
             local selected = (index == 1) == (not not book.isMinimized)
             local palette = Themes.GetPalette()
-            button.FFXIVUISelected = selected
+            ArtOf(button).selected = selected
             button:SetEnabled(not InCombatLockdown())
             addonEnv.UpdateControlMaterial(art, "Square")
             for _, texture in ipairs(art.fill) do
@@ -392,7 +438,7 @@ local function DisplayMode(host, book)
         control.buttons[index] = button
         Update()
     end
-    book.FFXIVUIDisplayMode = control
+    ArtOf(book).displayMode = control
 end
 
 Layout = function()
@@ -409,9 +455,10 @@ Layout = function()
     else
         pending = true
     end
-    local bookHeight = book.FFXIVUINativeHeight or book:GetHeight() or 812
+    local state = ArtOf(book)
+    local bookHeight = state.nativeHeight or book:GetHeight() or 812
     local gridHeight = bookHeight - 72
-    if book:IsShown() and book.FFXIVUICompactGrid then
+    if book:IsShown() and state.compactGrid then
         if CanModifyGeometry(book) then
             book:ClearAllPoints()
             book:SetPoint("TOPLEFT", host, "TOPLEFT", 0, -BOOK_TOP)
@@ -421,14 +468,14 @@ Layout = function()
         end
         if CanModifyGeometry(host) then
             host:SetHeight(BOOK_TOP + bookHeight + 4)
-            local widthOffset = book.isMinimized and book.FFXIVUIHostMinWidthOffset
-                or book.FFXIVUIHostMaxWidthOffset or 3
+            local widthOffset = book.isMinimized and state.hostMinWidthOffset
+                or state.hostMaxWidthOffset or 3
             host:SetWidth(book:GetWidth() + widthOffset)
         else
             pending = true
         end
-    elseif book.FFXIVUINativeHostHeight then
-        if CanModifyGeometry(host) then host:SetHeight(book.FFXIVUINativeHostHeight)
+    elseif state.nativeHostHeight then
+        if CanModifyGeometry(host) then host:SetHeight(state.nativeHostHeight)
         else pending = true end
     end
     if CanModifyGeometry(book.SearchBox) then
@@ -478,10 +525,11 @@ Layout = function()
                     if tabs[tab] then
                         local info = category.skillLineIndex
                             and C_SpellBook.GetSpellBookSkillLineInfo(category.skillLineIndex)
-                        tab.FFXIVUICategoryLabel:SetText(info and info.name
+                        local label = ArtOf(tab).categoryLabel
+                        label:SetText(info and info.name
                             or category:GetName() or tab:GetTooltipText())
-                        tab.FFXIVUICategoryLabel:Show()
-                        tab.FFXIVUICategoryLabel:SetAlpha(1)
+                        label:Show()
+                        label:SetAlpha(1)
                         tabs[tab]()
                     end
                     tab:SetAlpha(1)
@@ -509,10 +557,10 @@ Layout = function()
     else
         pending = true
     end
-    if book.FFXIVUICompactGrid then
+    if state.compactGrid then
         local totalWidth = book:GetWidth() - SIDEBAR
         local pageWidth = book.isMinimized and totalWidth or (totalWidth / 2)
-        book.FFXIVUIPageWidth = math.max(1, pageWidth - 32)
+        state.pageWidth = math.max(1, pageWidth - 32)
         for index, view in ipairs(paged.ViewFrames or {}) do
             if CanModifyGeometry(view) then
                 view:ClearAllPoints()
@@ -593,7 +641,7 @@ local function Shell(host, book)
     header:EnableMouse(false)
     local label = header:CreateFontString(nil, "OVERLAY", "FFXIV_SpellbookHeaderTitleTemplate")
     Text(label, "text", 18)
-    host.FFXIVUISpellbookTitle = label
+    ArtOf(host).title = label
     local divider = header:CreateTexture(nil, "BACKGROUND", "FFXIV_SpellbookHeaderDividerTemplate")
     Themes.StyleDivider(divider, header)
     local sidebarDivider = book:CreateTexture(nil, "BACKGROUND")
@@ -602,23 +650,24 @@ local function Shell(host, book)
     sidebarDivider:SetPoint("BOTTOM", book, "BOTTOM", 0, 6)
     sidebarDivider:SetWidth(1)
     Themes.StyleDivider(sidebarDivider, book, "BACKGROUND", 0, true)
-    book.FFXIVUISidebarDivider = sidebarDivider
+    ArtOf(book).sidebarDivider = sidebarDivider
     local footerDivider = book:CreateTexture(nil, "BACKGROUND")
     footerDivider:SetPoint("BOTTOMLEFT", book, "BOTTOMLEFT", SIDEBAR+2, 42)
     footerDivider:SetPoint("BOTTOMRIGHT", book, "BOTTOMRIGHT", -10, 42)
     footerDivider:SetHeight(1)
     Themes.StyleDivider(footerDivider, book)
-    book.FFXIVUIFooterDivider = footerDivider
+    ArtOf(book).footerDivider = footerDivider
     DisplayMode(host, book)
     local function Update()
         local active = book:IsShown()
         if not active then
             if InCombatLockdown() then pending = true
             else
-                host:SetHeight(book.FFXIVUINativeHostHeight)
+                local state = ArtOf(book)
+                host:SetHeight(state.nativeHostHeight)
                 book:ClearAllPoints()
-                for _, point in ipairs(book.FFXIVUINativePoints) do book:SetPoint(unpack(point)) end
-                book:SetHeight(book.FFXIVUINativeHeight)
+                for _, point in ipairs(state.nativePoints) do book:SetPoint(unpack(point)) end
+                book:SetHeight(state.nativeHeight)
             end
         end
         panel:SetShown(active)
@@ -647,7 +696,7 @@ local function Shell(host, book)
     host:HookScript("OnShow", Update)
     Hook(host, "UpdatePortrait", Update)
     Hook(host, "UpdateFrameTitle", Update)
-    book.FFXIVUIUpdateShell = Update
+    ArtOf(book).updateShell = Update
     Update()
 end
 
@@ -668,20 +717,21 @@ Install = function()
     if not styled[book] then
         styled[book] = true
         -- Reserve the sidebar through native sizing so both page widths stay intact.
-        book.FFXIVUIHostMinWidthOffset = type(host.spellBookMinimizedWidth) == "number"
+        local state = ArtOf(book)
+        state.hostMinWidthOffset = type(host.spellBookMinimizedWidth) == "number"
             and host.spellBookMinimizedWidth - book.minimizedWidth or 3
-        book.FFXIVUIHostMaxWidthOffset = type(host.spellBookMaximizedWidth) == "number"
+        state.hostMaxWidthOffset = type(host.spellBookMaximizedWidth) == "number"
             and host.spellBookMaximizedWidth - book.maximizedWidth or 6
         for _, key in ipairs({"spellBookMinimizedWidth", "spellBookMaximizedWidth"}) do
             if type(host[key]) == "number" then host[key] = host[key] + SIDEBAR end
         end
         ReserveSidebarWidths(book)
-        book.FFXIVUINativeHeight = book:GetHeight()
-        book.FFXIVUINativeHostHeight = host:GetHeight()
-        book.FFXIVUINativePoints = {}
-        for index = 1, book:GetNumPoints() do book.FFXIVUINativePoints[index] = {book:GetPoint(index)} end
+        state.nativeHeight = book:GetHeight()
+        state.nativeHostHeight = host:GetHeight()
+        state.nativePoints = {}
+        for index = 1, book:GetNumPoints() do state.nativePoints[index] = {book:GetPoint(index)} end
         CompactGrid(book)
-        book.FFXIVUIGridNeedsLayout = book.FFXIVUICompactGrid
+        state.gridNeedsLayout = state.compactGrid
         HideTextures(book)
         local help = book.HelpPlateButton
         if help then
@@ -695,33 +745,34 @@ Install = function()
         Settings(book.SettingsDropdown)
         Preview(book)
         for _, method in ipairs({"CreateCategoryMixins", "UpdateAllSpellData", "UpdateDisplayedSpells",
-            "OnPagedSpellsUpdate", "SetMinimized"}) do Hook(book, method, Install) end
+            "OnPagedSpellsUpdate", "SetMinimized"}) do Hook(book, method, QueueInstall) end
         Hook(book, "ApplyInputModeSizing", function()
-            ReserveSidebarWidths(book)
-            Layout()
+            C_Timer.After(0, function()
+                ReserveSidebarWidths(book)
+                Layout()
+            end)
         end)
-        for _, method in ipairs({"ResizeSearchBox", "UpdateAttic"}) do Hook(book, method, Layout) end
+        for _, method in ipairs({"ResizeSearchBox", "UpdateAttic"}) do Hook(book, method, QueueLayout) end
         Hook(book.CategoryTabSystem, "Layout", QueueInstall)
         Hook(book.CategoryTabSystem, "OnCleaned", QueueInstall)
-        Hook(book.CategoryTabSystem, "SetTabShown", Layout)
+        Hook(book.CategoryTabSystem, "SetTabShown", QueueLayout)
         -- The original callback resized search for a horizontal category bar.
-        book.CategoryTabSystem:SetScript("OnSizeChanged", Layout)
-        Hook(host, "UpdateSize", Layout)
-        Hook(host, "SetMinimized", Install)
+        book.CategoryTabSystem:HookScript("OnSizeChanged", QueueLayout)
+        Hook(host, "UpdateSize", QueueLayout)
         Hook(host, "SetMinimized", QueueInstall)
-        book:HookScript("OnShow", Install)
         book:HookScript("OnShow", QueueInstall)
         host:HookScript("OnShow", QueueInstall)
         Hook(book, "CreateCategoryMixins", QueueInstall)
         if book:IsShown() and type(host.UpdateSize) == "function" then host:UpdateSize() end
     end
     Layout()
-    if book.FFXIVUIGridNeedsLayout and book.PagedSpellsFrame.dataProvider then
-        book.FFXIVUIGridNeedsLayout = false
-        book.PagedSpellsFrame:UpdateLayouts()
+    local state = ArtOf(book)
+    if state.gridNeedsLayout and book.PagedSpellsFrame.dataProvider then
+        state.gridNeedsLayout = false
+        state.refitElements()
     end
     Rows(book)
-    book.FFXIVUIUpdateShell()
+    state.updateShell()
 end
 
 Themes.Register(function()
@@ -730,14 +781,14 @@ Themes.Register(function()
 end)
 if EventRegistry then
     EventRegistry:RegisterCallback("PlayerSpellsFrame.SpellBookFrame.DisplayedSpellsChanged", function()
-        Install()
+    QueueInstall()
     end, watcher)
 end
 local handlers = {
-    ADDON_LOADED = Install,
-    PLAYER_LOGIN = Install,
-    PLAYER_REGEN_ENABLED = function() if pending then Install() end end,
-    PLAYER_REGEN_DISABLED = Install,
+    ADDON_LOADED = QueueInstall,
+    PLAYER_LOGIN = QueueInstall,
+    PLAYER_REGEN_ENABLED = function() if pending then QueueInstall() end end,
+    PLAYER_REGEN_DISABLED = QueueInstall,
 }
 for event in pairs(handlers) do
     watcher:RegisterEvent(event)

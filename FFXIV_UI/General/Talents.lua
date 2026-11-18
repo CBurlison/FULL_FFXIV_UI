@@ -4,7 +4,13 @@ local Themes = addonEnv.Themes or { GetPalette = function() return { inset = {0,
           accent = {1,1,1} } end }
 local Skin = addonEnv.Skin
 local styled = {}
+local art = setmetatable({}, {__mode = "k"})
+local function ArtOf(frame)
+    art[frame] = art[frame] or {}
+    return art[frame]
+end
 local pending = false
+local DeferOutside = addonEnv.DeferOutsideSecureUpdate
 local watcher = CreateFrame("Frame")
 local Install
 local Hide, HideTextures = Skin.Hide, Skin.HideTextures
@@ -15,14 +21,14 @@ local function UpdateCloseButton(host)
     if host.SpellBookFrame and host.SpellBookFrame:IsShown() then return false end
     for _, key in ipairs({"TalentsFrame", "SpecFrame"}) do
         local frame = host[key]
-        if frame and frame.FFXIVUIHeader and frame:IsShown() then active = frame; break end
+        if frame and ArtOf(frame).header and frame:IsShown() then active = frame; break end
     end
     if not active then
         for _, child in ipairs({host:GetChildren()}) do
-            if child.FFXIVUIHeader and child:IsShown() then active = child; break end
+            if ArtOf(child).header and child:IsShown() then active = child; break end
         end
     end
-    if not active and host.FFXIVUIHeader and host:IsShown() then active = host end
+    if not active and ArtOf(host).header and host:IsShown() then active = host end
     if not active then return false end
     if InCombatLockdown() then pending = true; return true end
     local close = host.CloseButton
@@ -33,7 +39,7 @@ local function UpdateCloseButton(host)
     close.FFXIVUICloseIcon:Show()
     close:ClearAllPoints()
     close:SetSize(24, 24)
-    close:SetPoint("RIGHT", active.FFXIVUIHeader, "RIGHT", -2, 0)
+    close:SetPoint("RIGHT", ArtOf(active).header, "RIGHT", -2, 0)
     return true
 end
 
@@ -42,11 +48,12 @@ local HEALER_ICON = "Interface\\AddOns\\FFXIV_UI\\Media\\Textures\\Character\\He
 local DPS_ICON = "Interface\\AddOns\\FFXIV_UI\\Media\\Textures\\Character\\DPS.tga"
 
 local function StyleRoleIcon(texture)
-    if not texture or texture.FFXIVUIRoleSkinned then return end
-    texture.FFXIVUIRoleSkinned = true
+    if not texture or ArtOf(texture).roleSkinned then return end
+    ArtOf(texture).roleSkinned = true
     local function Update(self, atlasOrTexture)
-        if self.FFXIVUIUpdatingRole then return end
-        self.FFXIVUIUpdatingRole = true
+        local state = ArtOf(self)
+        if state.updatingRole then return end
+        state.updatingRole = true
         local name = tostring(atlasOrTexture or ""):lower()
         if name:find("tank") then
             self:SetTexture(TANK_ICON)
@@ -55,10 +62,15 @@ local function StyleRoleIcon(texture)
         elseif name:find("dps") or name:find("damage") or name:find("damager") then
             self:SetTexture(DPS_ICON)
         end
-        self.FFXIVUIUpdatingRole = false
+        state.updatingRole = false
     end
-    hooksecurefunc(texture, "SetAtlas", Update)
-    hooksecurefunc(texture, "SetTexture", Update)
+    -- Blizzard sets role art inside its own update chain, so the swap runs after that chain returns.
+    local function Queue(self, value)
+        if ArtOf(self).updatingRole then return end
+        C_Timer.After(0, function() Update(self, value) end)
+    end
+    hooksecurefunc(texture, "SetAtlas", Queue)
+    hooksecurefunc(texture, "SetTexture", Queue)
     if texture.GetAtlas then Update(texture, texture:GetAtlas())
     elseif texture.GetTexture then Update(texture, texture:GetTexture()) end
 end
@@ -119,22 +131,24 @@ local function HideTabArt(owner, depth)
 end
 
 local function UpdateForeverTab(tab)
-    addonEnv.UpdateExtractedTabArtwork(tab.FFXIVUITabArt, tab.selected == true)
-    Skin.Text(tab.FFXIVUILabel, tab.selected and "text" or "tabText", 12)
+    local state = ArtOf(tab)
+    addonEnv.UpdateExtractedTabArtwork(state.tabArt, state.selected == true)
+    Skin.Text(state.label, state.selected and "text" or "tabText", 12)
 end
 
 local function SetForeverTabSelected(tabs, selectedTab)
     for _, tab in ipairs(tabs) do
         local selected = tab == selectedTab
         if tab.SetChecked then tab:SetChecked(selected) end
-        tab.selected = selected
+        ArtOf(tab).selected = selected
         UpdateForeverTab(tab)
     end
 end
 
 local function SkinForeverTab(tab, tabs)
-    if tab.FFXIVUITab then return end
-    tab.FFXIVUITab = true
+    local state = ArtOf(tab)
+    if state.skinnedTab then return end
+    state.skinnedTab = true
     for _, key in ipairs({"Left", "Middle", "Right", "Background", "SelectedTexture", "HighlightTexture",
         "NormalTexture", "PushedTexture", "LeftActive", "MiddleActive", "RightActive", "LeftHighlight",
         "MiddleHighlight", "RightHighlight", "SquareBackground", "SquareBackgroundActive",
@@ -144,13 +158,15 @@ local function SkinForeverTab(tab, tabs)
     HideTabArt(tab, 2)
     local native = tab.GetFontString and tab:GetFontString() or tab.Text
     Skin.Hide(native)
-    tab.FFXIVUITabArt = addonEnv.CreateExtractedTabArtwork(tab)
+    state.tabArt = addonEnv.CreateExtractedTabArtwork(tab)
     local label = tab:CreateFontString(nil, "OVERLAY")
     Skin.Font(label, 12)
     label:SetPoint("CENTER", tab, "CENTER", 0, 0)
     label:SetText(TextOf(native))
-    tab.FFXIVUILabel = label
-    tab:HookScript("OnClick", function(self) SetForeverTabSelected(tabs, self) end)
+    state.label = label
+    tab:HookScript("OnClick", function(self)
+        DeferOutside(self, "select", function() SetForeverTabSelected(tabs, self) end)
+    end)
     UpdateForeverTab(tab)
 end
 
@@ -182,27 +198,31 @@ local function FindForeverTabs(frame)
 end
 
 local function LayoutForeverTabs(frame, tabs)
-    frame.FFXIVUILayingOut = true
+    ArtOf(frame).layingOut = true
     for index, tab in ipairs(tabs) do
         tab:ClearAllPoints()
         tab:SetSize(TAB_WIDTH, TAB_HEIGHT)
         if index == 1 then
-            tab:SetPoint("TOPLEFT", frame.FFXIVUIHeader, "BOTTOMLEFT", 8, -10)
+            tab:SetPoint("TOPLEFT", ArtOf(frame).header, "BOTTOMLEFT", 8, -10)
         else
             tab:SetPoint("LEFT", tabs[index - 1], "RIGHT", TAB_SPACING, 0)
         end
     end
-    frame.FFXIVUILayingOut = false
+    ArtOf(frame).layingOut = false
 end
 
 -- Blizzard re-anchors the spec tabs after actions such as Apply Changes, so any move is undone by re-running the layout.
 local function GuardForeverTabAnchors(frame, tab)
-    if tab.FFXIVUIAnchorHooked then return end
-    tab.FFXIVUIAnchorHooked = true
+    local state = ArtOf(tab)
+    if state.anchorHooked then return end
+    state.anchorHooked = true
     local function Restore()
-        if frame.FFXIVUILayingOut then return end
-        if InCombatLockdown() then pending = true; return end
-        LayoutForeverTabs(frame, frame.FFXIVUITabs)
+        if ArtOf(frame).layingOut then return end
+        DeferOutside(tab, "anchor", function()
+            if ArtOf(frame).layingOut then return end
+            if InCombatLockdown() then pending = true; return end
+            LayoutForeverTabs(frame, ArtOf(frame).tabs)
+        end)
     end
     hooksecurefunc(tab, "SetPoint", Restore)
     hooksecurefunc(tab, "ClearAllPoints", Restore)
@@ -213,11 +233,12 @@ local function StyleForeverLayout(frame, host)
 
     local tabs = FindForeverTabs(frame)
     for _, tab in ipairs(tabs) do SkinForeverTab(tab, tabs) end
-    frame.FFXIVUITabs = tabs
+    ArtOf(frame).tabs = tabs
     for _, tab in ipairs(tabs) do GuardForeverTabAnchors(frame, tab) end
     LayoutForeverTabs(frame, tabs)
     for _, tab in ipairs(tabs) do
-        if tab.selected == nil then tab.selected = tab.GetChecked and tab:GetChecked() == true or false end
+        local state = ArtOf(tab)
+        if state.selected == nil then state.selected = tab.GetChecked and tab:GetChecked() == true or false end
         UpdateForeverTab(tab)
     end
 
@@ -238,7 +259,7 @@ local function StyleForeverLayout(frame, host)
         if apply then
             opener:SetPoint("RIGHT", apply, "LEFT", -12, 0)
         else
-            opener:SetPoint("TOPRIGHT", frame.FFXIVUIHeader, "BOTTOMRIGHT", -8, -10)
+            opener:SetPoint("TOPRIGHT", ArtOf(frame).header, "BOTTOMRIGHT", -8, -10)
         end
         opener:SetSize(24, 24)
         if opener.Arrow then Hide(opener.Arrow) end
@@ -256,7 +277,7 @@ local function StyleForeverLayout(frame, host)
         elseif currency then
             search:SetPoint("BOTTOMRIGHT", currency, "TOPRIGHT", -30, 8)
         else
-            search:SetPoint("TOPRIGHT", frame.FFXIVUIHeader, "BOTTOMRIGHT", -8, -10)
+            search:SetPoint("TOPRIGHT", ArtOf(frame).header, "BOTTOMRIGHT", -8, -10)
         end
         search:SetSize(180, 24)
         addonEnv.StyleEditBox(search)
@@ -271,21 +292,26 @@ local heldAlpha = {}
 
 -- Blizzard re-applies alpha when a panel animates in, so the hold is enforced through a SetAlpha hook.
 local function Hold(region, active)
+    local state = ArtOf(region)
     if active then
-        if region.FFXIVUISavedAlpha == nil then region.FFXIVUISavedAlpha = region:GetAlpha() end
+        if state.savedAlpha == nil then state.savedAlpha = region:GetAlpha() end
         heldAlpha[region] = true
         region:SetAlpha(0)
     else
         heldAlpha[region] = nil
-        if region.FFXIVUISavedAlpha ~= nil then
-            region:SetAlpha(region.FFXIVUISavedAlpha)
-            region.FFXIVUISavedAlpha = nil
+        if state.savedAlpha ~= nil then
+            region:SetAlpha(state.savedAlpha)
+            state.savedAlpha = nil
         end
     end
-    if not region.FFXIVUIAlphaHooked then
-        region.FFXIVUIAlphaHooked = true
+    if not state.alphaHooked then
+        state.alphaHooked = true
         hooksecurefunc(region, "SetAlpha", function(self, alpha)
-            if heldAlpha[self] and alpha ~= 0 then self:SetAlpha(0) end
+            if heldAlpha[self] and alpha ~= 0 then
+                DeferOutside(self, "alpha", function()
+                    if heldAlpha[self] then self:SetAlpha(0) end
+                end)
+            end
         end)
     end
 end
@@ -348,7 +374,7 @@ local function StyleSubFrame(frame, forever)
         addonEnv.RoundWindow(frame, true)
     end
 
-    if not frame.FFXIVUIHeader then
+    if not ArtOf(frame).header then
         local header = CreateFrame("Frame", nil, frame, "FFXIV_TalentsHeaderTemplate")
         header:SetFrameLevel(frame:GetFrameLevel() + 2)
         header:EnableMouse(false)
@@ -371,7 +397,7 @@ local function StyleSubFrame(frame, forever)
             end
         end
         label:SetText(titleText)
-        frame.FFXIVUIHeaderTitle = label
+        ArtOf(frame).headerTitle = label
 
         local divider = header:CreateTexture(nil, "BACKGROUND", "FFXIV_TalentsHeaderDividerTemplate")
         if Themes.StyleDivider then
@@ -379,7 +405,7 @@ local function StyleSubFrame(frame, forever)
         else
             divider:SetColorTexture(0.71, 0.61, 0.32, 1)
         end
-        frame.FFXIVUIHeader = header
+        ArtOf(frame).header = header
     end
 
     -- Talent nodes are Buttons too, so only recognised control templates are styled.
@@ -395,7 +421,7 @@ local function StyleSubFrame(frame, forever)
                     addonEnv.StyleComboBox(child)
                 elseif type(child.GetMenuDescription) == "function" then
                     addonEnv.StyleComboBoxMenu(child)
-                elseif IsButton(child) and child.Left and child.Middle and child.Right and not child.FFXIVUITab then
+                elseif IsButton(child) and child.Left and child.Middle and child.Right and not ArtOf(child).skinnedTab then
                     addonEnv.StyleButton(child)
                 end
                 Scan(child)
@@ -424,12 +450,16 @@ local function StyleSubFrame(frame, forever)
     Refresh()
     styled[frame] = Refresh
     frame:HookScript("OnShow", function()
-        if InCombatLockdown() then pending = true else Refresh() end
-        UpdateCloseButton(host)
+        DeferOutside(frame, "show", function()
+            if InCombatLockdown() then pending = true else Refresh() end
+            UpdateCloseButton(host)
+        end)
     end)
     frame:HookScript("OnHide", function()
-        if isForever then ApplyHostTopArt(host, frame, false) end
-        UpdateCloseButton(host)
+        DeferOutside(frame, "hide", function()
+            if isForever then ApplyHostTopArt(host, frame, frame:IsShown()) end
+            UpdateCloseButton(host)
+        end)
     end)
 end
 
@@ -472,6 +502,7 @@ watcher:SetScript("OnEvent", function(_, event)
     end
 end)
 
+addonEnv.TalentsFrameArt = ArtOf
 addonEnv.TalentsUI = {
     Install = Install,
     TankIcon = TANK_ICON,

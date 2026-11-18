@@ -23,9 +23,12 @@ end
 local timers = {}
 C_Timer = {After = function(_, callback) timers[#timers + 1] = callback end}
 local function flush()
-    local callbacks = timers
-    timers = {}
-    for _, callback in ipairs(callbacks) do callback() end
+    for _ = 1, 5 do
+        local callbacks = timers
+        if #callbacks == 0 then return end
+        timers = {}
+        for _, callback in ipairs(callbacks) do callback() end
+    end
     assert(#timers == 0, "layout refresh schedules itself indefinitely")
 end
 function CreateColor(...) return {...} end
@@ -163,6 +166,8 @@ function ScrollUtil.AddInitializedFrameCallback(box, callback, owner)
 end
 function methods:ForEachFrame(callback) for _, row in ipairs(self.frames) do callback(row) end end
 local env = {}
+env.DeferOutsideSecureUpdate = function(_, _, callback) C_Timer.After(0, callback) end
+local function artOf(frame) return env.SpellbookFrameArt(frame) end
 assert(loadfile("FFXIV_UI\\General\\Themes.lua"))("FFXIV_UI", env)
 assert(loadfile("FFXIV_UI\\General\\SkinUtils.lua"))("FFXIV_UI", env)
 assert(loadfile("FFXIV_UI\\General\\RoundedPanels.lua"))("FFXIV_UI", env)
@@ -385,18 +390,23 @@ local spell = paged.frames[2]
 local nativeDrag, nativeTooltip = spell.Button.scripts.OnDragStart, spell.Button.scripts.OnEnter
 combat = true
 event("ADDON_LOADED")
+flush()
 assert(host.spellBookMinimizedWidth == 809, "protected layout changed in combat")
 combat = false
 event("PLAYER_REGEN_ENABLED")
-assert(not paged.layoutUpdates and book.FFXIVUIGridNeedsLayout,
+flush()
+assert(not paged.layoutUpdates and artOf(book).gridNeedsLayout,
     "load-on-demand grid refresh was not deferred until data becomes available")
 event("PLAYER_LOGIN")
+flush()
 assert(not paged.layoutUpdates, "another event rebuilt the grid without a data provider")
 paged.dataProvider = {}
 book:UpdateDisplayedSpells()
-assert(not book.FFXIVUIGridNeedsLayout, "deferred grid refresh did not complete")
+assert(#timers > 0, "Blizzard post-hook must defer skinning outside its secure update")
+flush()
+assert(not artOf(book).gridNeedsLayout, "deferred grid refresh did not complete")
 assert(host.width == 1013 and book.width == 1010, "compact widths do not include sidebar")
-assert(spell.width == book.FFXIVUIPageWidth / 2 - 8,
+assert(spell.width == artOf(book).pageWidth / 2 - 8,
     "default collapsed spell list must fit two columns without widening the window")
 assert(book.SearchBox.points[1][4] == 14 and book.SearchBox.points[1][5] == -22)
 assert(book.SearchBox.width == 152 and book.SearchBox.text == "existing query")
@@ -418,18 +428,22 @@ assert(rotation.Icon.scripts.OnClick() == "native click"
     and rotation.Icon.scripts.OnEnter() == "native rotation tooltip",
     "relocating the rotation control replaced native icon actions or tooltips")
 book:ApplyInputModeSizing()
+flush()
 assert(host.width == 1013 and book.width == 1010,
     "native show-time sizing reset the compact sidebar width")
 book:UpdateAttic()
+flush()
 assert(rotation.points[1][1] == "BOTTOMLEFT" and rotation.points[1][5] == 10
     and not book.HelpPlateButton:IsShown(), "native attic update restored header overlap")
 book.rotationAvailable = false
 book:UpdateAttic()
+flush()
 assert(not rotation:IsShown(), "sidebar layout must not force unavailable rotation controls to show")
 assert(book.PreviousCategoryIcon.points[1][5] == 16,
     "controller prompts must return to the bottom when the rotation control is unavailable")
 book.rotationAvailable = true
 book:UpdateAttic()
+flush()
 assert(rotation:IsShown() and rotation.points[1][1] == "BOTTOMLEFT")
 assert(not book.SettingsDropdown.FFXIVUIArrowLabel, "settings still uses a letter instead of a menu icon")
 local menuLines = 0
@@ -534,13 +548,16 @@ MenuUtil = originalMenuUtil
 assert(book.height == 812 and host.height == 850, "spellbook height must match native height")
 assert(book.points[1][1] == "TOPLEFT" and book.points[1][2] == host and book.points[1][5] == -34,
     "book frame follows the native top anchor")
-assert(paged.cachedTemplateInfos.SPELL.height == 48 and paged.cachedTemplateInfos.HEADER.height == 32)
-assert(paged.yPadding == 8 and paged.spacerSize == 16)
+assert(paged.cachedTemplateInfos.SPELL.height == 60 and paged.cachedTemplateInfos.HEADER.height == 40,
+    "native template heights must not be written by addon code")
+assert(paged.yPadding == nil and paged.spacerSize == nil, "paged spacing fields must not be written by addon code")
+paged:UpdateLayouts()
+flush()
 assert(paged.frames[2].height == 48 and paged.frames[1].height == 32)
 assert(paged.frames[2].Button.points[1][4] == 10)
 assert(paged.frames[2].TextContainer.points[1][4] == 60)
-assert(paged.frames[1].FFXIVUIHeader.regions[1].gradient[1] == "VERTICAL")
-local categoryHeader = paged.frames[1].FFXIVUIHeader
+assert(artOf(paged.frames[1]).header.regions[1].gradient[1] == "VERTICAL")
+local categoryHeader = artOf(paged.frames[1]).header
 assert(#categoryHeader.regions == 18 and not categoryHeader.backdrop,
     "category header still uses a square backdrop border")
 assert(categoryHeader.regions[1].width == 6 and categoryHeader.regions[1].height == 6)
@@ -558,11 +575,11 @@ for _, view in ipairs(paged.ViewFrames) do
 end
 assert(paged.layoutUpdates == 1, "initial compaction must recalculate native page distribution")
 assert(paged.points[1][5] == -8)
-assert(book.FFXIVUIFooterDivider.points[1][5] == 42)
-assert(book.FFXIVUIFooterDivider.points[1][4] == 206,
+assert(artOf(book).footerDivider.points[1][5] == 42)
+assert(artOf(book).footerDivider.points[1][4] == 206,
     "footer divider extends into the sidebar")
 local pagingPoint = paged.PagingControls.points[1]
-local displayMode = book.FFXIVUIDisplayMode
+local displayMode = artOf(book).displayMode
 assert(pagingPoint[1] == "LEFT" and pagingPoint[3] == "BOTTOMLEFT" and pagingPoint[4] == 220)
 assert(pagingPoint[5] == displayMode.points[1][5] + displayMode.height / 2,
     "paging controls are not centered at the same height as display mode")
@@ -582,8 +599,8 @@ for index, expectedY in pairs({[1] = 0, [2] = -36, [4] = -72}) do
     for _, region in ipairs({tab:GetRegions()}) do
         assert(region ~= tab:GetFontString(), "native font-string fixture must be absent from the region scan")
     end
-    assert(tab.FFXIVUICategoryLabel.text == tab.tooltipText)
-    assert(tab.FFXIVUICategoryLabel.height == 28 and not tab.FFXIVUIControlArt,
+    assert(artOf(tab).categoryLabel.text == tab.tooltipText)
+    assert(artOf(tab).categoryLabel.height == 28 and not tab.FFXIVUIControlArt,
         "category label unbounded or boxed artwork restored")
 end
 system.tabs[1].Label:SetAlpha(1)
@@ -600,19 +617,21 @@ do
     replacement:SetText("Recreated native category name")
     system.tabs[1].nativeFontString = replacement
     book:UpdateAllSpellData()
+    flush()
     assert(not replacement:IsShown() and replacement.alpha == 0
-        and system.tabs[1].FFXIVUICategoryLabel:IsShown(),
+        and artOf(system.tabs[1]).categoryLabel:IsShown(),
         "native font-string replacement must be hidden without suppressing the custom category name")
 end
 local lateCategoryLabel = label(object("Frame", system.tabs[1].LabelContainer), "Late native category text")
 book:UpdateDisplayedSpells()
-assert(lateCategoryLabel.alpha == 0 and system.tabs[1].FFXIVUICategoryLabel.alpha == 1,
+flush()
+assert(lateCategoryLabel.alpha == 0 and artOf(system.tabs[1]).categoryLabel.alpha == 1,
     "late native category font strings must be hidden without hiding the custom category name")
 system.tabs[1].LabelContainer.Text:SetAlpha(1)
 assert(system.tabs[1].LabelContainer.Text.alpha == 0,
     "native alpha refresh must not restore nested duplicate category text")
-local firstHighlight = system.tabs[1].FFXIVUICategoryHighlight[2]
-local secondHighlight = system.tabs[2].FFXIVUICategoryHighlight[2]
+local firstHighlight = artOf(system.tabs[1]).categoryHighlight[2]
+local secondHighlight = artOf(system.tabs[2]).categoryHighlight[2]
 assert(firstHighlight:IsShown() and not secondHighlight:IsShown())
 assert(firstHighlight.gradient[2][4] == 0.24 and firstHighlight.gradient[3][4] == 0)
 system.tabs[2].scripts.OnEnter()
@@ -631,8 +650,10 @@ flush()
 assert(system.tabs[2].points[1][5] == -36 and system.width == 1, "native layout overwrote sidebar")
 book:ResizeSearchBox()
 book:UpdateAttic()
+flush()
 assert(book.SearchBox.width == 152)
 system:SetTabShown(3, true)
+flush()
 assert(system.tabs[4].points[1][5] == -108, "newly available category not inserted")
 print("PASS search-first text-only sidebar, localized categories, visibility, native selection and layout refreshes")
 
@@ -650,18 +671,18 @@ assert(book.SearchBox.points[1][1] == "TOPLEFT" and system.tabs[2].points[1][5] 
     "first-show late native anchors were not corrected")
 assert(book.points[1][1] == "TOPLEFT" and book.points[1][5] == -34,
     "late native anchoring restored the blank area above content")
-assert(host.NineSlice.alpha == 0 and host.FFXIVUISpellbookTitle.font[1]:find("AxisRegular"))
+assert(host.NineSlice.alpha == 0 and artOf(host).title.font[1]:find("AxisRegular"))
 assert(host.NineSlice.TopEdge.alpha == 0 and host.PortraitContainer.portrait.alpha == 0)
-assert(host.TitleContainer.TitleText.alpha == 0 and host.FFXIVUISpellbookTitle.justify == "LEFT")
-assert(host.FFXIVUISpellbookTitle.text == "Spellbook" and host.MaximizeMinimizeButton.alpha == 0)
-assert(book.FFXIVUIDisplayMode, "font initialization interrupted header/display-mode setup")
-local header = host.FFXIVUISpellbookTitle.parent
+assert(host.TitleContainer.TitleText.alpha == 0 and artOf(host).title.justify == "LEFT")
+assert(artOf(host).title.text == "Spellbook" and host.MaximizeMinimizeButton.alpha == 0)
+assert(artOf(book).displayMode, "font initialization interrupted header/display-mode setup")
+local header = artOf(host).title.parent
 assert(#header.regions == 3, "header has a separate panel fill")
-assert(not header.FFXIVUIHeader, "main Spellbook title must retain its divider-only styling")
+assert(not artOf(header).header, "main Spellbook title must retain its divider-only styling")
 assert(header.template == "FFXIV_SpellbookHeaderTemplate" and header.height == 30 and header.mouse == false)
 assert(header.points[1][1] == "TOPLEFT" and header.points[1][4] == 8 and header.points[1][5] == -4)
 assert(header.points[2][1] == "TOPRIGHT" and header.points[2][4] == -8 and header.points[2][5] == -4)
-local label = host.FFXIVUISpellbookTitle
+local label = artOf(host).title
 assert(label.template == "FFXIV_SpellbookHeaderTitleTemplate" and label.height == 26 and label.justify == "LEFT")
 assert(label.points[1][1] == "LEFT" and label.points[1][4] == 12 and label.points[2][4] == -36)
 local headerDivider
@@ -671,9 +692,9 @@ end
 assert(headerDivider and headerDivider.height == 1, "header divider should come from the template")
 assert(headerDivider.points[1][1] == "BOTTOMLEFT" and headerDivider.points[1][5] == 0)
 assert(headerDivider.points[2][1] == "BOTTOMRIGHT")
-assert(book.FFXIVUISidebarDivider.width == 1)
-assert(book.FFXIVUISidebarDivider.points[1][2] == header
-    and book.FFXIVUISidebarDivider.points[2][4] == 204)
+assert(artOf(book).sidebarDivider.width == 1)
+assert(artOf(book).sidebarDivider.points[1][2] == header
+    and artOf(book).sidebarDivider.points[2][4] == 204)
 assert(host.CloseButton.width == 24 and host.CloseButton.height == 24)
 assert(host.CloseButton.points[1][2] == header and host.CloseButton.points[1][4] == -2,
     "close button not inset inside header")
@@ -681,7 +702,7 @@ print("PASS first-show deferred layout and chrome correction without clicking a 
 
 assert(spell.Button.skin == "Equipment" and spell.Button.Icon.resolver == nil,
     "spellbook ability icon should keep native artwork")
-local card = spell.FFXIVUISpellCard
+local card = artOf(spell).spellCard
 assert(#card.regions == 9 and not card.FFXIVUIControlArt, "spell card still uses pill/button artwork")
 assert(card.regions[1].width == 6 and card.regions[1].height == 6,
     "spell card corners stretch with entry dimensions")
@@ -696,9 +717,14 @@ end
 assert(spell.Button.scripts.OnEnter == nativeTooltip, "card installed an extra hover effect")
 if spell.Button.scripts.OnLeave then spell.Button.scripts.OnLeave() end
 spell:UpdateVisuals()
+flush()
 assert(spell.Name.alpha == 0.6 and spell.Button.Icon.alpha == 0.6 and spell.Button.Icon.color[1] == 0.5,
     "unlearned spell state lost")
 assert(spell.Button.Border.alpha == 0 and spell.Name.color[1] == env.Themes.GetPalette().text[1])
+spell.Button.Border:SetAlpha(1)
+assert(spell.Button.Border.alpha == 1, "Blizzard reset should not be restored synchronously")
+flush()
+assert(spell.Button.Border.alpha == 0, "hidden Blizzard border not restored on the deferred step")
 assert(spell.Button.scripts.OnDragStart == nativeDrag and nativeDrag() == "native drag")
 assert(nativeTooltip() == "native tooltip")
 assert(paged.PagingControls.PageText.text == "Page 1/3")
@@ -715,6 +741,7 @@ assert(previous.FFXIVUIArrowTexture.texture:find("Arrow-Left-Enabled.tga", 1, tr
 assert(previous.FFXIVUIArrowTexture.width == 30 and previous.FFXIVUIArrowTexture.height == 30)
 paged.frames[#paged.frames + 1] = row()
 EventRegistry.callbacks["PlayerSpellsFrame.SpellBookFrame.DisplayedSpellsChanged"]()
+flush()
 assert(paged.frames[3].Button.skin == "Equipment", "new pooled spell not themed")
 for _, name in ipairs(env.Themes.GetNames()) do
     env.Themes.Set(name)
@@ -724,18 +751,20 @@ for _, name in ipairs(env.Themes.GetNames()) do
             "theme refresh must retain untinted Dark panel-border artwork on category headers")
     end
     assert(spell.Name.color[1] == env.Themes.GetPalette().text[1])
-    assert(system.tabs[1].FFXIVUICategoryLabel.color[1] == env.Themes.GetPalette().accent[1])
+    assert(artOf(system.tabs[1]).categoryLabel.color[1] == env.Themes.GetPalette().accent[1])
     assert(firstHighlight.gradient[2][1] == env.Themes.GetPalette().accent[1])
     assert(card.regions[1].color[1] == env.Themes.GetPalette().tab[1])
 end
 print("PASS themed spell rows, headers and paging; pooled rows, ability icons, semantic states and all themes")
 
 book:SetMinimized(false)
+flush()
 assert(host.width == 1822 and book.width == 1816 and book.viewsPerPage == 2)
 assert(host.height == 850 and book.height == 812)
 paged.frames[1]:SetWidth(1400)
 paged.frames[2]:SetWidth(900)
 book:SetMinimized(true)
+flush()
 assert(host.width == 1013 and book.width == 1010 and book.viewsPerPage == 1)
 assert(paged.frames[1].width == 774 and paged.frames[2].width == 379,
     "collapsed spellbook must keep full-width headers and half-width spell cards")
@@ -746,23 +775,24 @@ do
     reflowFirst:ClearAllPoints(); reflowFirst:SetPoint("TOPLEFT", paged.ViewFrames[1], "TOPLEFT", 0, -40)
     reflowSecond:ClearAllPoints(); reflowSecond:SetPoint("TOPLEFT", paged.ViewFrames[2], "TOPLEFT", 400, -40)
     paged:UpdateLayouts()
+    flush()
     assert(reflowSecond.points[1][2] == paged.ViewFrames[2] and reflowSecond.points[1][4] == 400
-        and reflowSecond.points[1][5] == -40 and reflowSecond.width == book.FFXIVUIPageWidth / 2 - 8,
+        and reflowSecond.points[1][5] == -40 and reflowSecond.width == artOf(book).pageWidth / 2 - 8,
         "collapsed spellbook must preserve the native second column and fit its card in-pane")
 end
-local display = book.FFXIVUIDisplayMode
-assert(display.buttons[1].FFXIVUISelected and not display.buttons[2].FFXIVUISelected)
+local display = artOf(book).displayMode
+assert(artOf(display.buttons[1]).selected and not artOf(display.buttons[2]).selected)
 for _ = 1, 3 do
     display.buttons[2].scripts.OnClick()
     flush()
-    assert(not display.buttons[1].FFXIVUISelected and display.buttons[2].FFXIVUISelected)
+    assert(not artOf(display.buttons[1]).selected and artOf(display.buttons[2]).selected)
     assert(system:IsShown() and system.tabs[1]:IsShown() and system.tabs[2]:IsShown())
-    assert(system.tabs[2].FFXIVUICategoryLabel.text == "Holy localized")
+    assert(artOf(system.tabs[2]).categoryLabel.text == "Holy localized")
     assert(rotation.points[1][1] == "BOTTOMLEFT" and rotation.points[1][5] == 10
         and not book.HelpPlateButton:IsShown(), "expanded spellbook restored overlapping header controls")
     display.buttons[1].scripts.OnClick()
     flush()
-    assert(display.buttons[1].FFXIVUISelected and not display.buttons[2].FFXIVUISelected)
+    assert(artOf(display.buttons[1]).selected and not artOf(display.buttons[2]).selected)
     assert(system:IsShown() and system.tabs[1]:IsShown())
     assert(system.tabs[1].Label.alpha == 0 and rotation.points[1][1] == "BOTTOMLEFT",
         "compact spellbook restored duplicate category names or the rotation header anchor")
@@ -784,35 +814,40 @@ assert(host.CloseButton.points[1][1] == "TOPRIGHT" and host.CloseButton.points[1
     and host.CloseButton.points[1][5] == 5, "native close geometry not restored for talents")
 book:Show()
 host:UpdateSize()
+flush()
 assert(host.width == 1013 and host.NineSlice.alpha == 0 and host.CloseButton.FFXIVUICloseIcon:IsShown())
 local before = #objects
 for _ = 1, 3 do event("ADDON_LOADED"); book:UpdateAllSpellData(); book:CreateCategoryMixins() end
 flush()
 assert(#objects == before and host.spellBookMinimizedWidth == 1013, "duplicate art or repeated width growth")
-assert(paged.cachedTemplateInfos.SPELL.height == 48, "repeated install compounded height reduction")
+assert(paged.cachedTemplateInfos.SPELL.height == 60, "repeated install must not write template heights")
 paged.cachedTemplateInfos.FRESH = {height = 60}
-paged:ProcessTemplateInfo(paged.cachedTemplateInfos.FRESH)
-assert(paged.cachedTemplateInfos.FRESH.height == 48, "new template cache bypassed compaction")
+paged:InternalGetTemplateInfo("FRESH")
+flush()
+assert(paged.cachedTemplateInfos.FRESH.height == 60, "new template cache must not be written")
 display.buttons[2].scripts.OnClick()
 flush()
 assert(not book.isMinimized and spell.width == 379, "expanded spellbook did not prepare its two-column rows")
 book:ApplyInputModeSizing()
+flush()
 assert(host.width == 1822 and book.width == 1816,
     "native show-time sizing reset the expanded sidebar width")
 spell:ClearAllPoints()
 spell:SetPoint("TOPLEFT", paged.ViewFrames[2], "TOPLEFT", 400, -40)
 combat = true
 event("PLAYER_REGEN_DISABLED")
+flush()
 assert(not display.buttons[1]:IsEnabled() and not display.buttons[2]:IsEnabled())
 spell.Button.protected = true
 local buttonPoint, buttonRelative, buttonRelativePoint, buttonX, buttonY = spell.Button:GetPoint(1)
 host:SetMinimized(true)
 book:ApplyInputModeSizing()
+flush()
 paged:UpdateLayouts()
 local newButtonPoint, newButtonRelative, newButtonRelativePoint, newButtonX, newButtonY =
     spell.Button:GetPoint(1)
 assert(book.isMinimized and host.width == 1013 and book.width == 1010
-    and spell.width == book.FFXIVUIPageWidth / 2 - 8
+    and spell.width == artOf(book).pageWidth / 2 - 8
     and spell.points[1][2] == paged.ViewFrames[2] and spell.points[1][4] == 400,
     "combat minimize must preserve the second column within the existing window width")
 assert(newButtonPoint == buttonPoint and newButtonRelative == buttonRelative
@@ -821,11 +856,12 @@ assert(newButtonPoint == buttonPoint and newButtonRelative == buttonRelative
 spell.Button.protected = nil
 assert(system:IsShown() and system.tabs[1]:IsShown(),
     "combat minimize left the sidebar categories hidden")
-local compactPageWidth = book.FFXIVUIPageWidth
+local compactPageWidth = artOf(book).pageWidth
 paged.ViewFrames[1].protected = true
 local protectedViewWidth = paged.ViewFrames[1].width
 book:SetMinimized(false)
-assert(not book.isMinimized and book.FFXIVUIPageWidth == compactPageWidth
+flush()
+assert(not book.isMinimized and artOf(book).pageWidth == compactPageWidth
     and paged.ViewFrames[1].width == protectedViewWidth and spell.width == compactPageWidth / 2 - 8,
     "one protected view blocked independent spell-row layout")
 paged.ViewFrames[1].protected = nil
@@ -837,6 +873,7 @@ flush()
 assert(not late.Button.skin)
 combat = false
 event("PLAYER_REGEN_ENABLED")
+flush()
 assert(late.Button.skin == "Equipment" and spell.width == compactPageWidth / 2 - 8,
     "combat-deferred row styling or two-column layout did not resume after combat")
 assert(display.buttons[1]:IsEnabled() and display.buttons[2]:IsEnabled())
@@ -845,6 +882,7 @@ book:Hide()
 assert(host.CloseButton.width == 24, "close geometry changed during combat")
 combat = false
 event("PLAYER_REGEN_ENABLED")
+flush()
 assert(host.CloseButton.width == 32 and host.CloseButton.points[1][5] == 5,
     "deferred native close restoration did not run")
 book:Show()
@@ -876,5 +914,6 @@ book:Hide()
 assert(host.CloseButton.points[1][2] == header)
 combat = false
 event("PLAYER_REGEN_ENABLED")
+flush()
 assert(host.CloseButton.points[1][2] == talentHeader)
 print("PASS shared close ownership across spellbook/talent switching and deferred updates")

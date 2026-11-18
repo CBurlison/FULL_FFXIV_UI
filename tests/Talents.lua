@@ -96,6 +96,17 @@ function hooksecurefunc(target, method, func)
 end
 
 _G = _G or {}
+local timers = {}
+C_Timer = {After = function(_, callback) timers[#timers + 1] = callback end}
+local function flush()
+    for _ = 1, 5 do
+        local callbacks = timers
+        if #callbacks == 0 then return end
+        timers = {}
+        for _, callback in ipairs(callbacks) do callback() end
+    end
+    assert(#timers == 0, "deferred Talents work schedules itself indefinitely")
+end
 local host = object("Frame")
 host.TalentsFrame = object("Frame", host)
 host.SpecFrame = object("Frame", host)
@@ -125,6 +136,7 @@ local circled = {}
 ns.StyleCircularArrowButton = function(control, direction) circled[control] = direction end
 ns.CreateExtractedTabArtwork = function(panel) return {panel = panel} end
 ns.UpdateExtractedTabArtwork = function(art, selected) art.selected = selected end
+ns.DeferOutsideSecureUpdate = function(_, _, callback) C_Timer.After(0, callback) end
 local apply = object("Button", host.TalentsFrame)
 apply.Left, apply.Middle, apply.Right = apply:CreateTexture(), apply:CreateTexture(), apply:CreateTexture()
 local node = object("Button", host.TalentsFrame)
@@ -147,23 +159,24 @@ assert(ns.TalentsUI.HealerIcon:match("Healer.tga"), "Healer icon should be confi
 assert(ns.TalentsUI.DpsIcon:match("DPS.tga"), "DPS icon should be configured")
 assert(host.TalentsFrame.rounded, "TalentsFrame should be styled with RoundWindow")
 assert(host.SpecFrame.rounded, "SpecFrame should be styled with RoundWindow")
-assert(host.TalentsFrame.FFXIVUIHeaderTitle.text == "Talents", "TalentsFrame title should be 'Talents'")
-assert(host.SpecFrame.FFXIVUIHeaderTitle.text == "Specializations", "SpecFrame title should be 'Specializations'")
+assert(ns.TalentsFrameArt(host.TalentsFrame).headerTitle.text == "Talents", "TalentsFrame title should be 'Talents'")
+assert(ns.TalentsFrameArt(host.SpecFrame).headerTitle.text == "Specializations", "SpecFrame title should be 'Specializations'")
 assert(styledAs[apply] == "button" and styledAs[search] == "edit" and styledAs[loadout] == "combo")
 assert(styledAs[reset] == "menu", "icon dropdown should only receive the popup skin")
 assert(styledAs[node] == nil, "talent node buttons must keep their native art")
 local spec = object("Button", host.SpecFrame)
 spec.Left, spec.Middle, spec.Right = spec:CreateTexture(), spec:CreateTexture(), spec:CreateTexture()
 host.SpecFrame:Show()
+flush()
 assert(styledAs[spec] == "button", "controls created after install should be styled on show")
 host.SpecFrame.shown = false
 
-local header = host.TalentsFrame.FFXIVUIHeader
+local header = ns.TalentsFrameArt(host.TalentsFrame).header
 assert(header.template == "FFXIV_TalentsHeaderTemplate", "Header should use the Talents header template")
 assert(header.height == 30 and #header.points == 2, "Header geometry should come from the template")
 assert(header.points[1][1] == "TOPLEFT" and header.points[1][4] == 8 and header.points[1][5] == -4)
 assert(header.points[2][1] == "TOPRIGHT" and header.points[2][4] == -8 and header.points[2][5] == -4)
-local title = host.TalentsFrame.FFXIVUIHeaderTitle
+local title = ns.TalentsFrameArt(host.TalentsFrame).headerTitle
 assert(title.template == "FFXIV_TalentsHeaderTitleTemplate", "Title should use the title template")
 assert(title.height == 26 and title.justify == "LEFT", "Title size and justification should come from the template")
 assert(title.points[1][1] == "LEFT" and title.points[1][4] == 12)
@@ -180,18 +193,19 @@ assert(roleTex.texture:match("Tank.tga"), "Role icon texture should be updated t
 
 local close = host.CloseButton
 assert(close.width == 24 and close.height == 24 and close.native.alpha == 0)
-assert(close.points[1][2] == host.TalentsFrame.FFXIVUIHeader and close.points[1][4] == -2)
+assert(close.points[1][2] == ns.TalentsFrameArt(host.TalentsFrame).header and close.points[1][4] == -2)
 host.TalentsFrame:Hide()
 host.SpecFrame:Show()
-assert(close.points[1][2] == host.SpecFrame.FFXIVUIHeader)
+flush()
+assert(close.points[1][2] == ns.TalentsFrameArt(host.SpecFrame).header)
 assert(close.FFXIVUICloseIcon:IsShown() and close.scripts.OnClick() == "native close")
 combat = true
 host.SpecFrame:Hide()
 host.TalentsFrame:Show()
-assert(close.points[1][2] == host.SpecFrame.FFXIVUIHeader, "Close moved in combat")
+assert(close.points[1][2] == ns.TalentsFrameArt(host.SpecFrame).header, "Close moved in combat")
 combat = false
 ns.TalentsUI.Install()
-assert(close.points[1][2] == host.TalentsFrame.FFXIVUIHeader)
+assert(close.points[1][2] == ns.TalentsFrameArt(host.TalentsFrame).header)
 host.SpellBookFrame = object("Frame", host)
 assert(not ns.TalentsUI.UpdateCloseButton(host), "Talents claimed the active spellbook close button")
 local legacy = object("Frame")
@@ -221,23 +235,25 @@ legacyApply.Text = legacyApply:CreateFontString()
 legacyApply.Text:SetText("Apply Changes")
 PlayerTalentFrame = legacy
 ns.TalentsUI.Install()
-assert(legacy.CloseButton.points[1][2] == legacy.FFXIVUIHeader)
+assert(legacy.CloseButton.points[1][2] == ns.TalentsFrameArt(legacy).header)
 assert(banner.alpha == 0 and legacy.TopBackground.alpha == 0, "Forever top art should be hidden")
-assert(legacy.Primary.FFXIVUITab and legacy.Secondary.FFXIVUITab, "Primary and Secondary should be tabs")
+assert(ns.TalentsFrameArt(legacy.Primary).skinnedTab and ns.TalentsFrameArt(legacy.Secondary).skinnedTab, "Primary and Secondary should be tabs")
 assert(styledAs[legacy.Primary] == nil, "tabs must not also receive the generic button skin")
 local p1, p2 = legacy.Primary.points[1], legacy.Secondary.points[1]
-assert(p1[1] == "TOPLEFT" and p1[2] == legacy.FFXIVUIHeader and p1[4] == 8 and p1[5] == -10, "first tab should sit left under the header")
+assert(p1[1] == "TOPLEFT" and p1[2] == ns.TalentsFrameArt(legacy).header and p1[4] == 8 and p1[5] == -10, "first tab should sit left under the header")
 assert(p2[1] == "LEFT" and p2[2] == legacy.Primary and p2[3] == "RIGHT" and p2[4] == -6, "second tab should follow the first")
 assert(legacy.Primary.width == 130 and legacy.Primary.height == 30, "tabs should use the fixed tab size")
 legacy.Primary:ClearAllPoints()
 legacy.Primary:SetPoint("TOPLEFT", legacy, "TOPLEFT", 0, 0)
-assert(#legacy.Primary.points == 1 and legacy.Primary.points[1][2] == legacy.FFXIVUIHeader and legacy.Primary.points[1][5] == -10,
+flush()
+assert(#legacy.Primary.points == 1 and legacy.Primary.points[1][2] == ns.TalentsFrameArt(legacy).header and legacy.Primary.points[1][5] == -10,
     "Blizzard re-anchoring a tab should be restored under the header")
 assert(#legacy.Secondary.points == 1 and legacy.Secondary.points[2] == nil and legacy.Secondary.points[1][2] == legacy.Primary,
     "the second tab should keep following the first")
-assert(legacy.Primary.FFXIVUITabArt.selected == false and legacy.Secondary.FFXIVUITabArt.selected == false, "tabs start unselected without a native checked state")
+assert(ns.TalentsFrameArt(legacy.Primary).tabArt.selected == false and ns.TalentsFrameArt(legacy.Secondary).tabArt.selected == false, "tabs start unselected without a native checked state")
 legacy.Secondary.scripts.OnClick(legacy.Secondary)
-assert(legacy.Secondary.FFXIVUITabArt.selected == true and legacy.Primary.FFXIVUITabArt.selected == false, "clicking a tab should select it")
+flush()
+assert(ns.TalentsFrameArt(legacy.Secondary).tabArt.selected == true and ns.TalentsFrameArt(legacy.Primary).tabArt.selected == false, "clicking a tab should select it")
 local sp = legacySearch.points[1]
 assert(sp[1] == "RIGHT" and sp[2] == legacyOpener and sp[3] == "LEFT" and sp[4] == -6, "search should sit left of the options button on the Apply row")
 assert(legacySearch.width == 180 and legacySearch.height == 24)
@@ -281,10 +297,10 @@ plainFrame.Left, plainFrame.Middle, plainFrame.Right = plainFrame:CreateTexture(
 _G.PlayerSpellsFrame = spells
 ns.TalentsUI.Install()
 assert(styledAs[plainFrame] == nil, "non-Button frames with side textures must not receive the button skin")
-assert(view.FFXIVUITabs and #view.FFXIVUITabs == 2, "a non-button child must not stop the Forever layout")
-assert(view.FFXIVUIHeader, "the TalentsFrame should receive the FFXIV_UI header")
+assert(ns.TalentsFrameArt(view).tabs and #ns.TalentsFrameArt(view).tabs == 2, "a non-button child must not stop the Forever layout")
+assert(ns.TalentsFrameArt(view).header, "the TalentsFrame should receive the FFXIV_UI header")
 assert(spells.TopTileStreaks.alpha == 0, "PlayerSpellsFrame top art should hide while Talents is shown")
-assert(tabA.FFXIVUITab and tabB.FFXIVUITab, "the wide two-button row should become tabs")
+assert(ns.TalentsFrameArt(tabA).skinnedTab and ns.TalentsFrameArt(tabB).skinnedTab, "the wide two-button row should become tabs")
 assert(styledAs[viewSearch] == "edit", "search should keep the FFXIV_UI edit box skin")
 assert(viewSearch.points[1][1] == "RIGHT" and viewSearch.points[1][2] == viewOpener, "search should sit left of the options button on the Apply row")
 assert(viewOpener.points[1][1] == "RIGHT" and viewOpener.points[1][2] == viewApply, "options button should sit left of Apply Changes")
@@ -293,8 +309,11 @@ assert(circled[viewOpener] == "down", "opener should become a down circle button
 assert(viewOpener.Arrow == nil or viewOpener.Arrow.alpha == 0, "opener's native arrow should be hidden")
 assert(styledAs[viewApply] == "button", "Apply Changes should be textured")
 view:Hide()
+assert(#timers > 0, "Talents hide work should be deferred out of the Blizzard tab chain")
+flush()
 assert(spells.TopTileStreaks.alpha == 1, "top art should restore when Talents hides so Spellbook is unaffected")
 view:Show()
+flush()
 assert(spells.TopTileStreaks.alpha == 0, "top art should hide again when Talents shows")
 print("PASS PlayerSpellsFrame.TalentsFrame: tabs, search, opener, counter, Apply Changes and gated top art")
 
