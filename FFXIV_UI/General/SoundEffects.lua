@@ -95,7 +95,28 @@ local function PlayCustomSFX(fileName)
 
     DebugPrint("Attempting to play:", path)
 
-    PlaySoundFile(path, "SFX")
+    return PlaySoundFile(path, "SFX")
+end
+
+local questSoundHandle, questSoundType
+
+local function PlayQuestSFX(fileName, soundType)
+    if not FFXIV_UI_DB or not FFXIV_UI_DB.sfxEnabled then
+        return
+    end
+
+    if questSoundHandle and C_Sound.IsPlaying(questSoundHandle) then
+        if questSoundType == soundType then
+            return
+        end
+        StopSound(questSoundHandle)
+    end
+
+    questSoundHandle, questSoundType = nil, nil
+    local willPlay, soundHandle = PlayCustomSFX(fileName)
+    if willPlay and soundHandle then
+        questSoundHandle, questSoundType = soundHandle, soundType
+    end
 end
 
 
@@ -227,7 +248,7 @@ frame:SetScript("OnEvent", function(self, event, arg1)
     if index > 0 then
         local file = QuestAcceptSounds[index]
         if file then
-            PlayCustomSFX(file)
+            PlayQuestSFX(file, "accept")
         end
     end
 
@@ -240,7 +261,7 @@ elseif event == "QUEST_TURNED_IN" then
     if index > 0 then
         local file = QuestCompleteSounds[index]
         if file then
-            PlayCustomSFX(file)
+            PlayQuestSFX(file, "complete")
         end
     end
 

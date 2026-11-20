@@ -917,3 +917,15 @@ event("PLAYER_REGEN_ENABLED")
 flush()
 assert(host.CloseButton.points[1][2] == talentHeader)
 print("PASS shared close ownership across spellbook/talent switching and deferred updates")
+local category = book.categoryMixins[1]
+local IsAvailable = category.IsAvailable
+category.IsAvailable = function() error("transient layout failure") end
+book:UpdateDisplayedSpells()
+assert(not pcall(flush), "layout error was swallowed")
+category.IsAvailable = IsAvailable
+skillLines[1].name = "Renamed after layout error"
+book:UpdateDisplayedSpells()
+flush()
+assert(artOf(system.tabs[1]).categoryLabel:GetText() == "Renamed after layout error",
+    "a layout error left the spellbook layout permanently stopped")
+print("PASS layout errors do not block later spellbook layout passes")

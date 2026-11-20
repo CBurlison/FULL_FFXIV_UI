@@ -441,15 +441,11 @@ local function DisplayMode(host, book)
     ArtOf(book).displayMode = control
 end
 
-Layout = function()
-    local host = PlayerSpellsFrame
-    local book = host and host.SpellBookFrame
-    if not book or updating then return end
+local function LayoutBook(host, book)
     if InCombatLockdown() then
         pending = true
         for _, update in pairs(modes) do update() end
     end
-    updating = true
     if CanModifyGeometry(book) then
         book:SetWidth(book.isMinimized and book.minimizedWidth or book.maximizedWidth)
     else
@@ -595,12 +591,26 @@ Layout = function()
             end
         end
     end
+end
+
+-- An error mid-layout must not leave `updating` set, or every later install and layout pass is skipped.
+Layout = function()
+    local host = PlayerSpellsFrame
+    local book = host and host.SpellBookFrame
+    if not book or updating then return end
+    updating = true
+    local ok, err = pcall(LayoutBook, host, book)
     updating = false
+    if not ok then
+        pending = true
+        error(err, 0)
+    end
 end
 
 local function Shell(host, book)
     local panel = Panel(host)
     addonEnv.RoundWindow(panel, true)
+    ArtOf(host).panel = panel
     local native = {}
     local function Capture(region)
         if not region or native[region] then return end

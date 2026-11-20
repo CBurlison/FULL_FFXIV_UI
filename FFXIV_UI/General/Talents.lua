@@ -78,12 +78,14 @@ end
 local TAB_WIDTH, TAB_HEIGHT, TAB_SPACING = 130, 30, -6
 local TOP_ART_KEYS = {"Bg", "Background", "TopBackground", "TopBG", "TopTileStreaks", "TopTexture"}
 
-local function FindChildren(owner, match, depth, found)
+local function FindChildren(owner, match, depth, found, skip)
     found = found or {}
     if depth <= 0 or type(owner.GetChildren) ~= "function" then return found end
     for _, child in ipairs({owner:GetChildren()}) do
-        if match(child) then found[#found + 1] = child end
-        FindChildren(child, match, depth - 1, found)
+        if not (skip and skip(child)) then
+            if match(child) then found[#found + 1] = child end
+            FindChildren(child, match, depth - 1, found, skip)
+        end
     end
     return found
 end
@@ -339,7 +341,14 @@ local function ApplyHostTopArt(host, frame, talentsActive)
     end
     if talentsActive then
         local frameTop = frame and frame.GetTop and frame:GetTop()
-        for _, owner in ipairs(FindChildren(host, function() return true end, 3)) do
+        -- Spellbook's own window panel and book are full-height overlays that Talents must never hold.
+        local spellbookArt = addonEnv.SpellbookFrameArt and addonEnv.SpellbookFrameArt(host)
+        local spellbookPanel = spellbookArt and spellbookArt.panel
+        local spellbookBook = host.SpellBookFrame
+        local function IsSpellbookArt(child)
+            return child == spellbookPanel or child == spellbookBook
+        end
+        for _, owner in ipairs(FindChildren(host, function() return true end, 3, nil, IsSpellbookArt)) do
             if owner ~= frame then
                 for _, region in ipairs({owner:GetRegions()}) do
                     if IsOverflowing(region, frameTop) then

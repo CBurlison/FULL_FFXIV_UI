@@ -60,6 +60,7 @@ function methods:SetAllPoints(owner) self.allPoints = owner end
 function methods:ClearAllPoints() self.points = {} end
 function methods:SetPoint(...) self.points[#self.points + 1] = {...} end
 function methods:GetAlpha() return self.alpha end
+function methods:GetTop() return self.top end
 function methods:GetPoint(index) local p = self.points[index or 1]; return p and p[1] end
 function methods:GetWidth() return self.width end
 function methods:GetHeight() return self.height end
@@ -316,6 +317,35 @@ view:Show()
 flush()
 assert(spells.TopTileStreaks.alpha == 0, "top art should hide again when Talents shows")
 print("PASS PlayerSpellsFrame.TalentsFrame: tabs, search, opener, counter, Apply Changes and gated top art")
+
+-- Spellbook's window panel and book sit at the host's top edge; Talents must not alpha-hold them.
+local spellbookArt = {}
+ns.SpellbookFrameArt = function(frame)
+    spellbookArt[frame] = spellbookArt[frame] or {}
+    return spellbookArt[frame]
+end
+local shared = object("Frame")
+shared.top = 1000
+local sharedView = object("Frame", shared)
+sharedView.top = 900
+shared.TalentsFrame = sharedView
+local sharedPanel = object("Frame", shared)
+sharedPanel.top = 1000
+local panelArt = sharedPanel:CreateTexture()
+panelArt.top = 1000
+spellbookArt[shared] = {panel = sharedPanel}
+shared.SpellBookFrame = object("Frame", shared)
+local bookArt = shared.SpellBookFrame:CreateTexture()
+bookArt.top = 1000
+_G.PlayerSpellsFrame = shared
+ns.TalentsUI.Install()
+sharedView:Show()
+flush()
+assert(panelArt.alpha == 1, "Spellbook panel art must not be held while Talents is shown")
+assert(bookArt.alpha == 1, "Spellbook book art must not be held while Talents is shown")
+sharedView:Hide()
+flush()
+print("PASS Spellbook panel and book stay visible while Talents is shown")
 
 
 print("PASS talent/spec/legacy close styling, native clicks, shared ownership and combat deferral")
