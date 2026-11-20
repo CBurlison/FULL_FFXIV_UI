@@ -34,3 +34,13 @@ If you like what I do, consider supporting me: https://ko-fi.com/mojithemonk
 - Bank
 
 Most things are kind of buggy in Combat. wow is pretty unhappy when you try to do things to the UI in combat that require game data and I am (read: the AI is) trying to work around it.
+
+## Updating
+
+Run `FFXIV_UI\updater\FFXIV_UI_Updater.exe` from inside your AddOns folder. It downloads the latest GitHub release and installs it over the current addon. Close World of Warcraft first. It is a small native binary, so nothing else needs to be installed.
+
+To rebuild the updater after changing `Updater\src\main.rs`, run the following from the repo root, then copy the exe into the addon's `updater` folder:
+
+`cargo build --release --manifest-path Updater\Cargo.toml`
+
+`copy Updater\target\release\FFXIV_UI_Updater.exe FFXIV_UI\updater\`
