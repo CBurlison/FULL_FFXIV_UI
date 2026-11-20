@@ -2,7 +2,7 @@
 ## Title: FFXIV UI
 ## Notes: Final Fantasy XIV inspired HUD
 ## Author: MojiTheMonk, Golbezz
-## Version: 1.0
+## Version: 0.3.0
 
 ## SavedVariables: FFXIV_UI_Profiles, FFXIV_UI_Theme
 ## SavedVariablesPerCharacter: FFXIV_UI_DB
