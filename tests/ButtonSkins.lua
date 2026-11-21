@@ -196,3 +196,41 @@ assert(stanceButton.icon.width == 32 and stanceButton.icon.height == 32)
 assert(S(stanceButton).style == "Stance")
 assert(stanceButton.icon.point[5] == 1)
 print("PASS: stance action bar icons match pet action bar icon size (32px)")
+
+local deferredWork = {}
+C_Timer.After = function(_, callback) deferredWork[#deferredWork + 1] = callback end
+local function runDeferredWork()
+    while #deferredWork > 0 do table.remove(deferredWork, 1)() end
+end
+local costFrame
+for _, frame in ipairs(frames) do
+    if frame.events.SPELLS_CHANGED then costFrame = frame end
+end
+local labels = {}
+function regionMethods:CreateFontString()
+    local label = region()
+    function label:SetFont() end
+    function label:SetShadowColor() end
+    function label:SetShadowOffset() end
+    function label:SetJustifyH() end
+    function label:SetTextColor() end
+    function label:SetFormattedText(format, value) self.text = string.format(format, value) end
+    labels[#labels + 1] = label
+    return label
+end
+local spellCost = 20
+GetActionInfo = function() return "spell", 5487 end
+C_Spell = {GetSpellPowerCost = function() return {{type = 0, cost = spellCost, hasRequiredAura = true}} end}
+local castButton = region()
+castButton.icon, castButton.action = region(), 1
+castButton.UpdateAction = function() end
+namespace.ApplyButtonSkin(castButton, {Icon = castButton.icon}, "General")
+runDeferredWork()
+local label = labels[#labels]
+assert(label.text == "20")
+spellCost = 30
+costFrame.callback(costFrame)
+assert(label.text == "20", "spell cost must not be recalculated inside the Blizzard action bar event")
+runDeferredWork()
+assert(label.text == "30")
+print("PASS: spell cost labels refresh in a fresh execution, not inside Blizzard's action bar event")

@@ -384,9 +384,11 @@ end
 costEvents:RegisterUnitEvent("UNIT_AURA", "player")
 costEvents:RegisterUnitEvent("UNIT_MAXPOWER", "player")
 costEvents:SetScript("OnEvent", function()
-	for button in pairs(spellCostButtons) do
-		updateSpellCost(button)
-	end
+	deferOutsideSecureUpdate(costEvents, "spellCost", function()
+		for button in pairs(spellCostButtons) do
+			updateSpellCost(button)
+		end
+	end)
 end)
 
 local function applyButtonSkin(button, regions, styleName, auraSize)
@@ -595,14 +597,16 @@ loader:SetScript("OnEvent", function(_, event, loadedAddon, ...)
 	end
 
 	if event == "PLAYER_REGEN_ENABLED" then
-		for button, pending in pairs(pendingButtons) do
-			applyButtonSkin(button, pending.regions, pending.styleName, pending.auraSize)
-			pendingButtons[button] = nil
-		end
-		if pendingHotbarBackgroundHidden ~= nil then
-			setHotbarBackgroundHidden(pendingHotbarBackgroundHidden)
-			pendingHotbarBackgroundHidden = nil
-		end
+		deferOutsideSecureUpdate(loader, "pendingSkins", function()
+			for button, pending in pairs(pendingButtons) do
+				applyButtonSkin(button, pending.regions, pending.styleName, pending.auraSize)
+				pendingButtons[button] = nil
+			end
+			if pendingHotbarBackgroundHidden ~= nil then
+				setHotbarBackgroundHidden(pendingHotbarBackgroundHidden)
+				pendingHotbarBackgroundHidden = nil
+			end
+		end)
 	end
 
 	queueRefresh()
